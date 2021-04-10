@@ -36,7 +36,15 @@ def question(request, question_id):
 		q = Question.objects.get(id=question_id)
 	except:
 		# pergunta não encontrada:
-		return HttpResponse('<p>Essa pergunta não existe, talvez ela tenha sido apagada pelo criador da pergunta. <a href="/">Clique aqui</a> para voltar para a página inicial.</p>')
+		return HttpResponse('''<html>
+			<head>
+				<meta charset="utf-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1">
+			</head>
+			<body>
+				<p>Essa pergunta não existe, talvez ela tenha sido apagada pelo criador da pergunta. <a href="/">Clique aqui</a> para voltar para a página inicial.</p>
+			</body>
+			</html>''')
 
 	if request.method == 'POST':
 
