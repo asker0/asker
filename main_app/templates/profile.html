@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-br">
+	<head>
+		<title>{{user_p.user.username}}</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('.navbar-light .dmenu').hover(function() {
+					$(this).find('.sm-menu').first().stop(true, true).slideDown(150);
+				}, function() {
+					$(this).find('.sm-menu').first().stop(true, true).slideUp(105)
+				});
+			});
+		</script>
+
+		<style>
+			#center1 img {
+				width: 10%;
+				display: block;
+			}
+
+			#user-bio {
+				width: 50%;
+				margin: 0 auto;
+			}
+
+            .table {
+                width: 50%;
+                margin: 0 auto;
+            }
+
+			@media (min-width: 320px) and (max-width: 480px) {
+				#center1 img {
+					width: 25%;
+				}
+
+				.table {
+				    width: 100%;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
+		    <a href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+					{% if user.is_authenticated %}
+    					{% if user.username != user_p.user.username %}
+    					<li class="nav-item">
+    					    <a class="nav-link" href="/user/{{user.username}}">Perfil</a>
+    					</li>
+    					{% endif %}
+					<li class="nav-item">
+						<a class="nav-link" href="/ask">Perguntar</a>
+					</li>
+					<li class="nav-item">
+					    <a class="nav-link" href="/notifications">Notificações</a>
+					</li>
+					<li class="nav-item">
+					    <a class="nav-link" href="/rank">Rank</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/logout">Sair</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="/signin">Entrar</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/signup">Criar uma conta</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+		</nav>
+
+		<center id="center1">
+		    <img src="{{user_p.avatar.url}}" alt="{{user_p.user.username}}">
+			<span>{{user_p.user.username}}</span>
+		</center>
+		<br><center><span id="user-bio">{{user_p.bio}}</span></center><br>
+
+		<table class="table table-bordered">
+		  <thead>
+			<tr>
+			  <th scope="col">Perguntou</th>
+			  <th scope="col">Respondeu</th>
+			  <th scope="col">Pontos</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td>{{user_p.total_questions}}</td>
+			  <td>{{user_p.total_responses}}</td>
+			  <td>{{user_p.total_points}}</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		{% if user_p.user.username == user.username %}
+		<br>
+		<div class="card">
+            <div class="card-body">
+        		<p>Suas perguntas:</p>
+        		{% for question in questions %}
+        		<div class="card"><div class="card-body">
+        		    <a href="/question/{{question.id}}">{{question.text}}</a>
+        		</div></div>
+        		{% endfor %}
+    		</div>
+		</div>
+
+		<div class="card">
+		    <div class="card-body">
+        		<p>Suas respostas:</p>
+        		{% for response in responses %}
+            		<div class="card"><div class="card-body">
+            		<p><a href="/question/{{response.question.id}}">{{response.question.text}}</a></p>
+            		<span>{{response.text}}</span>
+            		</div></div>
+        		{% endfor %}
+        	</div>
+		</div>
+		<br><br>
+
+		<p>Alterar foto de perfil:</p>
+		<form class="form-inline" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{change_profile_picture_form}}
+			<input type="submit" value="Alterar">
+		</form>
+
+		<br><br>
+		<p>Alterar biografia:</p>
+		<form method="post">
+			{% csrf_token %}
+			<textarea name="bio" placeholder="Biografia" maxlength="400">{{ user_p.bio }}</textarea><br>
+			<input type="submit" value="Alterar">
+		</form>
+		{% endif %}
+	</body>
+</html>

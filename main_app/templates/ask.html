@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-br">
+	<head>
+		<title>Perguntar</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<meta name="keywords" content="asker, asker.fun, perguntar">
+		<meta name="description" content="Faça uma pergunta no Asker.fun">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+		<style>
+			main {
+				width: 50%;
+				margin: 5px auto;
+			}
+
+			@media (min-width: 320px) and (max-width: 480px) {
+				main {
+					width: 80%;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<div id="inner">
+				<form method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<div class="form-group">
+						<input class="form-control" type="text" name="question" placeholder="Sua pergunta aqui" autocomplete="off" maxlength="180">
+
+						<br>
+						<label for="image">Imagem</label>
+						<input type="file" class="form-control-file" id="image" name="file">
+
+						<br>
+						<input class="btn btn-primary" type="submit" value="Fazer pergunta">
+					</div>
+				</form>
+			</div>
+
+			<section>
+				<style>
+					img {
+						display: block;
+						width: 50%;
+						margin: auto;
+					}
+
+					@media (min-width: 320px) and (max-width: 480px) {
+					    img {
+					        width: 70%;
+					    }
+					}
+				</style>
+				<!--  www.picpay.com/convite?@ZHQSXF -->
+				<a href="https://www.picpay.com/convite?@ZHQSXF"><img src="/media/ads/picpay.jpg"></a>
+
+				<!--<small>
+					<b>Por que anúncios?</b>
+					<p>O dinheiro ganho com anúncios será usado para pagar a hospedagem, domínio e melhorias no site. Espero que compreendam, obrigado!</p>
+				</small>-->
+			</section>
+			<hr>
+			<footer>
+				<p>Encontrou algum bug, tem alguma dúvida ou sugestão? <a href="mailto:minha.ccontta@gmail.com">Me envie um email</a>.</p>
+			</footer>
+
+			{{ error|safe }}
+		</main>
+	</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">
+
+        <title>Suas Notificações</title>
+
+        <style>
+            .notifications {
+                width: 60%;
+                margin: 0 auto;
+            }
+
+            @media (min-width: 320px) and (max-width: 480px) {
+                .notifications {
+                    width: 95%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+
+		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
+		    <a href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						<a class="nav-link" href="/user/{{user.username}}">Perfil</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/ask">Perguntar</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/logout">Sair</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="/signin">Entrar</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/signup">Criar uma conta</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+		</nav>
+
+        <section class="notifications">
+            {% for notification in notifications %}
+            <div class="card">
+                <div class="card-body">
+                    <p>{{ notification.text|safe }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% if notifications.has_previous %}
+            <a href="/notifications?page={{ notifications.previous_page_number }}">Anterior</a>
+                {% if notifications.has_next %} | {% endif %}
+            {% endif %}
+            {% if notifications.has_next %}
+            <a href="/notifications?page={{ notifications.next_page_number }}">Próximo</a>
+            {% endif %}
+        </section>
+
+    </body>
+</html>

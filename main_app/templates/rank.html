@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-br">
+	<head>
+		<title>Asker | Rank</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+		<style>
+			.rank {
+				width: 50%;
+				margin: 5px auto;
+			}
+
+			@media (min-width: 320px) and (max-width: 480px) {
+				.rank {
+					width: 95%;
+				}
+			}
+		</style>
+	</head>
+	<body>
+
+		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
+		    <a href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						<a class="nav-link" href="/user/{{user.username}}">Perfil</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/ask">Perguntar</a>
+					</li>
+					<li class="nav-item">
+					    <a class="nav-link" href="/notifications">Notificações</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/logout">Sair</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="/signin">Entrar</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/signup">Criar uma conta</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+		</nav>
+
+		<main class="rank">
+			<table class="table">
+				<head>
+					<tr>
+						<th>Posição</th><th>Pontos</th><th>Aliás</th>
+					</tr>
+				</head>
+
+				<tbody>
+					{% for user in rank %}
+					<tr>
+						<td># {{ user.rank }}</td><td>{{ user.total_points }}</td><td><a href="/user/{{ user.user.username }}">{{ user.user.username }}</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+			<p>Para conseguir pontos você pode:</p>
+			<ul>
+				<li>Responder - 2 pontos por resposta</li>
+				<li>Perguntar - 1 ponto por pergunta</li>
+			</ul>
+		</main>
+
+	</body>
+</html>

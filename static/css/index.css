@@ -1,0 +1,14 @@
+#questions {
+	width: 60%;
+	margin: 0 auto 0;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+	#questions {
+		width: 98%;
+	}
+}
+
+.card {
+	margin-bottom: 2px;
+}

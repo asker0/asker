@@ -1,0 +1,145 @@
+<!doctype html>
+{% load main_app_extras %}
+{% load humanize %}
+<html lang="pt-br">
+	<head>
+		<title>Página inicial</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<meta name="keywords" content="asker, asker.fun, askerfun, perguntas, respostas">
+		<meta name="description" content="Venha se divertir e aprender fazendo e respondendo perguntas na comunidade de P&R mais promissora!">
+
+		<meta name="propeller" content="8e5237a6968a054792af4b70e5631e3d">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('.navbar-light .dmenu').hover(function() {
+					$(this).find('.sm-menu').first().stop(true, true).slideDown(150);
+				}, function() {
+					$(this).find('.sm-menu').first().stop(true, true).slideUp(105)
+				});
+			});
+
+			function reply(obj, q_id) {
+				$.ajax({
+					url: '/',
+					type: 'POST',
+					data: {
+						csrfmiddlewaretoken: obj.csrfmiddlewaretoken.value,
+						question_id: obj.question_id.value,
+						response: obj.response.value,
+					},
+					complete: function(data) {
+						document.getElementById('form-question-' + q_id).style.display = 'none'
+						document.getElementById('submit-answer-button' + q_id).style.display = 'none'
+						document.getElementById('cancel-submit-answer-button' + q_id).style.display = 'none'
+						document.getElementById('your-answer' + q_id).innerHTML = 'Sua resposta: ' + obj.response.value
+					}
+				})
+			}
+		</script>
+
+		<link rel="stylesheet" href="/static/css/index.css">
+
+		<style>
+		    #questions .card {
+		        border-radius: 10px;
+		    }
+		</style>
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
+		    <a href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						<a class="nav-link" href="/user/{{user.username}}">Perfil</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/ask">Perguntar</a>
+					</li>
+					<li class="nav-item">
+					    <a class="nav-link" href="/notifications">Notificações</a>
+					</li>
+					<li class="nav-item">
+					    <a class="nav-link" href="/rank">Rank</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/logout">Sair</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="/signin">Entrar</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/signup">Criar uma conta</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+		</nav>
+
+		<section id="questions">
+			{% for question in questions %}
+			<div class="card">
+				<div class="card-body">
+					<a href="/question/{{question.id}}">{{question.text}}</a> &middot; <small class="text-muted">{{ question.pub_date|naturaltime }}</small>
+					{% if user.is_authenticated %}
+						{% if user.username|answered:question.id %}
+						<p>Sua resposta: {{ user.username|answer:question.id }}</p>
+						{% else %}
+							<style>
+								.answer-form {
+									width: 50%;
+								}
+
+								@media (min-width: 320px) and (max-width: 480px) {
+									.answer-form {
+										width: 98%;
+									}
+								}
+							</style>
+							<form class="answer-form" id="form-question-{{question.id}}" style="margin-bottom: 1px">
+								{% csrf_token %}
+								<input type="hidden" value="{{redirect}}" name="redirect">
+								<input type="hidden" value="{{question.id}}" name="question_id">
+								<textarea class="form-control" onclick="javascript:document.getElementById('submit-answer-button{{question.id}}').style.display = 'block'; document.getElementById('cancel-submit-answer-button{{question.id}}').style.display = 'block'" placeholder="Escreva sua resposta aqui" name="response" maxlength="600" required="required"></textarea>
+								<div class="form-inline">
+									<input class="btn btn-info" id="submit-answer-button{{question.id}}" type="submit" value="Enviar" onclick="javascript:reply(this.parentElement.parentElement, {{question.id}}); return false" style="margin-left: 3px; display: none">
+									<button class="btn btn-info" id="cancel-submit-answer-button{{question.id}}" onclick="javascript:document.getElementById('submit-answer-button{{question.id}}').style.display = 'none'; document.getElementById('cancel-submit-answer-button{{question.id}}').style.display = 'none'; return false" style="margin-left: 3px; display: none">Cancelar</button>
+								</div>
+							</form>
+						{% endif %}
+					{% else %}
+					<p class="text-muted">Faça <a href="/signin?redirect=/question/{{question.id}}">login</a> ou <a href="/signup?redirect=/question/{{question.id}}">crie uma conta</a> para responder esta pergunta.</p>
+					{% endif %}
+					<p id="your-answer{{question.id}}"></p>
+					<span>{{ question.id|total_answers }}</span>
+				</div>
+			</div>
+			{% endfor %}
+
+			{% if page_obj.has_previous %}
+            <a rel="prev" href="?page={{ page_obj.previous_page_number }}{{ current_category }}">Anterior</a>
+                {% if page_obj.has_next %} | {% endif %}
+            {% endif %}
+            {% if page_obj.has_next %}
+            <a rel="next" href="?page={{ page_obj.next_page_number }}{{ current_category }}">Próximo</a>
+            {% endif %}
+		</section>
+	</body>
+</html>
