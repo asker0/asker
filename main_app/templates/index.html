@@ -43,6 +43,12 @@
 						document.getElementById('submit-answer-button' + q_id).style.display = 'none'
 						document.getElementById('cancel-submit-answer-button' + q_id).style.display = 'none'
 						document.getElementById('your-answer' + q_id).innerHTML = 'Sua resposta: ' + obj.response.value
+						document.getElementById('total-answers-' + q_id).innerHTML = Number(document.getElementById('total-answers-' + q_id).innerHTML) + 1
+						
+						/* Se o total de respostas agora é 1, então é necessário trocar "1 respostas" por "1 resposta" (no singular) */
+						if(document.getElementById('total-answers-' + q_id).innerHTML == '1') {
+							document.getElementById('total-answers-' + q_id + '-text').innerHTML = 'resposta'
+						}
 					}
 				})
 			}
@@ -119,8 +125,9 @@
 								<input type="hidden" value="{{question.id}}" name="question_id">
 								<textarea class="form-control" onclick="javascript:document.getElementById('submit-answer-button{{question.id}}').style.display = 'block'; document.getElementById('cancel-submit-answer-button{{question.id}}').style.display = 'block'" placeholder="Escreva sua resposta aqui" name="response" maxlength="600" required="required"></textarea>
 								<div class="form-inline">
-									<input class="btn btn-info" id="submit-answer-button{{question.id}}" type="submit" value="Enviar" onclick="javascript:reply(this.parentElement.parentElement, {{question.id}}); return false" style="margin-left: 3px; display: none">
+									<input class="btn btn-info" id="submit-answer-button{{question.id}}" type="submit" value="Enviar" onclick="javascript:document.getElementById('modal-{{ question.id }}').style.display = 'block';this.style.display='none';this.nextSibling.nextSibling.style.display='none';reply(this.parentElement.parentElement, {{question.id}});return false" style="margin-left: 3px; display: none">
 									<button class="btn btn-info" id="cancel-submit-answer-button{{question.id}}" onclick="javascript:document.getElementById('submit-answer-button{{question.id}}').style.display = 'none'; document.getElementById('cancel-submit-answer-button{{question.id}}').style.display = 'none'; return false" style="margin-left: 3px; display: none">Cancelar</button>
+									<img style="display: none" id="modal-{{ question.id }}" src="/static/images/loading.gif">
 								</div>
 							</form>
 						{% endif %}
@@ -128,7 +135,7 @@
 					<p class="text-muted">Faça <a href="/signin?redirect=/question/{{question.id}}">login</a> ou <a href="/signup?redirect=/question/{{question.id}}">crie uma conta</a> para responder esta pergunta.</p>
 					{% endif %}
 					<p id="your-answer{{question.id}}"></p>
-					<span>{{ question.id|total_answers }}</span>
+					<span>{{ question.id|total_answers|safe }}</span>
 				</div>
 			</div>
 			{% endfor %}
