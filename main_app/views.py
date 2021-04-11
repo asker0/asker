@@ -17,6 +17,9 @@ def index(request):
 		Response.objects.create(question=Question.objects.get(id=request.POST.get('question_id')),
 								creator=UserProfile.objects.get(user=request.user),
 								text=request.POST.get('response'))
+		u = UserProfile.objects.get(user=request.user)
+		u.total_points += 2
+		u.save()
 		return HttpResponse('OK')
 
 	all = Question.objects.all().order_by('-pub_date')
@@ -47,7 +50,6 @@ def question(request, question_id):
 			</html>''')
 
 	if request.method == 'POST':
-
 		if Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=Question.objects.get(id=question_id)).exists():
 			return redirect('/question/' + str(q.id))
 
