@@ -12,7 +12,6 @@ from main_app.forms import UploadFileForm
 import random, string
 
 def index(request):
-
 	if request.method == 'POST':
 		Response.objects.create(question=Question.objects.get(id=request.POST.get('question_id')),
 								creator=UserProfile.objects.get(user=request.user),
@@ -34,17 +33,14 @@ def index(request):
 			   'popular_tab': ' disabled',
 			   'new_tab': ' active'}
 
-	if request.GET.get('nqd', None) != None:
+	if request.GET.get('nqd', False):
 		context['new_tab'] = ' active'
 		context['popular_tab'] = ' disabled'
 		context['popular_questions_display'] = 'none'
 
 	# contexto das questões populares:
-	p = Paginator(all, 60)
-	try:
-		context['popular_questions'] = sorted(p.page(1).object_list[:30], key=lambda x:x.total_likes, reverse=True)
-	except:
-		context['popular_questions'] = sorted(p.page(1).object_list, key=lambda x:x.total_likes, reverse=True)
+	p = Paginator(all, 30)
+	context['popular_questions'] = sorted(p.page(1).object_list, key=lambda x:x.total_likes, reverse=True)
 
 	return render(request, 'index.html', context)
 
