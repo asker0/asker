@@ -52,6 +52,18 @@
 					}
 				})
 			}
+			
+			function show_more(obj) {
+				obj.style.display = 'none'
+				obj.nextSibling.style.display = 'inline'
+				obj.nextSibling.nextSibling.nextSibling.style.display = 'inline'
+			}
+			
+			function show_less(obj) {
+				obj.style.display = 'none'
+				obj.previousSibling.previousSibling.style.display = 'none'
+				obj.previousSibling.previousSibling.previousSibling.style.display = 'inline'
+			}
 		</script>
 
 		<link rel="stylesheet" href="/static/css/index.css">
@@ -104,6 +116,11 @@
 			<div class="card">
 				<div class="card-body">
 					<a href="/question/{{question.id}}">{{question.text}}</a> &middot; <small class="text-muted">{{ question.pub_date|naturaltime }}</small>
+					<p id="description-{{ question.id }}">
+					{% if question.description %}
+					{{question.cut_description|safe}}
+					{% endif %}
+					</p>
 					{% if user.is_authenticated %}
 						{% if user.username|answered:question.id %}
 						<p>Sua resposta: {{ user.username|answer:question.id }}</p>

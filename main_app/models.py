@@ -30,9 +30,18 @@ class Question(models.Model):
 	text = models.TextField()
 	pub_date = models.DateTimeField(default=timezone.now)
 	image = models.ImageField(null=True, blank=True)
+	description = models.TextField(null=True, blank=True)
 
 	def __str__(self):
 	    return self.text
+	
+	def cut_description(self):
+		d = self.description[:300]
+		
+		if len(d) == 300 and len(self.description) > 300:
+			d += '<span style="color: #007bff; cursor: pointer;" onclick="show_more(this)">...Mostrar mais</span><span style="display: none;">{}</span> <span style="color: #007bff; cursor: pointer; display: none;" onclick="show_less(this)">Mostrar menos</span>'.format(self.description[300:])
+		
+		return d
 
 
 class Response(models.Model):

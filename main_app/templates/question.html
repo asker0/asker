@@ -190,6 +190,20 @@
 		        border-radius: 10px;
 		    }
 		</style>
+		
+		<script>
+			function show_more(obj) {
+				obj.style.display = 'none'
+				obj.nextSibling.style.display = 'inline'
+				obj.nextSibling.nextSibling.nextSibling.style.display = 'inline'
+			}
+			
+			function show_less(obj) {
+				obj.style.display = 'none'
+				obj.previousSibling.previousSibling.style.display = 'none'
+				obj.previousSibling.previousSibling.previousSibling.style.display = 'inline'
+			}
+		</script>
 	</head>
 	<body>
 
@@ -245,15 +259,33 @@
 			</script>
 			<button onclick="javascript:delete_bostagem()">Apagar bostagem</button><br>
 			{% endif %}
-			<big>{{question.text}}</big> &middot; <a href="/user/{{ question.creator.user.username }}">{{ question.creator.user.username }}</a>
-			{% if question.image %}
-			<center><img style="display: block;" src="{{ question.image.url }}" width="55%"></center>
-			{% endif %}
+			
+			<div class="card">
+				<div class="card-body">
+					<big>{{question.text}}</big> &middot; <a href="/user/{{ question.creator.user.username }}">{{ question.creator.user.username }}</a>
+					{% if question.description == '' %}
+							{% if question.image %}
+							<center><img style="display: block;" src="{{ question.image.url }}" width="55%"></center>
+							{% endif %}
+					{% endif %}
+					{% if question.description %}
+					<hr>
+					<p>
+						{{ question.cut_description|safe }}
+					</p>
+					{% if question.image %}
+					<center><img style="display: block;" src="{{ question.image.url }}" width="55%"></center>
+					{% endif %}
+					{% endif %}
+				</div>
+			</div>
+			
+			<hr>
 
 			{% if request.user.username == question.creator.user.username %}
 				<br><button class="btn btn-outline-danger" style="display: block;" onclick="delete_question()">Excluir</button><br>
 			{% endif %}
-
+			
 			{% for response in responses %}
 			<div class="card">
 			    <a href="/user/{{response.creator.user.username}}" style="text-decoration: none; color: black"><img class="user-profile-picture" src="{{response.creator.avatar.url}}" width="40px" class="response-profile-pic"> {{response.creator.user.username}}</a>

@@ -216,7 +216,7 @@ def ask(request):
 		if request.POST.get('question') == '' or request.POST.get('question') == '.':
 			return render(request, 'ask.html', {'error': '<p>Pergunta inválida.</p>'})
 
-		q = Question.objects.create(creator=UserProfile.objects.get(user=request.user), text=request.POST.get('question'))
+		q = Question.objects.create(creator=UserProfile.objects.get(user=request.user), text=request.POST.get('question'), description=request.POST.get('description'))
 
 		form = UploadFileForm(request.POST, request.FILES)
 		if form.is_valid():
@@ -224,7 +224,7 @@ def ask(request):
 
 			file_name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
 			file_name += str(f)
-
+			
 			with open('django_project/media/questions/' + file_name, 'wb+') as destination:
 				for chunk in f.chunks():
 					destination.write(chunk)
