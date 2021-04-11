@@ -59,7 +59,9 @@
        // bind 'myForm' and provide a simple callback function
        $('#response-form').ajaxForm(function(answer_id) {
            document.getElementById('response-form').style.display = 'none'
-           document.getElementById('responses').innerHTML += '<div class="card"><a href="/user/{{ user.username }}"><img src="{{user_p.avatar.url}}" width="40px" class="response-profile-pic"></a><div class="card-body"><p>'+document.getElementById('response-form').response.value+'</p><img onclick="like_or_stop_liking(this)" src="/static/images/white-heart.png" width="20px" id="' + answer_id + '" style="cursor: pointer"> &nbsp;<span>0</span></div></div>'
+           a = eval('comment_'+answer_id+' = false;function h(el) {el = el.getElementsByClassName("c");for(var i = 0; i < el.length; i++) {if(el[i].style.display != "none") {el[i].style.display = "none";} else {el[i].style.display = "block";}}}')
+           a = ''
+           document.getElementById('responses').innerHTML += '<div class="card"><a href="/user/{{ user.username }}" style="text-decoration: none; color: black"><img src="{{user_p.avatar.url}}" width="40px" class="response-profile-pic"> {{ user.username }}</a><div class="card-body"><p>'+document.getElementById('response-form').response.value+'</p><img onclick="like_or_stop_liking(this)" src="/static/images/white-heart.png" width="20px" id="' + answer_id + '" style="cursor: pointer"> &nbsp;<span>0</span> ' + a + '&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="if(comment_' + answer_id + ' == false) {show_comments(this, '+answer_id+', 1); comment_'+answer_id+' = true} else {h(this.parentElement)}"><img src="/static/images/comments.png" width="20px" style="cursor: pointer;"></span><span> &nbsp;0</span>        </div></div>'
            document.getElementById('response-form').remove()
        });
      });
@@ -271,7 +273,7 @@
 					{% if question.description %}
 					<hr>
 					<p>
-						{{ question.cut_description|safe }}
+						{{ question.cut_description|safe|linebreaksbr }}
 					</p>
 					{% if question.image %}
 					<center><img style="display: block;" src="{{ question.image.url }}" width="55%"></center>

@@ -178,7 +178,7 @@
 						<a href="/question/{{question.id}}">{{question.text}}</a> &middot; <small class="text-muted">{{ question.pub_date|naturaltime }}</small>
 						<p id="description-{{ question.id }}">
 						{% if question.description %}
-						{{question.cut_description|safe}}
+						{{question.cut_description|safe|linebreaksbr}}
 						{% endif %}
 						</p>
 						{% if user.is_authenticated %}
