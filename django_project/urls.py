@@ -31,7 +31,6 @@ urlpatterns = [
 	path('signup', views.signup, name='signup'),
 	path('logout', views.logout, name='logout'),
 	path('test', views.test, name='test'),
-	path('ads.txt', views.test, name='test'),
 	path('notifications', views.notification, name='notification'),
 	path('deleteQuestion', views.deleteQuestion, name='deleteQuestion'),
 	path('comments', views.comments, name='comments'),

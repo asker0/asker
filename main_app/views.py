@@ -246,7 +246,7 @@ def logout(request):
 
 
 def test(request):
-	return render(request, 'ads.txt')
+	return render(request, 'test.html')
 
 
 def notification(request):
