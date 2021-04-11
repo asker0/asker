@@ -31,6 +31,7 @@ class Question(models.Model):
 	pub_date = models.DateTimeField(default=timezone.now)
 	image = models.ImageField(null=True, blank=True)
 	description = models.TextField(null=True)
+	total_likes = models.IntegerField(default=0, null=True)
 
 	def __str__(self):
 	    return self.text
