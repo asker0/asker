@@ -49,3 +49,9 @@ def like_or_not(response_id, username):
 @register.filter(name='total_comments')
 def total_comments(response_id):
     return Comment.objects.filter(response=Response.objects.get(id=response_id)).count()
+
+
+@register.filter(name='last_response_pub_date')
+def last_response_pub_date(question_id):
+    q = Question.objects.get(id=question_id)
+    return Response.objects.filter(question=q).order_by('-pub_date')[0].pub_date

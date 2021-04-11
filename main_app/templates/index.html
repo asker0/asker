@@ -44,7 +44,7 @@
 						document.getElementById('cancel-submit-answer-button' + q_id).style.display = 'none'
 						document.getElementById('your-answer' + q_id).innerHTML = 'Sua resposta: ' + obj.response.value
 						document.getElementById('total-answers-' + q_id).innerHTML = Number(document.getElementById('total-answers-' + q_id).innerHTML) + 1
-						
+
 						/* Se o total de respostas agora é 1, então é necessário trocar "1 respostas" por "1 resposta" (no singular) */
 						if(document.getElementById('total-answers-' + q_id).innerHTML == '1') {
 							document.getElementById('total-answers-' + q_id + '-text').innerHTML = 'resposta'
@@ -52,13 +52,13 @@
 					}
 				})
 			}
-			
+
 			function show_more(obj) {
 				obj.style.display = 'none'
 				obj.nextSibling.style.display = 'inline'
 				obj.nextSibling.nextSibling.nextSibling.style.display = 'inline'
 			}
-			
+
 			function show_less(obj) {
 				obj.style.display = 'none'
 				obj.previousSibling.previousSibling.style.display = 'none'
@@ -117,7 +117,7 @@
 				<div class="card-body">
 					<a href="/question/{{question.id}}">{{question.text}}</a> &middot; <small class="text-muted">{{ question.pub_date|naturaltime }}</small>
 					<p id="description-{{ question.id }}">
-					{% if question.description %}
+                    {% if question.description %}
 					{{question.cut_description|safe}}
 					{% endif %}
 					</p>
