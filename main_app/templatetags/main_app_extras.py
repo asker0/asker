@@ -13,7 +13,10 @@ def answered(username, question_id):
 
 @register.filter(name='answer')
 def answer(username, question_id):
-	text = Response.objects.get(creator=UserProfile.objects.get(user=User.objects.get(username=username)), question=Question.objects.get(id=question_id)).text
+	try:
+		text = Response.objects.get(creator=UserProfile.objects.get(user=User.objects.get(username=username)), question=Question.objects.get(id=question_id)).text
+	except:
+		text = 'null'
 	if len(text) > 77:
 		text = text[0:77] + '...'
 	return text
