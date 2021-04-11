@@ -29,19 +29,22 @@ def index(request):
 
 	context = {'questions': p.page(page).object_list,
 			   'page_obj': p.page(page),
-			   'new_questions_display': request.GET.get('nqd', 'none'),
-			   'popular_questions_display': request.GET.get('pqd', 'block'),
-			   'popular_tab': ' active',
-			   'new_tab': ' disabled'}
-	
+			   'new_questions_display': request.GET.get('nqd', 'block'),
+			   'popular_questions_display': request.GET.get('pqd', 'none'),
+			   'popular_tab': ' disabled',
+			   'new_tab': ' active'}
+
 	if request.GET.get('nqd', None) != None:
 		context['new_tab'] = ' active'
 		context['popular_tab'] = ' disabled'
 		context['popular_questions_display'] = 'none'
 
 	# contexto das questões populares:
-	# pega as 100 últimas questões e pega as 20 com mais likes.
-	context['popular_questions'] = sorted(p.page(1).object_list, key=lambda x:x.total_likes, reverse=True)
+	p = Paginator(all, 60)
+	try:
+		context['popular_questions'] = sorted(p.page(1).object_list[:30], key=lambda x:x.total_likes, reverse=True)
+	except:
+		context['popular_questions'] = sorted(p.page(1).object_list, key=lambda x:x.total_likes, reverse=True)
 
 	return render(request, 'index.html', context)
 
@@ -111,6 +114,11 @@ def like(request, answer_id):
                                         type='like-in-response')
         n.set_text(answer_id)
         n.save()
+
+        # aumenta total de likes da pergunta:
+        q = r.question
+        q.total_likes += 1
+        q.save()
 
     return HttpResponse('OK')
 
@@ -237,7 +245,7 @@ def ask(request):
 
 			file_name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
 			file_name += str(f)
-			
+
 			with open('django_project/media/questions/' + file_name, 'wb+') as destination:
 				for chunk in f.chunks():
 					destination.write(chunk)

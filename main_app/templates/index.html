@@ -112,7 +112,7 @@
 		</nav>
 
 		<section id="questions">
-			
+
 			<ul class="nav nav-tabs" id="tabs">
 				<li class="nav-item">
 					<a class="nav-link{{ popular_tab }}" id="popular">Popular</a>
@@ -121,56 +121,56 @@
 					<a class="nav-link{{ new_tab }}" id="new">Novas perguntas</a>
 				</li>
 			</ul>
-			
+
 			<script>
 				/* Este script controla a barra de navegação (popular e novas perguntas) */
 				popular = document.getElementById("popular")
 				new_tab = document.getElementById("new")
-				
+
 				popular.onclick = function() {
 					popular.classList.add("active")
 					new_tab.classList.remove("active")
 					new_tab.classList.add("disabled")
-					
+
 					document.getElementById("new-questions").style.display = "none"
 					document.getElementById("popular-questions").style.display = "block"
 				}
-				
+
 				new_tab.onclick = function() {
 					new_tab.classList.add("active")
 					popular.classList.remove("active")
 					popular.classList.add("disabled")
-					
+
 					document.getElementById("new-questions").style.display = "block"
 					document.getElementById("popular-questions").style.display = "none"
 				}
 			</script>
-			
+
 			<style>
 				/* estes estilos são para a barra de navegação (popular e novas perguntas) */
 				#tabs {
 					margin-bottom: 1%;
 				}
-				
+
 				#popular {
 					cursor: pointer;
 				}
-				
+
 				#new {
 					cursor: pointer;
 				}
 			</style>
-			
+
 			<style>
 				#new-questions {
 					display: {{ new_questions_display }};
 				}
-				
+
 				#popular-questions {
 					display: {{ popular_questions_display }};
 				}
 			</style>
-			
+
 			<section id="new-questions">
 				{% for question in questions %}
 				<div class="card">
@@ -216,7 +216,7 @@
 					</div>
 				</div>
 				{% endfor %}
-				
+
 				{% if page_obj.has_previous %}
 				<a rel="prev" href="?page={{ page_obj.previous_page_number }}{{ current_category }}&nqd">Anterior</a>
 					{% if page_obj.has_next %} | {% endif %}
@@ -224,11 +224,11 @@
 				{% if page_obj.has_next %}
 				<a rel="next" href="?page={{ page_obj.next_page_number }}{{ current_category }}&nqd">Próximo</a>
 				{% endif %}
-            
+
 			</section>
-			
+
 			<section id="popular-questions">
-				
+
 				{% for question in popular_questions %}
 				<div class="card">
 					<div class="card-body">
@@ -269,11 +269,11 @@
 						<p class="text-muted">Faça <a href="/signin?redirect=/question/{{question.id}}">login</a> ou <a href="/signup?redirect=/question/{{question.id}}">crie uma conta</a> para responder esta pergunta.</p>
 						{% endif %}
 						<p id="your-answer{{question.id}}"></p>
-						<span>{{ question.id|total_answers|safe }}</span> | <span>{{ question.total_likes }}</span>
+						<span>{{ question.id|total_answers|safe }}</span> | <span>{{ question.total_likes }} likes</span>
 					</div>
 				</div>
 				{% endfor %}
-				
+
 			</section>
 		</section>
 	</body>
