@@ -208,7 +208,7 @@
 											<div class="form-inline">
 												<input class="btn btn-info" id="submit-answer-button{{question.id}}" type="submit" value="Enviar" onclick="javascript:document.getElementById('modal-{{ question.id }}').style.display = 'block';this.style.display='none';this.nextSibling.nextSibling.style.display='none';reply(this.parentElement.parentElement, {{question.id}});return false" style="margin-left: 3px; display: none">
 												<button class="btn btn-info" id="cancel-submit-answer-button{{question.id}}" onclick="javascript:document.getElementById('submit-answer-button{{question.id}}').style.display = 'none'; document.getElementById('cancel-submit-answer-button{{question.id}}').style.display = 'none'; return false" style="margin-left: 3px; display: none">Cancelar</button>
-												<img style="display: none" id="modal-{{ question.id }}" src="/static/images/loading.gif">
+												<img style="display: none" id="modal-{{ question.id }}" src="/static/images/loading.gif" width="10%;">
 											</div>
 										</form>
 									{% endif %}
@@ -249,8 +249,8 @@
 
 				  <center>
 					  <br>
-					  <div class="loading" style="display: none;">
-						<img src="/static/images/loading.gif">
+					  <div class="loading" style="display: none">
+						<img width="10%" src="/static/images/loading.gif">
 					  </div>
 					  <br>
 				  </center>
