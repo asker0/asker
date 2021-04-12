@@ -37,6 +37,8 @@ urlpatterns = [
 	path('comment', views.comment, name='comment'),
 	path('rank', views.rank, name='rank'),
 	path('response', views.edit_response, name='edit_response'),
+	path('get_more_questions', views.get_more_questions, name='get_more_questions'),
+	path('get_more_responses', views.get_more_responses, name='get_more_responses'),
 	path('question/apagar/pergunta/moderador/apagar/<int:question_id>', views.delete_question, name='delete_question'),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

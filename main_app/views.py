@@ -408,6 +408,55 @@ def edit_response(request):
 	return redirect('/question/' + str(r.question.id))
 
 
+def get_more_questions(request):
+	q = Question.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date')
+	p = Paginator(q, 4)
+	page = request.POST.get('q_page', 2)
+	
+	json = {
+	}
+	
+	json['questions'] = {}
+	
+	count = 1
+	for q in p.page(page):
+		json['questions'][count] = {
+			'text': q.text,
+			'id': q.id,
+		}
+		count += 1
+	
+	if not p.page(page).has_next():
+		json['has_next'] = 'false'
+	
+	return JsonResponse(json)
+
+
+def get_more_responses(request):
+	r = Response.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date')
+	p = Paginator(r, 4)
+	page = request.POST.get('r_page', 2)
+	
+	json = {
+	}
+	
+	json['responses'] = {}
+	
+	count = 1
+	for r in p.page(page):
+		json['responses'][count] = {
+			'text': r.text,
+			'question_text': r.question.text,
+			'id': r.question.id,
+		}
+		count += 1
+	
+	if not p.page(page).has_next():
+		json['has_next'] = 'false'
+	
+	return JsonResponse(json)
+
+
 def delete_question(request, question_id):
 	q = Question.objects.get(id=question_id)
 	q.delete()

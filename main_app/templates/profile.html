@@ -48,6 +48,71 @@
 				}
 			}
 		</style>
+		
+		<script>
+			function show_more_questions(obj) {
+				$.ajax({
+					type: 'post',
+					url: '/get_more_questions',
+					dataType: 'json',
+					data: {
+						csrfmiddlewaretoken: '{{ csrf_token }}',
+						q_page: obj.id,
+					},
+					
+					
+					complete: function(data) {
+						data = JSON.parse(data.responseText)
+						
+						$.each(data.questions, function(i, val) {
+							
+							new_html = '<div class="card"><div class="card-body"><a href="/question/'+val.id+'">'+val.text+'</a></div></div>'
+							
+							obj.parentElement.getElementsByClassName('card-body')[0].innerHTML += new_html
+							
+							if(data.has_next == 'false') {
+								obj.remove()
+								return
+							}
+							
+							obj.id = Number(obj.id) + 1
+						})
+					}
+					
+					
+				})
+			}
+			
+			function show_more_responses(obj) {
+				$.ajax({
+					type: 'post',
+					url: '/get_more_responses',
+					dataType: 'json',
+					
+					data: {
+						csrfmiddlewaretoken: '{{ csrf_token }}',
+						r_page: obj.id,
+					},
+					
+					complete: function(data) {
+						data = JSON.parse(data.responseText)
+						
+						$.each(data.responses, function(i, val) {
+							new_html = '<div class="card"><div class="card-body"><p><a href="/question/'+val.id+'">'+val.question_text+'</a></p><span>'+val.text+'</span></div></div>'
+							
+							obj.parentElement.getElementsByClassName('card-body')[0].innerHTML += new_html
+							
+							if(data.has_next == 'false') {
+								obj.remove()
+								return
+							}
+							
+							obj.id = Number(obj.id) + 1
+						})
+					}
+				})
+			}
+		</script>
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
@@ -117,23 +182,24 @@
             <div class="card-body">
         		<p>Suas perguntas:</p>
         		{% for question in questions %}
-        		<div class="card"><div class="card-body">
-        		    <a href="/question/{{question.id}}">{{question.text}}</a>
-        		</div></div>
+        		<div class="card">
+					<div class="card-body">
+						<a href="/question/{{question.id}}">{{question.text}}</a>
+					</div>
+        		</div>
         		{% endfor %}
     		</div>
+    		<span style="cursor: pointer;" class="text text-secondary" id="2" onclick="show_more_questions(this)">Carregar mais</span> <!-- O ID deste elemento é usado como paginação. -->
 		</div>
 
 		<div class="card">
 		    <div class="card-body">
         		<p>Suas respostas:</p>
         		{% for response in responses %}
-            		<div class="card"><div class="card-body">
-            		<p><a href="/question/{{response.question.id}}">{{response.question.text}}</a></p>
-            		<span>{{response.text}}</span>
-            		</div></div>
+            		<div class="card"><div class="card-body"><p><a href="/question/{{response.question.id}}">{{response.question.text}}</a></p><span>{{response.text}}</span></div></div>
         		{% endfor %}
         	</div>
+        	<span style="cursor: pointer;" class="text text-secondary" id="2" onclick="show_more_responses(this)">Carregar mais</span> <!-- O ID deste elemento é usado como paginação. -->
 		</div>
 		<br><br>
 
