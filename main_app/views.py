@@ -12,6 +12,14 @@ from main_app.forms import UploadFileForm
 import random, string
 
 def index(request):
+
+	try:#aumenta total de visualizações do site
+		u = UserProfile.objects.get(user=User.objects.get(username='views'))
+		u.total_points += 1
+		u.save()
+	except:
+		pass
+
 	if request.method == 'POST':
 		Response.objects.create(question=Question.objects.get(id=request.POST.get('question_id')),
 								creator=UserProfile.objects.get(user=request.user),
@@ -40,9 +48,6 @@ def index(request):
 
 	# contexto das questões populares:
 	context['popular_questions'] = sorted(p.page(1).object_list, key=lambda x:x.total_likes, reverse=True)
-	
-	from time import sleep
-	sleep(10)
 
 	return render(request, 'index.html', context)
 
@@ -463,3 +468,4 @@ def delete_question(request, question_id):
 	q = Question.objects.get(id=question_id)
 	q.delete()
 	return HttpResponse('OK')
+
