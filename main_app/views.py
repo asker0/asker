@@ -40,6 +40,9 @@ def index(request):
 
 	# contexto das questões populares:
 	context['popular_questions'] = sorted(p.page(1).object_list, key=lambda x:x.total_likes, reverse=True)
+	
+	from time import sleep
+	sleep(10)
 
 	return render(request, 'index.html', context)
 
