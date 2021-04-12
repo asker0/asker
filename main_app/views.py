@@ -39,7 +39,6 @@ def index(request):
 		context['popular_questions_display'] = 'none'
 
 	# contexto das questões populares:
-	p = Paginator(all, 30)
 	context['popular_questions'] = sorted(p.page(1).object_list, key=lambda x:x.total_likes, reverse=True)
 
 	return render(request, 'index.html', context)
@@ -412,12 +411,12 @@ def get_more_questions(request):
 	q = Question.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date')
 	p = Paginator(q, 4)
 	page = request.POST.get('q_page', 2)
-	
+
 	json = {
 	}
-	
+
 	json['questions'] = {}
-	
+
 	count = 1
 	for q in p.page(page):
 		json['questions'][count] = {
@@ -425,10 +424,10 @@ def get_more_questions(request):
 			'id': q.id,
 		}
 		count += 1
-	
+
 	if not p.page(page).has_next():
 		json['has_next'] = 'false'
-	
+
 	return JsonResponse(json)
 
 
@@ -436,12 +435,12 @@ def get_more_responses(request):
 	r = Response.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date')
 	p = Paginator(r, 4)
 	page = request.POST.get('r_page', 2)
-	
+
 	json = {
 	}
-	
+
 	json['responses'] = {}
-	
+
 	count = 1
 	for r in p.page(page):
 		json['responses'][count] = {
@@ -450,10 +449,10 @@ def get_more_responses(request):
 			'id': r.question.id,
 		}
 		count += 1
-	
+
 	if not p.page(page).has_next():
 		json['has_next'] = 'false'
-	
+
 	return JsonResponse(json)
 
 
