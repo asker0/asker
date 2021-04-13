@@ -166,7 +166,7 @@
 						while(count <= data.total_comments) {
 							
 							if(data.comments[count].username == "{{ user.username }}") {
-								element.innerHTML += "<small id='comment_"+data.comments[count].id+"' class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p><img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer;'></div></div></small>"
+								element.innerHTML += "<small id='comment_"+data.comments[count].id+"' class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p><img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer; border-radius: 0px;'></div></div></small>"
 							} else
 								element.innerHTML += "<small class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p></div></div></small>"
 							count += 1
