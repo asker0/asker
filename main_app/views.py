@@ -12,14 +12,6 @@ from main_app.forms import UploadFileForm
 import random, string
 
 def index(request):
-
-	try:#aumenta total de visualizações do site
-		u = UserProfile.objects.get(user=User.objects.get(username='views'))
-		u.total_points += 1
-		u.save()
-	except:
-		pass
-
 	if request.method == 'POST':
 		Response.objects.create(question=Question.objects.get(id=request.POST.get('question_id')),
 								creator=UserProfile.objects.get(user=request.user),
