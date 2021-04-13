@@ -177,6 +177,15 @@
 					},
 				})
 			}
+			
+			function anti_spam(obj) {
+				if(obj.parentElement.response.value == '') {
+					alert('Preencha sua resposta.')
+					return false
+				}
+				
+				return true
+			}
 		</script>
 
 		<style>
@@ -347,7 +356,7 @@
 				<form class="form-inline" id="response-form" method="post">
 					{% csrf_token %}
 					<textarea class="form-control" placeholder="Responda esta pergunta!" name="response" required="required"></textarea>
-					<input class="btn btn-primary" type="submit" value="Enviar">
+					<input class="btn btn-primary" type="submit" value="Enviar" onclick="javascript:if(anti_spam(this) == 'false') {return false}">
 				</form>
 				{% endif %}
 			{% endif %}
