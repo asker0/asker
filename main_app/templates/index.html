@@ -146,6 +146,15 @@
 					document.getElementById("new-questions").style.display = "block"
 					document.getElementById("popular-questions").style.display = "none"
 				}
+				
+				function anti_spam(obj) {
+					if(obj.parentElement.parentElement.response.value == '') {
+						alert('Preencha sua resposta.')
+						return false
+					}
+					
+					return true
+				}
 			</script>
 
 			<style>
@@ -206,7 +215,7 @@
 											<input type="hidden" value="{{question.id}}" name="question_id">
 											<textarea class="form-control" onclick="javascript:document.getElementById('submit-answer-button{{question.id}}').style.display = 'block'; document.getElementById('cancel-submit-answer-button{{question.id}}').style.display = 'block'" placeholder="Escreva sua resposta aqui" name="response" maxlength="600" required="required"></textarea>
 											<div class="form-inline">
-												<input class="btn btn-info" id="submit-answer-button{{question.id}}" type="submit" value="Enviar" onclick="javascript:document.getElementById('modal-{{ question.id }}').style.display = 'block';this.style.display='none';this.nextSibling.nextSibling.style.display='none';reply(this.parentElement.parentElement, {{question.id}});return false" style="margin-left: 3px; display: none">
+												<input class="btn btn-info" id="submit-answer-button{{question.id}}" type="submit" value="Enviar" onclick="javascript:if(anti_spam(this) == false) {return false};document.getElementById('modal-{{ question.id }}').style.display = 'block';this.style.display='none';this.nextSibling.nextSibling.style.display='none';reply(this.parentElement.parentElement, {{question.id}});return false" style="margin-left: 3px; display: none">
 												<button class="btn btn-info" id="cancel-submit-answer-button{{question.id}}" onclick="javascript:document.getElementById('submit-answer-button{{question.id}}').style.display = 'none'; document.getElementById('cancel-submit-answer-button{{question.id}}').style.display = 'none'; return false" style="margin-left: 3px; display: none">Cancelar</button>
 												<img style="display: none" id="modal-{{ question.id }}" src="/static/images/loading.gif" width="10%;">
 											</div>
