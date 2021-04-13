@@ -24,6 +24,10 @@
 		</script>
 
 		<style>
+		    body {
+		        background-color: #efefef;
+		    }
+
 			.card {
 				margin-top: 3px;
 			}
@@ -164,7 +168,7 @@
 
 						var count = 1
 						while(count <= data.total_comments) {
-							
+
 							if(data.comments[count].username == "{{ user.username }}") {
 								element.innerHTML += "<small id='comment_"+data.comments[count].id+"' class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p><img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer; border-radius: 0px;'></div></div></small>"
 							} else
@@ -181,22 +185,22 @@
 					},
 				})
 			}
-			
+
 			function anti_spam(obj) {
 				if(obj.parentElement.response.value == '') {
 					alert('Preencha sua resposta.')
 					return false
 				}
-				
+
 				return true
 			}
-			
+
 			function delete_comment(obj) {
-				
+
 				obj = obj.parentElement.parentElement.parentElement
-				
+
 				comment_id = obj.id.slice(8)
-				
+
 				// apaga o comentário de verdade do banco de dados:
 				$.ajax({
 					type: 'post',
@@ -206,7 +210,7 @@
 						comment_id: comment_id,
 					},
 				})
-				
+
 				obj.remove()
 			}
 		</script>
@@ -224,14 +228,14 @@
 		        border-radius: 10px;
 		    }
 		</style>
-		
+
 		<script>
 			function show_more(obj) {
 				obj.style.display = 'none'
 				obj.nextSibling.style.display = 'inline'
 				obj.nextSibling.nextSibling.nextSibling.style.display = 'inline'
 			}
-			
+
 			function show_less(obj) {
 				obj.style.display = 'none'
 				obj.previousSibling.previousSibling.style.display = 'none'
@@ -293,7 +297,7 @@
 			</script>
 			<button onclick="javascript:delete_bostagem()">Apagar bostagem</button><br>
 			{% endif %}
-			
+
 			<div class="card">
 				<div class="card-body">
 					<big>{{question.text}}</big> &middot; <a href="/user/{{ question.creator.user.username }}">{{ question.creator.user.username }}</a>
@@ -313,13 +317,13 @@
 					{% endif %}
 				</div>
 			</div>
-			
+
 			<hr>
 
 			{% if request.user.username == question.creator.user.username %}
 				<br><button class="btn btn-outline-danger" style="display: block;" onclick="delete_question()">Excluir</button><br>
 			{% endif %}
-			
+
 			{% for response in responses %}
 			<div class="card">
 			    <a href="/user/{{response.creator.user.username}}" style="text-decoration: none; color: black"><img class="user-profile-picture" src="{{response.creator.avatar.url}}" width="40px" class="response-profile-pic"> {{response.creator.user.username}}</a>
