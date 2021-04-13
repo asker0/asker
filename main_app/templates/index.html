@@ -188,12 +188,13 @@
 					<div class="infinite-item">
 						<div class="card">
 							<div class="card-body">
-								<a href="/question/{{question.id}}">{{question.text}}</a> &middot; <small class="text-muted">{{ question.pub_date|naturaltime }}</small>
-								<p id="description-{{ question.id }}">
+								<a href="/question/{{question.id}}">{{question.text}}</a><br>
 								{% if question.description %}
-								{{question.cut_description|safe|linebreaksbr}}
-								{% endif %}
+								<p id="description-{{ question.id }}">
+									{{question.cut_description|safe|linebreaksbr}}
 								</p>
+								{% endif %}
+								<small class="text-muted">{{ question.id|total_answers|safe }}</small><b> &middot; </b><small>{{ question.pub_date|naturaltime }}</small>
 								{% if user.is_authenticated %}
 									{% if user.username|answered:question.id %}
 									<p>Sua resposta: {{ user.username|answer:question.id }}</p>
@@ -225,7 +226,6 @@
 								<p class="text-muted">Faça <a href="/signin?redirect=/question/{{question.id}}">login</a> ou <a href="/signup?redirect=/question/{{question.id}}">crie uma conta</a> para responder esta pergunta.</p>
 								{% endif %}
 								<p id="your-answer{{question.id}}"></p>
-								<span>{{ question.id|total_answers|safe }}</span>
 							</div>
 						</div>
 					</div>
