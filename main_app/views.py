@@ -9,6 +9,8 @@ from main_app.models import UserProfile, Question, Response, Notification, Comme
 
 from main_app.forms import UploadFileForm
 
+from bs4 import BeautifulSoup as bs
+
 import random, string
 
 def index(request):
@@ -231,8 +233,11 @@ def ask(request):
 
 		if request.POST.get('question') == '' or request.POST.get('question') == '.':
 			return render(request, 'ask.html', {'error': '<p>Pergunta inválida.</p>'})
+		
+		description = bs(request.POST.get('description'), 'html.parser').text
+		text = bs(request.POST.get('question'), 'html.parser').text
 
-		q = Question.objects.create(creator=UserProfile.objects.get(user=request.user), text=request.POST.get('question'), description=request.POST.get('description'))
+		q = Question.objects.create(creator=UserProfile.objects.get(user=request.user), text=text, description=description)
 
 		form = UploadFileForm(request.POST, request.FILES)
 		if form.is_valid():
