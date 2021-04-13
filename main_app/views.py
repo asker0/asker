@@ -323,6 +323,7 @@ def comments(request):
 				'username': Comment.objects.filter(id__in=id_list).first().creator.username,
 				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).first().creator).avatar.url,
 				'comment': Comment.objects.filter(id__in=id_list).first().text,
+				'id': Comment.objects.filter(id__in=id_list).first().id,
 			}
 		}
 	elif len(Comment.objects.filter(id__in=id_list)) == 2:
@@ -331,12 +332,14 @@ def comments(request):
 				'username': Comment.objects.filter(id__in=id_list).first().creator.username,
 				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).first().creator).avatar.url,
 				'comment': Comment.objects.filter(id__in=id_list).first().text,
+				'id': Comment.objects.filter(id__in=id_list).first().id,
 			},
 
 			2: {
 				'username': Comment.objects.filter(id__in=id_list).last().creator.username,
 				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).last().creator).avatar.url,
 				'comment': Comment.objects.filter(id__in=id_list).last().text,
+				'id': Comment.objects.filter(id__in=id_list).last().id,
 			},
 		}
 	else:
@@ -345,17 +348,20 @@ def comments(request):
 				'username': Comment.objects.filter(id__in=id_list).first().creator.username,
 				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).first().creator).avatar.url,
 				'comment': Comment.objects.filter(id__in=id_list).first().text,
+				'id': Comment.objects.filter(id__in=id_list).first().id,
 			},
 
 			2: {
 				'username': Comment.objects.filter(id__in=id_list)[1].creator.username,
 				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list)[1].creator).avatar.url,
 				'comment': Comment.objects.filter(id__in=id_list)[1].text,
+				'id': Comment.objects.filter(id__in=id_list)[1].id,
 			},
 			3: {
 				'username': Comment.objects.filter(id__in=id_list).last().creator.username,
 				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).last().creator).avatar.url,
 				'comment': Comment.objects.filter(id__in=id_list).last().text,
+				'id': Comment.objects.filter(id__in=id_list).last().id,
 			},
 		}
 
@@ -461,3 +467,8 @@ def delete_question(request, question_id):
 	q.delete()
 	return HttpResponse('OK')
 
+
+def delete_comment(request):
+	c = Comment.objects.get(id=request.POST.get('comment_id'))
+	c.delete()
+	return HttpResponse('OK')

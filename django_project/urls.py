@@ -33,6 +33,7 @@ urlpatterns = [
 	path('test', views.test, name='test'),
 	path('notifications', views.notification, name='notification'),
 	path('deleteQuestion', views.deleteQuestion, name='deleteQuestion'),
+	path('delete_comment', views.delete_comment, name='delete_comment'),
 	path('comments', views.comments, name='comments'),
 	path('comment', views.comment, name='comment'),
 	path('rank', views.rank, name='rank'),

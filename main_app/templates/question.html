@@ -164,7 +164,11 @@
 
 						var count = 1
 						while(count <= data.total_comments) {
-							element.innerHTML += "<small class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p></div></div></small>"
+							
+							if(data.comments[count].username == "{{ user.username }}") {
+								element.innerHTML += "<small id='comment_"+data.comments[count].id+"' class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p><img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer;'></div></div></small>"
+							} else
+								element.innerHTML += "<small class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p></div></div></small>"
 							count += 1
 						}
 
@@ -185,6 +189,25 @@
 				}
 				
 				return true
+			}
+			
+			function delete_comment(obj) {
+				
+				obj = obj.parentElement.parentElement.parentElement
+				
+				comment_id = obj.id.slice(8)
+				
+				// apaga o comentário de verdade do banco de dados:
+				$.ajax({
+					type: 'post',
+					url: '/delete_comment',
+					data: {
+						csrfmiddlewaretoken: '{{ csrf_token }}',
+						comment_id: comment_id,
+					},
+				})
+				
+				obj.remove()
 			}
 		</script>
 
