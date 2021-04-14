@@ -1,0 +1,46 @@
+#response-form {
+	margin: 6px;
+}
+
+#response-form input {
+	margin: 3px;
+}
+
+.comment_form input {
+	margin: 3px;
+}
+
+.card {
+	margin: 6px;
+}
+
+section {
+	width: 50%;
+	margin: 6px auto auto;
+}
+
+#options-dropdown {
+	float: right;
+}
+
+.fa-flag {
+	float: right;
+	font-size: 120%;
+}
+
+.fa-flag:hover {
+	font-weight: 800;
+	font-size: 140%;
+	transition-duration: 0.2s;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+	section {
+		width: 95%;
+	}
+	
+	.fa-flag:hover {
+		font-weight: 400;
+		font-size: 120%;
+	}
+}

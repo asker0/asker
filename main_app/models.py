@@ -82,3 +82,9 @@ class Notification(models.Model):
 		if self.type == 'comment-in-response':
 			comment = Comment.objects.get(response=Response.objects.get(id=answer_id), id=comment_id)
 			self.text = '<p><a href="/user/{}">{}</a> comentou na sua resposta na pergunta: <a href="/question/{}">"{}"</a></p>'.format(comment.creator.username, comment.creator.username, comment.response.question.id, comment.response.question.text)
+
+
+class Report(models.Model):
+    type = models.TextField()
+    item = models.IntegerField()
+    reporter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
