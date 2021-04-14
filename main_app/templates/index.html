@@ -16,6 +16,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">
 
+		<script src="https://kit.fontawesome.com/1f965a8b94.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/shortcuts/infinite.min.js"></script>
@@ -93,19 +94,19 @@
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 					{% if user.is_authenticated %}
 					<li class="nav-item">
-						<a class="nav-link" href="/user/{{user.username}}">Perfil</a>
+						<a class="nav-link" href="/user/{{user.username}}"><i class="far fa-user"></i> perfil</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/ask">Perguntar</a>
+						<a class="nav-link" href="/ask"><i class="fas fa-question"></i> perguntar</a>
 					</li>
 					<li class="nav-item">
-					    <a class="nav-link" href="/notifications">Notificações</a>
+					    <a class="nav-link" href="/notifications"><i class="far fa-bell"></i> notificações</a>
 					</li>
 					<li class="nav-item">
-					    <a class="nav-link" href="/rank">Rank</a>
+					    <a class="nav-link" href="/rank"><i class="fas fa-trophy"></i> rank</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/logout">Sair</a>
+						<a class="nav-link" href="/logout"><i class="fas fa-external-link-alt"></i> sair</a>
 					</li>
 					{% else %}
 					<li class="nav-item">

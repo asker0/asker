@@ -126,20 +126,20 @@
 					{% if user.is_authenticated %}
     					{% if user.username != user_p.user.username %}
     					<li class="nav-item">
-    					    <a class="nav-link" href="/user/{{user.username}}">Perfil</a>
+    					    <a class="nav-link" href="/user/{{user.username}}"><i class="far fa-user"></i> perfil</a>
     					</li>
     					{% endif %}
 					<li class="nav-item">
-						<a class="nav-link" href="/ask">Perguntar</a>
+						<a class="nav-link" href="/ask"><i class="fas fa-question"></i> perguntar</a>
 					</li>
 					<li class="nav-item">
-					    <a class="nav-link" href="/notifications">Notificações</a>
+					    <a class="nav-link" href="/notifications"><i class="far fa-bell"></i> notificações</a>
 					</li>
 					<li class="nav-item">
-					    <a class="nav-link" href="/rank">Rank</a>
+					    <a class="nav-link" href="/rank"><i class="fas fa-trophy"></i> rank</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/logout">Sair</a>
+						<a class="nav-link" href="/logout"><i class="fas fa-external-link-alt"></i> sair</a>
 					</li>
 					{% else %}
 					<li class="nav-item">
