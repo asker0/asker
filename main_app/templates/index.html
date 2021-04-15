@@ -30,6 +30,10 @@
 				}, function() {
 					$(this).find('.sm-menu').first().stop(true, true).slideUp(105)
 				});
+				
+				if(window.location.href.indexOf("nqd=true") != -1) {
+					document.getElementById("logo").href = "/?nqd=true"
+				}
 			});
 
 			function reply(obj, q_id) {
@@ -85,7 +89,7 @@
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
-		    <a href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
+		    <a id="logo" href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -138,6 +142,7 @@
 
 				popular.onclick = function() {
 					window.history.pushState("object or string", "Title", "/");
+					document.getElementById("logo").href = "/"
 
 					popular.classList.add("active")
 					new_tab.classList.remove("active")
@@ -149,6 +154,7 @@
 
 				new_tab.onclick = function() {
 					window.history.pushState("object or string", "Title", "/?nqd=true");
+					document.getElementById("logo").href = "/?nqd=true"
 
 					new_tab.classList.add("active")
 					popular.classList.remove("active")
