@@ -29,10 +29,10 @@ def index(request):
 
 	context = {'questions': p.page(page).object_list,
 			   'page_obj': p.page(page),
-			   'new_questions_display': request.GET.get('nqd', 'block'),
-			   'popular_questions_display': request.GET.get('pqd', 'none'),
-			   'popular_tab': ' disabled',
-			   'new_tab': ' active'}
+			   'new_questions_display': request.GET.get('nqd', 'none'),
+			   'popular_questions_display': request.GET.get('pqd', 'block'),
+			   'popular_tab': ' active',
+			   'new_tab': ' disabled'}
 
 	if request.GET.get('nqd', False):
 		context['new_tab'] = ' active'

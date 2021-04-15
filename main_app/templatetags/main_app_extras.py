@@ -55,3 +55,13 @@ def total_comments(response_id):
 def last_response_pub_date(question_id):
     q = Question.objects.get(id=question_id)
     return Response.objects.filter(question=q).order_by('-pub_date')[0].pub_date
+
+
+@register.filter(name='last_response')
+def last_response(question_id):
+	from django.contrib.humanize.templatetags.humanize import naturaltime
+	try:
+		r = Response.objects.filter(question=Question.objects.get(id=question_id)).order_by('-pub_date')
+		return 'respondida {} por <a href="/user/{}">{}</a>'.format(naturaltime(r[0].pub_date), r[0].creator.user.username, r[0].creator.user.username)
+	except:
+		return ''

@@ -137,6 +137,8 @@
 				new_tab = document.getElementById("new")
 
 				popular.onclick = function() {
+					window.history.pushState("object or string", "Title", "/");
+					
 					popular.classList.add("active")
 					new_tab.classList.remove("active")
 					new_tab.classList.add("disabled")
@@ -146,6 +148,8 @@
 				}
 
 				new_tab.onclick = function() {
+					window.history.pushState("object or string", "Title", "/?nqd=true");
+					
 					new_tab.classList.add("active")
 					popular.classList.remove("active")
 					popular.classList.add("disabled")
@@ -284,11 +288,12 @@
 						{{question.cut_description|safe}}
 						</p>
 						{% endif %}
-						<small class="text-muted">{{ question.id|total_answers|safe }}</small><b> &middot; </b><small class="text-muted">{{ question.total_likes }} like(s)</small><b> &middot; </b><small>{{ question.pub_date|naturaltime }}</small>
+						<small class="text-muted">{{ question.id|total_answers|safe }}</small><b> &middot; </b><small class="text-muted">{{ question.total_likes }} like(s)</small><b> &middot; </b><small>{{ question.id|last_response|safe }}</small>
 						{% if user.is_authenticated %}
 							{% if user.username|answered:question.id %}
 							<p>Sua resposta: {{ user.username|answer:question.id }}</p>
 							{% else %}
+							<a href="/question/{{ question.id }}" style="text-decoration: none;"><button style="display: block;" class="btn btn-outline-primary">Responder</button></a>
 							{% endif %}
 						{% else %}
 						<p class="text-muted">Faça <a href="/signin?redirect=/question/{{question.id}}">login</a> ou <a href="/signup?redirect=/question/{{question.id}}">crie uma conta</a> para responder esta pergunta.</p>
