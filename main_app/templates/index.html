@@ -17,7 +17,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">
 
 		<script src="https://kit.fontawesome.com/1f965a8b94.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/shortcuts/infinite.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
@@ -248,6 +248,22 @@
 					</div>
 					{% endfor %}
 				</div>
+				
+				{% if page_obj.has_next %}
+				<a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}" style="display: none">Mais</a>
+				{% endif %}
+
+  <script>
+    var infinite = new Waypoint.Infinite({
+      element: $('.infinite-container')[0],
+      onBeforePageLoad: function () {
+        $('.loading').show();
+      },
+      onAfterPageLoad: function ($items) {
+        $('.loading').hide();
+      }
+    });
+  </script>
 
 				<!--{% if page_obj.has_previous %}
 				<a rel="prev" href="?page={{ page_obj.previous_page_number }}{{ current_category }}&nqd">Anterior</a>
@@ -257,29 +273,7 @@
 				<a rel="next" href="?page={{ page_obj.next_page_number }}{{ current_category }}&nqd">Próximo</a>
 				{% endif %}-->
 
-				  {% if page_obj.has_next %}
-					<a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}"></a>
-				  {% endif %}
 
-				  <script>
-					var infinite = new Waypoint.Infinite({
-					  element: $('.infinite-container')[0],
-					  onBeforePageLoad: function () {
-						$('.loading').show();
-					  },
-					  onAfterPageLoad: function ($items) {
-						$('.loading').hide();
-					  }
-					});
-				  </script>
-
-				  <center>
-					  <br>
-					  <div class="loading" style="display: none">
-						<img width="10%" src="/static/images/loading.gif">
-					  </div>
-					  <br>
-				  </center>
 
 			</section>
 
@@ -311,5 +305,14 @@
 
 			</section>
 		</section>
+
+<center>
+<br>
+<div class="loading" style="display: none">
+<img width="10%" src="/static/images/loading.gif">
+</div>
+<br>
+</center>
+
 	</body>
 </html>
