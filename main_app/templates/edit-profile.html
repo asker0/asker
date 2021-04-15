@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-br">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Alterar foto de perfil</title>
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	</head>
+	
+	<body>
+		
+		<hr>
+		<h2>Foto de perfil</h2>
+		<form method="post" enctype="multipart/form-data">
+			<input type="hidden" name="type" value="profile-pic">
+			{% csrf_token %}
+			<label for="image">Escolha uma imagem:</label>
+			<input type="file" class="form-control-file" id="image" name="file" required="required">
+			<input type="submit" class="btn btn-primary" value="Alterar foto">
+		</form>
+		<hr>
+		<h2>Biografia</h2>
+		<form class="form-inline" method="post">
+			<input type="hidden" name="type" value="bio">
+			{% csrf_token %}
+			<textarea name="bio" maxlength="300">{{ user_p.bio }}</textarea>
+			<input class="btn btn-primary" type="submit" value="Alterar biografia">
+		</form>
+		<hr>
+		<h2>Nome de usuário</h2>
+		<form method="post" onsubmit="return username_form_validator()" id="username_form">
+			<input type="hidden" name="type" value="username">
+			{% csrf_token %}
+			
+			<div class="form-row">
+				<div class="col-md-4 mb-3">
+					<input name="password" placeholder="Digite sua senha" class="form-control{{ invalid_password }}" type="password">
+					<div class="invalid-feedback" style="display: {{ password_display }}">
+						Senha incorreta.
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-row">
+				<div class="col-md-4 mb-3">
+					<input name="username" placeholder="Novo nome de usuário" class="form-control{{ invalid_username }}" type="text">
+					<div class="invalid-feedback" style="display: {{ username_display }}">
+						Nome de usuário em uso ou inválido.
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-row">
+				<div class="col-md-4 mb-3">
+					<input placeholder="" class="btn btn-primary" type="submit">
+				</div>
+			</div>
+		</form>
+		
+	</body>
+</html>

@@ -26,6 +26,7 @@ urlpatterns = [
 	path('answer/<int:answer_id>/like', views.like, name='like'),
 	path('answer/<int:answer_id>/delete', views.delete_answer, name='delete_answer'),
 	path('user/<str:username>', views.profile, name='profile'),
+	path('user/<str:username>/edit', views.edit_profile, name='edit_profile'),
 	path('ask', views.ask, name='ask'),
 	path('signin', views.signin, name='signin'),
 	path('signup', views.signup, name='signup'),
