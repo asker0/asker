@@ -491,7 +491,8 @@ def report(request):
 
 		Report.objects.create(type=request.GET.get('type'),
 							  item=request.GET.get('id'),
-							  reporter=reporter)
+							  reporter=reporter,
+							  url='https://asker.fun/question/' + str(request.GET.get('id')))
 	return HttpResponse('OK')
 
 
