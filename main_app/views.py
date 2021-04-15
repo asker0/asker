@@ -492,7 +492,7 @@ def report(request):
 		Report.objects.create(type=request.GET.get('type'),
 							  item=request.GET.get('id'),
 							  reporter=reporter,
-							  url='https://asker.fun/question/' + str(request.GET.get('id')))
+							  url='https://asker.fun/question/' + str(Response.objects.get(id=request.GET.get('id')).question.id))
 	return HttpResponse('OK')
 
 
