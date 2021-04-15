@@ -488,11 +488,12 @@ def report(request):
 			reporter = None
 		else:
 			reporter = request.user
-
+		
 		Report.objects.create(type=request.GET.get('type'),
 							  item=request.GET.get('id'),
 							  reporter=reporter,
-							  url='https://asker.fun/question/' + str(Response.objects.get(id=request.GET.get('id')).question.id))
+							  url='https://asker.fun/question/' + str(Response.objects.get(id=request.GET.get('id')).question.id),
+							  text='Resposta: ' + str(Response.objects.get(id=request.GET.get('id')).text))
 	return HttpResponse('OK')
 
 

@@ -89,3 +89,4 @@ class Report(models.Model):
     item = models.IntegerField()
     reporter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     url = models.URLField(null=True)
+    text = models.TextField(null=True)
