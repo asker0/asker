@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login, logout as django_logout
@@ -41,7 +40,8 @@ def index(request):
 		context['popular_questions_display'] = 'none'
 
 	# contexto das questões populares:
-	context['popular_questions'] = sorted(p.page(1).object_list, key=lambda x:x.total_likes, reverse=True)
+	p = Paginator(all, 200)
+	context['popular_questions'] = sorted(p.page(1).object_list[:20], key=lambda x:x.total_likes, reverse=True)
 
 	return render(request, 'index.html', context)
 
@@ -496,7 +496,7 @@ def report(request):
 
 
 def edit_profile(request, username):
-	
+
 	if request.method == 'POST':
 		if request.POST.get('type') == 'profile-pic':
 			form = UploadFileForm(request.POST, request.FILES)
@@ -504,7 +504,7 @@ def edit_profile(request, username):
 				f = request.FILES['file']
 				file_name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
 				file_name += str(f)
-				
+
 				with open('django_project/media/avatars/' + file_name, 'wb+') as destination:
 					for chunk in f.chunks():
 						destination.write(chunk)
@@ -518,10 +518,10 @@ def edit_profile(request, username):
 			u.save()
 			return redirect('/user/' + username)
 		if request.POST.get('type') == 'username':
-			
+
 			if User.objects.filter(username=request.POST.get('username')).exists():
 				return render(request, 'edit-profile.html', {'user_p': UserProfile.objects.get(user=User.objects.get(username=username)), 'username_display': 'block', 'invalid_username': ' is-invalid'})
-			
+
 			password = request.POST.get('password')
 			user = authenticate(username=request.user.username, password=password)
 			if user is None:
@@ -531,5 +531,5 @@ def edit_profile(request, username):
 			user.save()
 			login(request, user)
 			return redirect('/user/' + user.username)
-	
+
 	return render(request, 'edit-profile.html', {'user_p': UserProfile.objects.get(user=User.objects.get(username=username))})
