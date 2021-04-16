@@ -7,6 +7,7 @@ class UserProfile(models.Model):
 	avatar = models.ImageField(default='avatars/default-avatar.png')
 	bio = models.TextField(max_length=400)
 	total_points = models.IntegerField(null=True, default=0)
+	total_views = models.IntegerField(default=0) # total de visualizações desde o dia: 16/04/2021
 
 	rank = models.IntegerField(default=-1, null=True, blank=True)
 

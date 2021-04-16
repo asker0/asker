@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-br">{% if user.username == "Erick" %} {{ user_p.total_views }} visualizações {% endif %}
 	<head>
 		<title>{{user_p.user.username}}</title>
 		<meta charset="utf-8">

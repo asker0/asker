@@ -202,6 +202,10 @@ def signup(request):
 
 
 def profile(request, username):
+	if request.user.username != username:
+		u = UserProfile.objects.get(user=User.objects.get(username=username))
+		u.total_views += 1
+		u.save()
 
 	context = {'user_p': UserProfile.objects.get(user=User.objects.get(username=username)),
 			   'change_profile_picture_form': UploadFileForm()}
