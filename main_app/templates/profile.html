@@ -28,9 +28,8 @@
 				display: block;
 			}
 
-			#user-bio {
+			#bio {
 				width: 50%;
-				margin: 0 auto;
 			}
 
             .table {
@@ -45,6 +44,10 @@
 
 				.table {
 				    width: 100%;
+				}
+				
+				#bio {
+					width: 90%;
 				}
 			}
 		</style>
@@ -156,16 +159,13 @@
 		</nav>
 		<center id="center1">
 		    <img src="{{user_p.avatar.url}}" alt="{{user_p.user.username}}">
-			<span>{{user_p.user.username}}</span>
-		</center>{% if user_p.user.username == "Erick" %}
-		<br><center><span id="user-bio">{{ user_p.bio|safe }}</span></center><br>{% else %}
-		<br><center><span id="user-bio">{{ user_p.bio }}</span></center><br>
-{% endif %}
+			<p id="bio">{{ user_p.bio }}</p>
+		</center>
 		<table class="table table-bordered">
 		  <thead>
 			<tr>
-			  <th scope="col">Perguntou</th>
-			  <th scope="col">Respondeu</th>
+			  <th scope="col">Perguntas</th>
+			  <th scope="col">Respostas</th>
 			  <th scope="col">Pontos</th>
 			</tr>
 		  </thead>
