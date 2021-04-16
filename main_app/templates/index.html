@@ -107,6 +107,8 @@
 									})
 								</script>
 								{% endif %}
+							{% else %}
+							<p><a href="/signin?redirect=/question/{{ question.id }}">Faça login</a> ou <a href="/signup?redirect=/question/{{ question.id }}">crie uma conta</a> para responder está pergunta.</p>
 							{% endif %}
 							</div>
 						</div>
@@ -139,6 +141,8 @@
 						{% else %}
 						<a style="display: block" href="/question/{{ question.id }}"><button class="btn btn-outline-primary">Responder</button></a>
 						{% endif %}
+					{% else %}
+					<p><a href="/signin?redirect=/question/{{ question.id }}">Faça login</a> ou <a href="/signup?redirect=/question/{{ question.id }}">crie uma conta</a> para responder está pergunta.</p>
 					{% endif %}
 					</div>
 				</div>

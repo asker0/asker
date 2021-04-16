@@ -6,7 +6,12 @@
 	display: none;
 }
 
-#questions {
+#p_questions {
+	width: 50%;
+	margin: auto;
+}
+
+#n_questions {
 	width: 50%;
 	margin: auto;
 }
@@ -18,8 +23,13 @@
 
 /* Para smartphones: */
 @media (min-width: 320px) and (max-width: 480px) {
-	#questions {
-		width: 100%;
+	#p_questions {
+		width: 98%;
+		margin: auto;
+	}
+	
+	#n_questions {
+		width: 98%;
 		margin: auto;
 	}
 	

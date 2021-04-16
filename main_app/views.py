@@ -23,7 +23,7 @@ def index(request):
 	context = {}
 	
 	# pega as perguntas da mais nova para a mais velha:
-	q = Question.objects.all().order_by('-pub_date')
+	q = Question.objects.all().order_by('pub_date')
 	p = Paginator(q, 20)
 	page = request.GET.get('page', 1)
 	questions = p.page(page)
