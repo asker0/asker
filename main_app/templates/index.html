@@ -86,7 +86,7 @@
 			{{ question.description|linebreaksbr }}
 									{% endif %}
 								</p>
-								<span>{{ question.id|total_answers }} respostas <b>&middot;</b> {{ question.pub_date|naturaltime }}</span>
+								<small>{{ question.id|total_answers }} respostas <b>&middot;</b> <span class="text-muted">{{ question.pub_date|naturaltime }}</span></small>
 							{% if user.is_authenticated %}
 								{% if user.username|answered:question.id %}
 								<span style="display: block"><b>Sua resposta:</b></span> {{ user.username|answer:question.id|linebreaksbr }}
@@ -141,7 +141,7 @@
 	{{ question.description|linebreaksbr }}
 							{% endif %}
 						</p>
-						<span>{{ question.id|total_answers }} respostas <b>&middot;</b> <span>{{ question.total_likes }} likes</span> <b>&middot;</b> {{ question.id|last_response|safe }}</span>
+						<small>{{ question.id|total_answers }} respostas <b>&middot;</b> <span>{{ question.total_likes }} likes</span> <b>&middot;</b> {{ question.id|last_response|safe }}</small>
 					{% if user.is_authenticated %}
 						{% if user.username|answered:question.id %}
 						<span style="display: block"><b>Sua resposta:</b></span> {{ user.username|answer:question.id|linebreaksbr }}
