@@ -6,25 +6,25 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Asker | Página inicial</title>
-		
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 		<script src="https://kit.fontawesome.com/1f965a8b94.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-		
+
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
-		
-		
+
+
 		<!-- SCROLL INFINITO: -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/shortcuts/infinite.min.js"></script>
-		
-		
+
+
 		<link rel="stylesheet" href="/static/css/index.css">
 	</head>
 	<body>
-		
-		
+
+
 		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
 		    <a id="logo" href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,9 +33,9 @@
 
 			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					
+
 					<li class="nav-item">
-						<a class="nav-link" href="/user/guy"><i class="far fa-user"></i> perfil</a>
+						<a class="nav-link" href="/user/{{ user.username }}"><i class="far fa-user"></i> perfil</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/ask"><i class="fas fa-question"></i> perguntar</a>
@@ -49,12 +49,12 @@
 					<li class="nav-item">
 						<a class="nav-link" href="/logout"><i class="fas fa-external-link-alt"></i> sair</a>
 					</li>
-					
+
 				</ul>
 			</div>
 		</nav>
-		
-		
+
+
 		<ul class="nav nav-tabs" id="tabs">
 			<li class="nav-item">
 				<a class="nav-link" id="popular">Popular</a>
@@ -63,8 +63,8 @@
 				<a class="nav-link" id="news">Novas perguntas</a>
 			</li>
 		</ul>
-		
-		
+
+
 			<section id="n_questions">
 				<div class="infinite-container">
 					{% for question in questions %}
@@ -115,14 +115,14 @@
 					</div>
 					{% endfor %}
 				</div>
-				
+
   {% if questions.has_next %}
     <a class="infinite-more-link" href="/news?page={{ questions.next_page_number }}">Próxima página</a>
   {% endif %}
 			</section>
-		
+
 			<section id="p_questions">
-				
+
 				{% for question in popular_questions %}
 				<div class="card">
 					<div class="card-body">
@@ -149,7 +149,7 @@
 				{% endfor %}
 				<h5>Fim! <a href="/news">Clique aqui</a> para ver as novas perguntas!</h5>
 			</section>
-		
+
 		<script src="/static/js/index.js"></script>
 	</body>
 </html>
