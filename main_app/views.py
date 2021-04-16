@@ -15,6 +15,9 @@ import random, string
 def index(request):
 	
 	if request.method == 'POST':
+		if Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=Question.objects.get(id=request.POST.get('question_id'))).exists():
+			return HttpResponse('OK')
+		
 		q = Question.objects.get(id=request.POST.get('question_id'))
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('text'))
 		q.total_responses += 1
@@ -69,11 +72,9 @@ def question(request, question_id):
 			</html>''')
 
 	if request.method == 'POST':
-		if Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=Question.objects.get(id=question_id)).exists():
-			return redirect('/question/' + str(q.id))
-
-		if Response.objects.filter(question=q, creator=UserProfile.objects.get(user=request.user)).exists():
-			return redirect('/question/' + str(q.id))
+		# para evitar respostas duplas:
+		if Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=q).exists():
+			return HttpResponse('OK')
 
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('response'))
 
