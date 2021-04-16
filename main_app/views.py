@@ -38,8 +38,11 @@ def index(request):
 	
 	
 	# pega as perguntas mais populares (com mais likes nas respostas) da mais nova para a mais velha:
-	q = Question.objects.all().order_by('-pub_date').order_by('-total_likes').order_by('-total_responses')
-	q = q[500:]
+	q = Question.objects.all().order_by('-pub_date')
+	q = q[:500]
+	
+	q = sorted(q, key=lambda o: o.total_likes, reverse=True)
+	
 	p = Paginator(q, 20)
 	page = request.GET.get('popular-page', 1)
 	questions = p.page(page).object_list
