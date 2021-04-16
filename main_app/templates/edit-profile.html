@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Alterar foto de perfil</title>
+		<title>Editar perfil</title>
 
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -22,10 +22,10 @@
 		</form>
 		<hr>
 		<h2>Biografia</h2>
-		<form class="form-inline" method="post">
+		<form method="post">
 			<input type="hidden" name="type" value="bio">
 			{% csrf_token %}
-			<textarea name="bio" maxlength="300">{{ user_p.bio }}</textarea>
+			<textarea name="bio" maxlength="3000" width="70%">{{ user_p.bio }}</textarea>
 			<input class="btn btn-primary" type="submit" value="Alterar biografia">
 		</form>
 		<hr>

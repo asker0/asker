@@ -1,3 +1,7 @@
+.card {
+    margin-bottom: 2px;
+}
+
 #tabs li {
 	cursor: pointer;
 }
@@ -27,12 +31,12 @@
 		width: 98%;
 		margin: auto;
 	}
-	
+
 	#n_questions {
 		width: 98%;
 		margin: auto;
 	}
-	
+
 	#tabs {
 		width: 100%;
 	}
