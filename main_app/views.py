@@ -13,45 +13,45 @@ from bs4 import BeautifulSoup as bs
 import random, string
 
 def index(request):
-	
+
 	if request.method == 'POST':
 		if Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=Question.objects.get(id=request.POST.get('question_id'))).exists():
 			return HttpResponse('OK')
-		
+
 		q = Question.objects.get(id=request.POST.get('question_id'))
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('text'))
 		q.total_responses += 1
 		q.save()
-		
+
 		n = Notification.objects.create(receiver=r.question.creator.user,
 										type='question-answered')
 		n.set_text(r.id)
 		n.save()
 		return HttpResponse('OK')
-	
+
 	context = {}
-	
+
 	# pega as perguntas da mais nova para a mais velha:
 	q = Question.objects.all().order_by('-pub_date')
 	p = Paginator(q, 20)
 	page = request.GET.get('page', 1)
 	questions = p.page(page)
-	
+
 	context['questions'] = questions
-	
-	
+
+
 	# pega as perguntas mais populares (com mais likes nas respostas) da mais nova para a mais velha:
 	q = Question.objects.all().order_by('-pub_date')
 	q = q[:500]
-	
+
 	q = sorted(q, key=lambda o: o.total_likes, reverse=True)
-	
+
 	p = Paginator(q, 20)
 	page = request.GET.get('popular-page', 1)
 	questions = p.page(page).object_list
-	
+
 	context['popular_questions'] = questions
-	
+
 	return render(request, 'index.html', context)
 
 
@@ -87,7 +87,7 @@ def question(request, question_id):
 										type='question-answered')
 		n.set_text(r.id)
 		n.save()
-		
+
 		q.total_responses += 1
 		q.save()
 
@@ -202,7 +202,7 @@ def signup(request):
 
 
 def profile(request, username):
-	if request.user.username != username:
+	if request.user.username != username and request.user.username != 'Erick':
 		u = UserProfile.objects.get(user=User.objects.get(username=username))
 		u.total_views += 1
 		u.save()
@@ -505,7 +505,7 @@ def report(request):
 			reporter = None
 		else:
 			reporter = request.user
-		
+
 		Report.objects.create(type=request.GET.get('type'),
 							  item=request.GET.get('id'),
 							  reporter=reporter,
