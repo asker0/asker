@@ -24,12 +24,10 @@ def answer(username, question_id):
 
 @register.filter(name='total_answers')
 def total_answers(question_id):
-    q = Question.objects.get(id=question_id)
-    total = Response.objects.filter(question=q).count()
-
-    if total == 0 or total > 1:
-        return '<span id="total-answers-{}">'.format(q.id) + str(total) + '</span> <span id="total-answers-{}-text">respostas</span>'.format(q.id)
-    return '<span id="total-answers-{}">1</span> resposta'.format(q.id)
+	try:
+		return Response.objects.filter(question=Question.objects.get(id=question_id)).count()
+	except:
+		return ''
 
 
 @register.filter(name='total_likes')

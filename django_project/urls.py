@@ -22,6 +22,8 @@ from main_app import views
 
 urlpatterns = [
 	path('', views.index, name='index'),
+	path('news', views.index, name='index'),
+	path('popular', views.index, name='index'),
 	path('question/<int:question_id>', views.question, name='question'),
 	path('answer/<int:answer_id>/like', views.like, name='like'),
 	path('answer/<int:answer_id>/delete', views.delete_answer, name='delete_answer'),

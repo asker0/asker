@@ -13,36 +13,35 @@ from bs4 import BeautifulSoup as bs
 import random, string
 
 def index(request):
+	
 	if request.method == 'POST':
+		from time import sleep
+		sleep(4)
 		Response.objects.create(question=Question.objects.get(id=request.POST.get('question_id')),
 								creator=UserProfile.objects.get(user=request.user),
-								text=request.POST.get('response'))
-		u = UserProfile.objects.get(user=request.user)
-		u.total_points += 2
-		u.save()
+								text=request.POST.get('text'))
 		return HttpResponse('OK')
-
-	all = Question.objects.all().order_by('-pub_date')
-	p = Paginator(all, 20)
-
+	
+	context = {}
+	
+	# pega as perguntas da mais nova para a mais velha:
+	q = Question.objects.all().order_by('-pub_date')
+	p = Paginator(q, 20)
 	page = request.GET.get('page', 1)
-
-	context = {'questions': p.page(page).object_list,
-			   'page_obj': p.page(page),
-			   'new_questions_display': request.GET.get('nqd', 'none'),
-			   'popular_questions_display': request.GET.get('pqd', 'block'),
-			   'popular_tab': ' active',
-			   'new_tab': ' disabled'}
-
-	if request.GET.get('nqd', False):
-		context['new_tab'] = ' active'
-		context['popular_tab'] = ' disabled'
-		context['popular_questions_display'] = 'none'
-
-	# contexto das questões populares:
-	p = Paginator(all, 200)
-	context['popular_questions'] = sorted(p.page(1).object_list[:20], key=lambda x:x.total_likes, reverse=True)
-
+	questions = p.page(page)
+	
+	context['questions'] = questions
+	
+	
+	# pega as perguntas mais populares (com mais likes nas respostas) da mais nova para a mais velha:
+	q = Question.objects.all().order_by('-pub_date').order_by('-total_likes')
+	q = q[:500]
+	p = Paginator(q, 20)
+	page = request.GET.get('popular-page', 1)
+	questions = p.page(page).object_list
+	
+	context['popular_questions'] = questions
+	
 	return render(request, 'index.html', context)
 
 

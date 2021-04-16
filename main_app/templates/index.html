@@ -1,93 +1,30 @@
-<!doctype html>
-{% load main_app_extras %}
 {% load humanize %}
-<html lang="pt-br">
+{% load main_app_extras %}
+<!doctype html>
+<html>
 	<head>
-		<title>Página inicial</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-
-		<meta name="keywords" content="asker, asker.fun, askerfun, perguntas, respostas">
-		<meta name="description" content="Venha se divertir e aprender fazendo e respondendo perguntas na comunidade de P&R mais legal!">
-
-		<meta name="propeller" content="8e5237a6968a054792af4b70e5631e3d">
-
+		<title>Asker | Página inicial</title>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,500i,700,800i" rel="stylesheet">
-
 		<script src="https://kit.fontawesome.com/1f965a8b94.js"></script>
-		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
+		
+		
+		<!-- SCROLL INFINITO: -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/shortcuts/infinite.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('.navbar-light .dmenu').hover(function() {
-					$(this).find('.sm-menu').first().stop(true, true).slideDown(150);
-				}, function() {
-					$(this).find('.sm-menu').first().stop(true, true).slideUp(105)
-				});
-				
-				if(window.location.href.indexOf("nqd=true") != -1) {
-					document.getElementById("logo").href = "/?nqd=true"
-				}
-			});
-
-			function reply(obj, q_id) {
-				$.ajax({
-					url: '/',
-					type: 'POST',
-					data: {
-						csrfmiddlewaretoken: obj.csrfmiddlewaretoken.value,
-						question_id: obj.question_id.value,
-						response: obj.response.value,
-					},
-					complete: function(data) {
-						document.getElementById('form-question-' + q_id).style.display = 'none'
-						document.getElementById('submit-answer-button' + q_id).style.display = 'none'
-						document.getElementById('cancel-submit-answer-button' + q_id).style.display = 'none'
-						document.getElementById('your-answer' + q_id).innerHTML = 'Sua resposta: ' + obj.response.value
-						document.getElementById('total-answers-' + q_id).innerHTML = Number(document.getElementById('total-answers-' + q_id).innerHTML) + 1
-
-						/* Se o total de respostas agora é 1, então é necessário trocar "1 respostas" por "1 resposta" (no singular) */
-						if(document.getElementById('total-answers-' + q_id).innerHTML == '1') {
-							document.getElementById('total-answers-' + q_id + '-text').innerHTML = 'resposta'
-						}
-					}
-				})
-			}
-
-			function show_more(obj) {
-				obj.style.display = 'none'
-				obj.nextSibling.style.display = 'inline'
-				obj.nextSibling.nextSibling.nextSibling.style.display = 'inline'
-			}
-
-			function show_less(obj) {
-				obj.style.display = 'none'
-				obj.previousSibling.previousSibling.style.display = 'none'
-				obj.previousSibling.previousSibling.previousSibling.style.display = 'inline'
-			}
-		</script>
-
+		
+		
 		<link rel="stylesheet" href="/static/css/index.css">
-
-		<style>
-		    @media (min-width: 320px) and (max-width: 480px) {
-		        body {
-			    	background-color: #efefef;
-			    }
-		    }
-
-		    #questions .card {
-		        border-radius: 10px;
-		    }
-		</style>
 	</head>
 	<body>
+		
+		
 		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
 		    <a id="logo" href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,9 +33,9 @@
 
 			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					{% if user.is_authenticated %}
+					
 					<li class="nav-item">
-						<a class="nav-link" href="/user/{{user.username}}"><i class="far fa-user"></i> perfil</a>
+						<a class="nav-link" href="/user/guy"><i class="far fa-user"></i> perfil</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/ask"><i class="fas fa-question"></i> perguntar</a>
@@ -112,207 +49,103 @@
 					<li class="nav-item">
 						<a class="nav-link" href="/logout"><i class="fas fa-external-link-alt"></i> sair</a>
 					</li>
-					{% else %}
-					<li class="nav-item">
-						<a class="nav-link" href="/signin">Entrar</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/signup">Criar uma conta</a>
-					</li>
-					{% endif %}
+					
 				</ul>
 			</div>
 		</nav>
-
-		<section id="questions">
-
-			<ul class="nav nav-tabs" id="tabs">
-				<li class="nav-item">
-					<a class="nav-link{{ popular_tab }}" id="popular">Popular</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link{{ new_tab }}" id="new">Novas perguntas</a>
-				</li>
-			</ul>
-
-			<script>
-				/* Este script controla a barra de navegação (popular e novas perguntas) */
-				popular = document.getElementById("popular")
-				new_tab = document.getElementById("new")
-
-				popular.onclick = function() {
-					window.history.pushState("object or string", "Title", "/");
-					document.getElementById("logo").href = "/"
-
-					popular.classList.add("active")
-					new_tab.classList.remove("active")
-					new_tab.classList.add("disabled")
-
-					document.getElementById("new-questions").style.display = "none"
-					document.getElementById("popular-questions").style.display = "block"
-				}
-
-				new_tab.onclick = function() {
-					window.history.pushState("object or string", "Title", "/?nqd=true");
-					document.getElementById("logo").href = "/?nqd=true"
-
-					new_tab.classList.add("active")
-					popular.classList.remove("active")
-					popular.classList.add("disabled")
-
-					document.getElementById("new-questions").style.display = "block"
-					document.getElementById("popular-questions").style.display = "none"
-				}
-
-				function anti_spam(obj) {
-					if(obj.parentElement.parentElement.response.value == '') {
-						alert('Preencha sua resposta.')
-						return false
-					}
-
-					return true
-				}
-			</script>
-
-			<style>
-				/* estes estilos são para a barra de navegação (popular e novas perguntas) */
-				#tabs {
-					margin-bottom: 1%;
-				}
-
-				#popular {
-					cursor: pointer;
-				}
-
-				#new {
-					cursor: pointer;
-				}
-			</style>
-
-			<style>
-				#new-questions {
-					display: {{ new_questions_display }};
-				}
-
-				#popular-questions {
-					display: {{ popular_questions_display }};
-				}
-			</style>
-
-			<section id="new-questions">
+		
+		
+		<ul class="nav nav-tabs" id="tabs">
+			<li class="nav-item">
+				<a class="nav-link" id="popular">Popular</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="news">Novas perguntas</a>
+			</li>
+		</ul>
+		
+		
+			<section id="n_questions">
 				<div class="infinite-container">
 					{% for question in questions %}
 					<div class="infinite-item">
 						<div class="card">
 							<div class="card-body">
-								<a href="/question/{{question.id}}">{{question.text}}</a><br>
-								{% if question.description %}
-								<p id="description-{{ question.id }}">
-									{{question.cut_description|safe|linebreaksbr}}
-								</p>
-								{% endif %}
-								<small class="text-muted">{{ question.id|total_answers|safe }}</small><b> &middot; </b><small>{{ question.pub_date|naturaltime }}</small>
-								{% if user.is_authenticated %}
-									{% if user.username|answered:question.id %}
-									<p>Sua resposta: {{ user.username|answer:question.id }}</p>
-									{% else %}
-										<style>
-											.answer-form {
-												width: 50%;
-											}
-
-											@media (min-width: 320px) and (max-width: 480px) {
-												.answer-form {
-													width: 98%;
-												}
-											}
-										</style>
-										<form class="answer-form" id="form-question-{{question.id}}" style="margin-bottom: 1px">
-											{% csrf_token %}
-											<input type="hidden" value="{{redirect}}" name="redirect">
-											<input type="hidden" value="{{question.id}}" name="question_id">
-											<textarea class="form-control" onclick="javascript:document.getElementById('submit-answer-button{{question.id}}').style.display = 'block'; document.getElementById('cancel-submit-answer-button{{question.id}}').style.display = 'block'" placeholder="Escreva sua resposta aqui" name="response" maxlength="600" required="required"></textarea>
-											<div class="form-inline">
-												<input class="btn btn-info" id="submit-answer-button{{question.id}}" type="submit" value="Enviar" onclick="javascript:if(anti_spam(this) == false) {return false};document.getElementById('modal-{{ question.id }}').style.display = 'block';this.style.display='none';this.nextSibling.nextSibling.style.display='none';reply(this.parentElement.parentElement, {{question.id}});return false" style="margin-left: 3px; display: none">
-												<button class="btn btn-info" id="cancel-submit-answer-button{{question.id}}" onclick="javascript:document.getElementById('submit-answer-button{{question.id}}').style.display = 'none'; document.getElementById('cancel-submit-answer-button{{question.id}}').style.display = 'none'; return false" style="margin-left: 3px; display: none">Cancelar</button>
-												<img style="display: none" id="modal-{{ question.id }}" src="/static/images/loading.gif" width="10%;">
-											</div>
-										</form>
+								<a href="/question/{{ question.id }}">
+									{{ question.text }}
+								</a>
+								<p>
+									{% if question.description != '' %}
+			{{ question.description|linebreaksbr }}
 									{% endif %}
+								</p>
+								<span>{{ question.id|total_answers }} respostas <b>&middot;</b> {{ question.pub_date|naturaltime }}</span>
+							{% if user.is_authenticated %}
+								{% if user.username|answered:question.id %}
+								<span style="display: block"><b>Sua resposta:</b></span> {{ user.username|answer:question.id|linebreaksbr }}
 								{% else %}
-								<p class="text-muted">Faça <a href="/signin?redirect=/question/{{question.id}}">login</a> ou <a href="/signup?redirect=/question/{{question.id}}">crie uma conta</a> para responder esta pergunta.</p>
+								<form id="form-{{ question.id }}" class="response-form" method="post" action="/">
+									{% csrf_token %}
+									<input name="question_id" type="hidden" value="{{ question.id }}">
+									<textarea name="text" maxlength="5000" class="form-control" placeholder="Escreva sua resposta aqui" onclick="return show_form_buttons(this.parentElement)"></textarea>
+									<input class="btn btn-outline-primary form-button" type="submit" value="Enviar">
+									<input class="btn btn-outline-primary form-button" type="submit" value="Cancelar" onclick="return hide_form_buttons(this.parentElement)">
+									<img style="display: none" id="modal-{{ question.id }}" src="/static/images/loading.gif" width="5%;">
+								</form>
+								<script>
+									$("#form-{{ question.id }}").submit(function() {
+										m = document.getElementById("modal-{{ question.id }}")
+										m.style.display = "block"
+										f = document.getElementById("form-{{ question.id }}")
+										f.getElementsByClassName("form-button")[0].style.display = "none"
+										f.getElementsByClassName("form-button")[1].style.display = "none"
+										$(this).ajaxSubmit(function() {
+											m.style.display = "none"
+											f.innerHTML = '<span style="display: block"><b>Sua resposta:</b></span> ' + f.text.value
+										})
+										return false
+									})
+								</script>
 								{% endif %}
-								<p id="your-answer{{question.id}}"></p>
+							{% endif %}
 							</div>
 						</div>
 					</div>
 					{% endfor %}
 				</div>
 				
-				{% if page_obj.has_next %}
-				<a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}" style="display: none">Mais</a>
-				{% endif %}
-
-  <script>
-    var infinite = new Waypoint.Infinite({
-      element: $('.infinite-container')[0],
-      onBeforePageLoad: function () {
-        $('.loading').show();
-      },
-      onAfterPageLoad: function ($items) {
-        $('.loading').hide();
-      }
-    });
-  </script>
-
-				<!--{% if page_obj.has_previous %}
-				<a rel="prev" href="?page={{ page_obj.previous_page_number }}{{ current_category }}&nqd">Anterior</a>
-					{% if page_obj.has_next %} | {% endif %}
-				{% endif %}
-				{% if page_obj.has_next %}
-				<a rel="next" href="?page={{ page_obj.next_page_number }}{{ current_category }}&nqd">Próximo</a>
-				{% endif %}-->
-
-
-
+  {% if questions.has_next %}
+    <a class="infinite-more-link" href="/news?page={{ questions.next_page_number }}">Próxima página</a>
+  {% endif %}
 			</section>
-
-			<section id="popular-questions">
-
+		
+			<section id="p_questions">
+				
 				{% for question in popular_questions %}
 				<div class="card">
 					<div class="card-body">
-						<a href="/question/{{question.id}}">{{question.text}}</a><br>
-						{% if question.description %}
-						<p id="description-{{ question.id }}">
-						{{question.cut_description|safe}}
-						</p>
-						{% endif %}
-						<small class="text-muted">{{ question.id|total_answers|safe }}</small><b> &middot; </b><small class="text-muted">{{ question.total_likes }} like(s)</small><b> &middot; </b><small>{{ question.id|last_response|safe }}</small>
-						{% if user.is_authenticated %}
-							{% if user.username|answered:question.id %}
-							<p>Sua resposta: {{ user.username|answer:question.id }}</p>
-							{% else %}
-							<a href="/question/{{ question.id }}" style="text-decoration: none;"><button style="display: block;" class="btn btn-outline-primary">Responder</button></a>
+						<a href="/question/{{ question.id }}">
+							{{ question.text }}
+						</a>
+						<p>
+							{% if question.description != '' %}
+	{{ question.description|linebreaksbr }}
 							{% endif %}
+						</p>
+						<span>{{ question.id|total_answers }} respostas <b>&middot;</b> <span>{{ question.total_likes }} likes</span> <b>&middot;</b> {{ question.id|last_response|safe }}</span>
+					{% if user.is_authenticated %}
+						{% if user.username|answered:question.id %}
+						<span style="display: block"><b>Sua resposta:</b></span> {{ user.username|answer:question.id|linebreaksbr }}
 						{% else %}
-						<p class="text-muted">Faça <a href="/signin?redirect=/question/{{question.id}}">login</a> ou <a href="/signup?redirect=/question/{{question.id}}">crie uma conta</a> para responder esta pergunta.</p>
+						<a style="display: block" href="/question/{{ question.id }}"><button class="btn btn-outline-primary">Responder</button></a>
 						{% endif %}
-						<p id="your-answer{{question.id}}"></p>
+					{% endif %}
 					</div>
 				</div>
 				{% endfor %}
-
+				<h5>Fim! <a href="/news">Clique aqui</a> para ver as novas perguntas!</h5>
 			</section>
-		</section>
-
-<center>
-<br>
-<div class="loading" style="display: none">
-<img width="10%" src="/static/images/loading.gif">
-</div>
-<br>
-</center>
-
+		
+		<script src="/static/js/index.js"></script>
 	</body>
 </html>

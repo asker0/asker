@@ -1,14 +1,29 @@
-#questions {
-	width: 60%;
-	margin: 0 auto 0;
+#tabs li {
+	cursor: pointer;
 }
 
+.response-form input {
+	display: none;
+}
+
+#questions {
+	width: 50%;
+	margin: auto;
+}
+
+#tabs {
+	width: 50%;
+	margin: 1% auto;
+}
+
+/* Para smartphones: */
 @media (min-width: 320px) and (max-width: 480px) {
 	#questions {
-		width: 98%;
+		width: 100%;
+		margin: auto;
 	}
-}
-
-.card {
-	margin-bottom: 2px;
+	
+	#tabs {
+		width: 100%;
+	}
 }
