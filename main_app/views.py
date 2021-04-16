@@ -15,8 +15,6 @@ import random, string
 def index(request):
 	
 	if request.method == 'POST':
-		from time import sleep
-		sleep(4)
 		Response.objects.create(question=Question.objects.get(id=request.POST.get('question_id')),
 								creator=UserProfile.objects.get(user=request.user),
 								text=request.POST.get('text'))
