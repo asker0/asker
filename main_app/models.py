@@ -32,6 +32,7 @@ class Question(models.Model):
 	image = models.ImageField(null=True, blank=True)
 	description = models.TextField(null=True)
 	total_likes = models.IntegerField(default=0, null=True)
+	total_responses = models.IntegerField(default=0)
 
 	def __str__(self):
 	    return self.text

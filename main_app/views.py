@@ -15,9 +15,15 @@ import random, string
 def index(request):
 	
 	if request.method == 'POST':
-		Response.objects.create(question=Question.objects.get(id=request.POST.get('question_id')),
-								creator=UserProfile.objects.get(user=request.user),
-								text=request.POST.get('text'))
+		q = Question.objects.get(id=request.POST.get('question_id'))
+		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('text'))
+		q.total_responses += 1
+		q.save()
+		
+		n = Notification.objects.create(receiver=r.question.creator.user,
+										type='question-answered')
+		n.set_text(r.id)
+		n.save()
 		return HttpResponse('OK')
 	
 	context = {}
@@ -32,8 +38,8 @@ def index(request):
 	
 	
 	# pega as perguntas mais populares (com mais likes nas respostas) da mais nova para a mais velha:
-	q = Question.objects.all().order_by('-pub_date').order_by('-total_likes')
-	q = q[:500]
+	q = Question.objects.all().order_by('-pub_date').order_by('-total_likes').order_by('-total_responses')
+	q = q[500:]
 	p = Paginator(q, 20)
 	page = request.GET.get('popular-page', 1)
 	questions = p.page(page).object_list
@@ -77,6 +83,9 @@ def question(request, question_id):
 										type='question-answered')
 		n.set_text(r.id)
 		n.save()
+		
+		q.total_responses += 1
+		q.save()
 
 		return HttpResponse(r.id)
 
@@ -119,6 +128,9 @@ def like(request, answer_id):
 
 def delete_answer(request, answer_id):
     r = Response.objects.get(id=answer_id)
+    q = r.question
+    q.total_responses -= 1
+    q.save()
     r.delete()
     return HttpResponse('OK')
 
