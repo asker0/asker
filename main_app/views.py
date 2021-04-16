@@ -485,6 +485,8 @@ def get_more_responses(request):
 
 
 def delete_question(request, question_id):
+	if request.user.username != 'Erick':
+		return HttpResponse('Proibido.')
 	q = Question.objects.get(id=question_id)
 	q.delete()
 	return HttpResponse('OK')
