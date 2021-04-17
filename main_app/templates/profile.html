@@ -147,7 +147,7 @@
 				{% for response in responses %}
 				<hr>
 				<div class="response">
-					<a href="#">{{ response.question.text }}</a><br>
+					<a href="/question/{{ response.question.id }}">{{ response.question.text }}</a><br>
 					<p>{{ response.text }}</p>
 				</div>
 				<hr>

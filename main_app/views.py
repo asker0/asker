@@ -480,6 +480,7 @@ def get_more_responses(request):
 		json['responses'][count] = {
 			'text': r.text,
 			'question_text': r.question.text,
+			'question_id': r.question.id,
 			'id': r.question.id,
 		}
 		count += 1

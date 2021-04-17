@@ -41,7 +41,7 @@ function show_more_questions(button) {
 			data = JSON.parse(data.responseText)
 			
 			$.each(data.questions, function(i, val) {
-				questions.innerHTML += '<hr><div class="question"><a href="#">'+val.text+'</a> <span>&middot; perguntada '+val.naturalday+'</span></div><hr>'
+				questions.innerHTML += '<hr><div class="question"><a href="/question/'+val.id+'">'+val.text+'</a> <span>&middot; perguntada '+val.naturalday+'</span></div><hr>'
 			})
 			
 			if(!data.has_next) {
@@ -67,7 +67,7 @@ function show_more_responses(button) {
 			data = JSON.parse(data.responseText)
 			
 			$.each(data.responses, function(i, val) {
-				responses.innerHTML += '<hr><div class="response"><a href="#">'+val.question_text+'</a><br><p>'+val.text+'</p></div><hr>'
+				responses.innerHTML += '<hr><div class="response"><a href="/question/'+val.question_id+'">'+val.question_text+'</a><br><p>'+val.text+'</p></div><hr>'
 			})
 			
 			if(!data.has_next) {
