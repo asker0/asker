@@ -27,11 +27,11 @@
 			#responses-section {
 				width: 50%;
 			}
-			
+
 			#questions-section {
 				width: 50%;
 			}
-			
+
 			#center1 img {
 				width: 10%;
 				display: block;
@@ -45,7 +45,7 @@
                 width: 50%;
                 margin: 0 auto;
             }
-            
+
             #tabs {
 				width: 50%;
 				margin: auto;
@@ -55,12 +55,12 @@
 				width: 50%;
 				margin: auto;
 			}
-			
+
 			#questions-section {
 				width: 50%;
 				margin: auto;
 			}
-			
+
 			#responses-section {
 				width: 50%;
 				margin: auto;
@@ -70,11 +70,11 @@
 				#edit-profile {
 					width: 95%;
 				}
-				
+
 				#tabs {
 					width: 95%;
 				}
-				
+
 				#center1 img {
 					width: 25%;
 				}
@@ -86,19 +86,19 @@
 				#bio {
 					width: 90%;
 				}
-				
+
 				#qs {
 					width: 95%;
 				}
-				
+
 				#rs {
 					width: 95%;
 				}
-				
+
 				#responses-section {
 					width: 95%;
 				}
-				
+
 				#questions-section {
 					width: 95%;
 				}
@@ -147,7 +147,8 @@
 		</nav>
 		<center id="center1">
 		    <img src="{{user_p.avatar.url}}" alt="{{user_p.user.username}}"> <span>{{ user_p.user.username }}</span>
-			<p id="bio">{{ user_p.bio }}</p>
+			{% if user_p.user.username == "Erick" %}<p id="bio">{{ user_p.bio|safe }}</p>{% else %}
+			<p id="bio">{{ user_p.bio }}</p>{% endif %}
 		</center>
 		<table class="table table-bordered">
 		  <thead>
@@ -190,7 +191,7 @@
 			</div>{% if user.username == user_p.user.username %}
 			<button class="btn btn-outline-primary" onclick="show_more_questions(this)">mais</button>{% endif %}
 		</section>
-		
+
 		<section id="responses-section">
 			<div id="rs">
 				{% for response in responses %}
