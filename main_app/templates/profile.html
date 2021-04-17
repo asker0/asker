@@ -46,13 +46,13 @@
 				.table {
 				    width: 100%;
 				}
-				
+
 				#bio {
 					width: 90%;
 				}
 			}
 		</style>
-		
+
 		<link rel="stylesheet" href="/static/css/profile.css">
 	</head>
 	<body>
@@ -126,7 +126,7 @@
 			</li>
 		</ul>
 		{% endif %}
-		
+
 		<section id="questions-section">
 			<div id="qs">
 				{% for question in questions %}
@@ -136,12 +136,12 @@
 				</div>
 				<hr>
 				{% endfor %}
-			</div>
-			<button class="btn btn-outline-primary" onclick="show_more_questions(this)">mais</button>
+			</div>{% if user.username == user_p.user.username %}
+			<button class="btn btn-outline-primary" onclick="show_more_questions(this)">mais</button>{% endif %}
 		</section>
-		
-		
-		
+
+
+
 		<section id="responses-section">
 			<div id="rs">
 				{% for response in responses %}
