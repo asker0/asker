@@ -24,6 +24,14 @@
 		</script>
 
 		<style>
+			#responses-section {
+				width: 50%;
+			}
+			
+			#questions-section {
+				width: 50%;
+			}
+			
 			#center1 img {
 				width: 10%;
 				display: block;
@@ -37,18 +45,62 @@
                 width: 50%;
                 margin: 0 auto;
             }
+            
+            #tabs {
+				width: 50%;
+				margin: auto;
+			}
+
+			#edit-profile {
+				width: 50%;
+				margin: auto;
+			}
+			
+			#questions-section {
+				width: 50%;
+				margin: auto;
+			}
+			
+			#responses-section {
+				width: 50%;
+				margin: auto;
+			}
 
 			@media (min-width: 320px) and (max-width: 480px) {
+				#edit-profile {
+					width: 95%;
+				}
+				
+				#tabs {
+					width: 95%;
+				}
+				
 				#center1 img {
 					width: 25%;
 				}
 
 				.table {
-				    width: 100%;
+				    width: 98%;
 				}
 
 				#bio {
 					width: 90%;
+				}
+				
+				#qs {
+					width: 95%;
+				}
+				
+				#rs {
+					width: 95%;
+				}
+				
+				#responses-section {
+					width: 95%;
+				}
+				
+				#questions-section {
+					width: 95%;
 				}
 			}
 		</style>
@@ -95,8 +147,7 @@
 		</nav>
 		<center id="center1">
 		    <img src="{{user_p.avatar.url}}" alt="{{user_p.user.username}}"> <span>{{ user_p.user.username }}</span>
-			{% if user_p.user.username == "Erick" %}<p id="bio">{{ user_p.bio|safe }}</p>{% else %}
-			<p id="bio">{{ user_p.bio }}</p>{% endif %}
+			<p id="bio">{{ user_p.bio }}</p>
 		</center>
 		<table class="table table-bordered">
 		  <thead>
@@ -117,7 +168,7 @@
 
 
 		{% if user_p.user.username == user.username %}
-		<a href="/user/{{ user.username }}/edit">Editar perfil</a>
+		<div id="edit-profile"><a href="/user/{{ user.username }}/edit">Editar perfil</a></div>
 		<ul class="nav nav-tabs" id="tabs">
 			<li class="nav-item">
 				<a class="nav-link active"  id="questions">Perguntas</a>
@@ -127,7 +178,6 @@
 			</li>
 		</ul>
 		{% endif %}
-
 		<section id="questions-section">
 			<div id="qs">
 				{% for question in questions %}
@@ -140,9 +190,7 @@
 			</div>{% if user.username == user_p.user.username %}
 			<button class="btn btn-outline-primary" onclick="show_more_questions(this)">mais</button>{% endif %}
 		</section>
-
-
-
+		
 		<section id="responses-section">
 			<div id="rs">
 				{% for response in responses %}
