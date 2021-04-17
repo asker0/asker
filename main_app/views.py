@@ -4,6 +4,8 @@ from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib.auth.models import User
 
+from django.contrib.humanize.templatetags.humanize import naturalday
+
 from main_app.models import UserProfile, Question, Response, Notification, Comment, Report
 
 from main_app.forms import UploadFileForm
@@ -21,6 +23,7 @@ def index(request):
 		q = Question.objects.get(id=request.POST.get('question_id'))
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('text'))
 		q.total_responses += 1
+		q.total_points += 2
 		q.save()
 
 		n = Notification.objects.create(receiver=r.question.creator.user,
@@ -211,8 +214,11 @@ def profile(request, username):
 			   'change_profile_picture_form': UploadFileForm()}
 
 	if request.user.username == username:
-		context['questions'] = Paginator(Question.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date'), 4).page(1).object_list
-		context['responses'] = Paginator(Response.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date'), 4).page(1).object_list
+		q_page = request.GET.get('q-page', 1)
+		r_page = request.GET.get('r-page', 1)
+		
+		context['questions'] = Paginator(Question.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date'), 10).page(q_page).object_list
+		context['responses'] = Paginator(Response.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date'), 10).page(r_page).object_list
 
 	if request.method == 'POST':
 
@@ -437,33 +443,33 @@ def edit_response(request):
 
 def get_more_questions(request):
 	q = Question.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date')
-	p = Paginator(q, 4)
-	page = request.POST.get('q_page', 2)
+	p = Paginator(q, 10)
+	page = request.GET.get('q_page', 2)
 
 	json = {
 	}
 
 	json['questions'] = {}
-
+	
 	count = 1
 	for q in p.page(page):
 		json['questions'][count] = {
 			'text': q.text,
 			'id': q.id,
+			'naturalday': naturalday(q.pub_date),
 		}
 		count += 1
-
-	if not p.page(page).has_next():
-		json['has_next'] = 'false'
-
+	
+	json['has_next'] = p.page(page).has_next()
+	
 	return JsonResponse(json)
 
 
 def get_more_responses(request):
 	r = Response.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date')
-	p = Paginator(r, 4)
-	page = request.POST.get('r_page', 2)
-
+	p = Paginator(r, 10)
+	page = request.GET.get('r_page', 2)
+	
 	json = {
 	}
 
@@ -478,8 +484,7 @@ def get_more_responses(request):
 		}
 		count += 1
 
-	if not p.page(page).has_next():
-		json['has_next'] = 'false'
+	json['has_next'] = p.page(page).has_next()
 
 	return JsonResponse(json)
 

@@ -1,0 +1,11 @@
+#questions {
+	cursor: pointer;
+}
+
+#responses {
+	cursor: pointer;
+}
+
+#responses-section {
+	display: none;
+}
