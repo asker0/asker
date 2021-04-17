@@ -524,7 +524,7 @@ def report(request):
 							  url='https://asker.fun/question/' + str(Response.objects.get(id=request.GET.get('id')).question.id),
 							  text='Resposta: ' + str(Response.objects.get(id=request.GET.get('id')).text))
 	else:
-		if UserProfile.objects.get(user=request.user).total_points < 100:
+		if UserProfile.objects.get(user=request.user).total_points < 300:
 			return HttpResponse('OK')
 		q = Question.objects.get(id=request.GET.get('id'))
 		if q.reporters.filter(username=request.user.username).exists():
@@ -532,7 +532,7 @@ def report(request):
 		q.reports += 1
 		q.reporters.add(request.user)
 		q.save()
-		
+
 		if q.reports >= 3:
 			q.delete()
 	return HttpResponse('OK')
