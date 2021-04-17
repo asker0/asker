@@ -23,11 +23,11 @@ def index(request):
 		q = Question.objects.get(id=request.POST.get('question_id'))
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('text'))
 		q.total_responses += 1
-		
+
 		u_p = UserProfile.objects.get(user=request.user)
 		u_p.total_points += 2
 		u_p.save()
-		
+
 		q.save()
 
 		n = Notification.objects.create(receiver=r.question.creator.user,
@@ -220,7 +220,7 @@ def profile(request, username):
 	if request.user.username == username:
 		q_page = request.GET.get('q-page', 1)
 		r_page = request.GET.get('r-page', 1)
-		
+
 		context['questions'] = Paginator(Question.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date'), 10).page(q_page).object_list
 		context['responses'] = Paginator(Response.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date'), 10).page(r_page).object_list
 
@@ -454,7 +454,7 @@ def get_more_questions(request):
 	}
 
 	json['questions'] = {}
-	
+
 	count = 1
 	for q in p.page(page):
 		json['questions'][count] = {
@@ -463,9 +463,9 @@ def get_more_questions(request):
 			'naturalday': naturalday(q.pub_date),
 		}
 		count += 1
-	
+
 	json['has_next'] = p.page(page).has_next()
-	
+
 	return JsonResponse(json)
 
 
@@ -473,7 +473,7 @@ def get_more_responses(request):
 	r = Response.objects.filter(creator=UserProfile.objects.get(user=request.user)).order_by('-pub_date')
 	p = Paginator(r, 10)
 	page = request.GET.get('r_page', 2)
-	
+
 	json = {
 	}
 
@@ -523,17 +523,17 @@ def report(request):
 							  reporter=reporter,
 							  url='https://asker.fun/question/' + str(Response.objects.get(id=request.GET.get('id')).question.id),
 							  text='Resposta: ' + str(Response.objects.get(id=request.GET.get('id')).text))
-	if request.GET.get('type') == 'question':
-		if UserProfile.objects.get(user=request.user).total_points < 200:
-			return HttpResponse('OK')
-		
+	else:
+		#if UserProfile.objects.get(user=request.user).total_points < 200:
+		#	return HttpResponse('OK')
+
 		q = Question.objects.get(id=request.GET.get('id'))
-		if q.reporters.filter(username=request.user.username).exists():
-			return HttpResponse('OK')
+		#if q.reporters.filter(username=request.user.username).exists():
+		#	return HttpResponse('OK')
 		q.reports += 1
 		q.reporters.add(request.user)
 		q.save()
-		
+
 		if q.reports >= 3:
 			q.delete()
 	return HttpResponse('OK')
