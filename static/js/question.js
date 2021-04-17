@@ -48,6 +48,27 @@ function report(response_id, obj) {
 	})
 }
 
+function report_question(question_id, obj) {
+	// quando a denúncia tiver sido feita, a função abaixo é executada:
+	function ok() {
+		obj.parentElement.innerHTML = '<p>Pergunta denunciada com sucesso <i class="far fa-check-circle"></i></p>'
+		obj.remove()
+	}
+	
+	$.ajax({
+		type: 'get',
+		url: '/report',
+		data: {
+			type: 'question',
+			id: question_id,
+		},
+		
+		complete: function () {
+			ok()
+		}
+	})
+}
+
 $(function () {
 	$('[data-toggle="popover"]').popover({
 		container: 'body',

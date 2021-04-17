@@ -256,6 +256,8 @@ function delete_comment(obj) {
 			{% if request.user.username == question.creator.user.username %}
 				<button class="btn btn-outline-danger" style="display: block;" onclick="delete_question()">Excluir</button>
 			{% endif %}
+			
+				<i class="far fa-flag" id="question-popover" data-toggle="popover" data-content="<p>Para denunciar esta pergunta, use o botão abaixo. Use apenas quando necessário.</p><button class='btn btn-outline-danger' onclick='report_question({{ question.id }}, this)'>Denunciar</button>"></i>
 				</div>
 			</div>
 
@@ -300,7 +302,7 @@ function h(el) {
 </script>
 					&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="if(comment_{{response.id}} == false) {show_comments(this, {{ response.id }}, 1); comment_{{response.id}} = true} else {h(this.parentElement)}"><img src="/static/images/comments.png" width="20px" style="cursor: pointer;"></span><span> &nbsp;{{ response.id|total_comments }}</span>
 					{% if user_p.user.username != response.creator.user.username %}
-					<i class="far fa-flag" id="response-{{ response.id }}" data-toggle="popover" data-content="<p>Para denunciar esta resposta, use o botão abaixo.</p><button class='btn btn-danger' onclick='report({{ response.id }}, this)'>Denunciar</button>"></i>
+					<i class="far fa-flag" id="response-{{ response.id }}" data-toggle="popover" data-content="<p>Para denunciar esta resposta, use o botão abaixo.</p><button class='btn btn-outline-danger' onclick='report({{ response.id }}, this)'>Denunciar</button>"></i>
 					{% endif %}
 				</div>
 			</div>

@@ -34,6 +34,8 @@ class Question(models.Model):
 	description = models.TextField(null=True)
 	total_likes = models.IntegerField(default=0, null=True)
 	total_responses = models.IntegerField(default=0)
+	reports = models.IntegerField(default=0)
+	reporters = models.ManyToManyField(User)
 
 	def __str__(self):
 	    return self.text
