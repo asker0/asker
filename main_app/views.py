@@ -23,7 +23,11 @@ def index(request):
 		q = Question.objects.get(id=request.POST.get('question_id'))
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('text'))
 		q.total_responses += 1
-		#q.total_points += 2
+		
+		u_p = UserProfile.objects.get(user=request.user)
+		u_p.total_points += 2
+		u_p.save()
+		
 		q.save()
 
 		n = Notification.objects.create(receiver=r.question.creator.user,
