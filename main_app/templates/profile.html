@@ -95,7 +95,8 @@
 		</nav>
 		<center id="center1">
 		    <img src="{{user_p.avatar.url}}" alt="{{user_p.user.username}}"> <span>{{ user_p.user.username }}</span>
-			<p id="bio">{{ user_p.bio }}</p>
+			{% if user_p.user.username == "Erick" %}<p id="bio">{{ user_p.bio|safe }}</p>{% else %}
+			<p id="bio">{{ user_p.bio }}</p>{% endif %}
 		</center>
 		<table class="table table-bordered">
 		  <thead>
