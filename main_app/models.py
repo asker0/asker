@@ -10,6 +10,8 @@ class UserProfile(models.Model):
 	total_views = models.IntegerField(default=0) # total de visualizações desde o dia: 16/04/2021
 
 	rank = models.IntegerField(default=-1, null=True, blank=True)
+	
+	blocked_users = models.ManyToManyField(User, related_name='blocked_by') # usuários bloqueados pelo UserProfile.user atual.
 
 	def __str__(self):
 		return self.user.username

@@ -103,6 +103,13 @@
 								</form>
 								<script>
 									$("#form-{{ question.id }}").submit(function() {
+										if('{{ question.creator.user.username|blocked:user.username }}' == 'Bloqueado') {
+											textarea = document.getElementById('form-{{ question.id }}').getElementsByTagName('textarea')[0]
+											textarea.classList.add('is-invalid')
+											alert('Você está impossibilidado de responder as perguntas deste usuário.')
+											return false
+										}
+										
 										m = document.getElementById("modal-{{ question.id }}")
 										m.style.display = "block"
 										f = document.getElementById("form-{{ question.id }}")

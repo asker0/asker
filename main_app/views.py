@@ -19,6 +19,12 @@ def index(request):
 	if request.method == 'POST':
 		if Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=Question.objects.get(id=request.POST.get('question_id'))).exists():
 			return HttpResponse('OK')
+		
+		user = User.objects.get(username=Question.objects.get(id=request.POST.get('question_id')).creator.user.username)
+		user_profile = UserProfile.objects.get(user=user)
+		
+		if user_profile.blocked_users.filter(username=request.user.username).exists():
+			return HttpResponse(False)
 
 		q = Question.objects.get(id=request.POST.get('question_id'))
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('text'))
@@ -576,3 +582,13 @@ def edit_profile(request, username):
 			return redirect('/user/' + user.username)
 
 	return render(request, 'edit-profile.html', {'user_p': UserProfile.objects.get(user=User.objects.get(username=username))})
+
+
+def block(request, username):
+	u_p = UserProfile.objects.get(user=request.user)
+	
+	if u_p.blocked_users.filter(username=username).exists():
+		u_p.blocked_users.remove(User.objects.get(username=username))
+	else:
+		u_p.blocked_users.add(User.objects.get(username=username))
+	return HttpResponse('OK')

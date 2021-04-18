@@ -73,3 +73,12 @@ def cut_description(description):
 	if len(pt2) > 0:
 		s = '{}<span style="color: #007bff; cursor: pointer;" onclick="this.nextSibling.style.display=`inline`; this.style.display=`none`; this.nextSibling.nextSibling.style.display=`inline`">...Mostrar mais</span><span style="display: none">{}</span><span style="display: none; color: #007bff; cursor: pointer;" onclick="this.previousSibling.style.display=`none`; this.style.display=`none`; this.previousSibling.previousSibling.style.display=`inline`"> Mostrar menos</span>'.format(pt1, pt2)
 	return s.replace('\n', '<br>')
+
+
+@register.filter(name='blocked')
+def blocked(username, username2):
+	u_p = UserProfile.objects.get(user=User.objects.get(username=username))
+	
+	if u_p.blocked_users.filter(username=username2).exists():
+		return 'Bloqueado'
+	return 'Bloquear'
