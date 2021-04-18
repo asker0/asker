@@ -30,7 +30,7 @@
 					{% csrf_token %}
 					<div class="form-group">
 						<input class="form-control" type="text" name="question" placeholder="Sua pergunta aqui" autocomplete="off" maxlength="180">
-						<br><textarea class="form-control" placeholder="Descrição (opcional)" name="description"></textarea>
+						<br><textarea maxlength="5000" class="form-control" placeholder="Descrição (opcional)" name="description"></textarea>
 
 						<br>
 						<label for="image">Imagem</label>

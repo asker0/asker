@@ -63,3 +63,13 @@ def last_response(question_id):
 		return 'respondida {} por <a href="/user/{}">{}</a>'.format(naturaltime(r[0].pub_date), r[0].creator.user.username, r[0].creator.user.username)
 	except:
 		return ''
+
+
+@register.filter(name='cut_description')
+def cut_description(description):
+	pt1 = description[:300]
+	pt2 = description[299:]
+	
+	if len(pt2) > 0:
+		s = '{}<span style="color: #007bff; cursor: pointer;" onclick="this.nextSibling.style.display=`inline`; this.style.display=`none`; this.nextSibling.nextSibling.style.display=`inline`">...Mostrar mais</span><span style="display: none">{}</span><span style="display: none; color: #007bff; cursor: pointer;" onclick="this.previousSibling.style.display=`none`; this.style.display=`none`; this.previousSibling.previousSibling.style.display=`inline`"> Mostrar menos</span>'.format(pt1, pt2)
+	return s.replace('\n', '<br>')

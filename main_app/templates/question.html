@@ -314,7 +314,7 @@ function h(el) {
 				{% else %}
 				<form id="response-form" method="post">
 					{% csrf_token %}
-					<textarea class="form-control" placeholder="Responda esta pergunta!" name="response" required="required"></textarea>
+					<textarea maxlength="5000" class="form-control" placeholder="Responda esta pergunta!" name="response" required="required"></textarea>
 					<input class="btn btn-primary" type="submit" value="Enviar" onclick="javascript:if(anti_spam(this) == 'false') {return false}">
 				</form>
 				{% endif %}
