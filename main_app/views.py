@@ -27,10 +27,10 @@ def index(request):
 	if request.method == 'POST':
 		if Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=Question.objects.get(id=request.POST.get('question_id'))).exists():
 			return HttpResponse('OK')
-		
+
 		user = User.objects.get(username=Question.objects.get(id=request.POST.get('question_id')).creator.user.username)
 		user_profile = UserProfile.objects.get(user=user)
-		
+
 		if user_profile.blocked_users.filter(username=request.user.username).exists():
 			return HttpResponse(False)
 
@@ -93,6 +93,7 @@ def question(request, question_id):
 			</html>''')
 
 	if request.method == 'POST':
+
 		# para evitar respostas duplas:
 		if Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=q).exists():
 			return HttpResponse('OK')
@@ -212,7 +213,8 @@ def signup(request):
 		login(request, u)
 
 		new_user_profile = UserProfile.objects.create(user=u)
-		new_user_proile.ip = get_client_ip(request)
+		new_user_profile.ip = get_client_ip(request)
+		new_user_profile.save()
 
 		return redirect(r)
 
@@ -270,6 +272,9 @@ def profile(request, username):
 
 
 def ask(request):
+
+	if str(get_client_ip(request)) == '201.71.41.130':
+		return HttpResponse('Você está bloqueado.')
 
 	if request.method == 'POST':
 
@@ -595,7 +600,7 @@ def edit_profile(request, username):
 
 def block(request, username):
 	u_p = UserProfile.objects.get(user=request.user)
-	
+
 	if u_p.blocked_users.filter(username=username).exists():
 		u_p.blocked_users.remove(User.objects.get(username=username))
 	else:
