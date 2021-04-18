@@ -128,6 +128,9 @@ def question(request, question_id):
 def like(request, answer_id):
 
     r = Response.objects.get(id=answer_id)
+    
+    if r.creator.blocked_users.filter(username=request.user.username).exists():
+        return HttpResponse('OK')
 
     if r.likes.filter(username=request.user.username).exists():
         r.likes.remove(request.user)
@@ -138,9 +141,12 @@ def like(request, answer_id):
         r.total_likes += 1
         r.save()
 
-        # cria uma notificação para o like (quem recebeu o like será notificado):
-        n = Notification.objects.create(receiver=Response.objects.get(id=answer_id).creator.user,
-                                        type='like-in-response')
+        if not Notification.objects.filter(type='like-in-response', liker=request.user, response=r).exists():
+            # cria uma notificação para o like (quem recebeu o like será notificado):
+            n = Notification.objects.create(receiver=Response.objects.get(id=answer_id).creator.user,
+                                            type='like-in-response',
+                                            liker=request.user,
+                                            response=r)
         n.set_text(answer_id)
         n.save()
 

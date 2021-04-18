@@ -79,6 +79,10 @@ class Notification(models.Model):
 	type = models.TextField() # tipos: question-answered, like-in-response, comment-in-response
 	text = models.TextField(null=True)
 	creation_date = models.DateTimeField(default=timezone.now)
+	
+	# os campos abaixo são usados caso a notificação seja do tipo like-in-response.
+	liker = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='l') # quem deu o like
+	response = models.ForeignKey(Response, on_delete=models.CASCADE, null=True, related_name='r') # qual é a resposta
 
 	def set_text(self, answer_id, comment_id=None):
 		if self.type == 'like-in-response':
