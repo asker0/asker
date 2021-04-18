@@ -181,13 +181,13 @@ def signin(request):
 
 		# testa se o email existe:
 		if not User.objects.filter(email=email).exists():
-			return render(request, 'signin.html', {'login_error': '''<div class="alert alert-danger" role="alert">Dados de login incorretos.</div>''',
+			return render(request, 'signin.html', {'login_error': '''<div class="alert alert-danger error-alert" role="alert"><h4 class="alert-heading">Ops!</h4>Dados de login incorretos.</div>''',
 												   'redirect': r})
 
 		user = authenticate(username=User.objects.get(email=email).username, password=password)
 
 		if user is None:
-			return render(request, 'signin.html', {'login_error': '''<div class="alert alert-danger" role="alert">Dados de login incorretos.</div>''',
+			return render(request, 'signin.html', {'login_error': '''<div class="alert alert-danger error-alert" role="alert"><h4 class="alert-heading">Ops!</h4>Dados de login incorretos.</div>''',
 												   'redirect': r})
 		login(request, user)
 		return redirect(r)
@@ -199,23 +199,25 @@ def signup(request):
 
 	if request.method == 'POST':
 		r = request.POST.get('redirect')
-		username = request.POST.get('username')
-		email = request.POST.get('email')
+		username = request.POST.get('username').strip()
+		email = request.POST.get('email').strip()
 		password = request.POST.get('password')
 
 		if User.objects.filter(username=username).exists():
-			return render(request, 'signup.html', {'error': '''<div class="alert alert-danger" role="alert">Nome de usuário em uso.</div>''',
+			return render(request, 'signup.html', {'error': '''<div class="alert alert-danger error-alert" role="alert"><h4 class="alert-heading">Ops!</h4>Nome de usuário em uso.</div>''',
 												   'username': username,
 												   'email': email,
-												   'redirect': r})
+												   'redirect': r,
+												   'username_error': ' is-invalid'})
 
 		if User.objects.filter(email=email).exists():
-			return render(request, 'signup.html', {'error': '''<div class="alert alert-danger" role="alert">Email em uso.</div>''',
+			return render(request, 'signup.html', {'error': '''<div class="alert alert-danger error-alert" role="alert"><h4 class="alert-heading">Ops!</h4>Email em uso. Faça login <a href="/signin">aqui</a>.</div>''',
 												   'username': username,
 												   'email': email,
-												   'redirect': r})
+												   'redirect': r,
+												   'email_error': ' is-invalid'})
 
-		u = User.objects.create_user(username=username.strip(), email=email.strip(), password=password)
+		u = User.objects.create_user(username=username, email=email, password=password)
 		login(request, u)
 
 		new_user_profile = UserProfile.objects.create(user=u)
