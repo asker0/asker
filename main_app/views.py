@@ -14,6 +14,14 @@ from bs4 import BeautifulSoup as bs
 
 import random, string
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
 def index(request):
 
 	if request.method == 'POST':
@@ -203,7 +211,8 @@ def signup(request):
 		u = User.objects.create_user(username=username.strip(), email=email.strip(), password=password)
 		login(request, u)
 
-		UserProfile.objects.create(user=u)
+		new_user_profile = UserProfile.objects.create(user=u)
+		new_user_proile.ip = get_client_ip(request)
 
 		return redirect(r)
 

@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
+	ip = models.TextField(null=True)
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	avatar = models.ImageField(default='avatars/default-avatar.png')
 	bio = models.TextField(max_length=400)
