@@ -312,14 +312,22 @@ function h(el) {
 			{% else %}
 				{% if answered %}
 				{% else %}
+				
 				<form id="response-form" method="post">
 					{% csrf_token %}
 					<textarea maxlength="5000" class="form-control" placeholder="Responda esta pergunta!" name="response" required="required"></textarea>
 					<input class="btn btn-primary" type="submit" value="Enviar" onclick="javascript:if(anti_spam(this) == 'false') {return false}">
 				</form>
 				{% endif %}
+
 			{% endif %}
 
+
+				{% if question.creator.user.username|blocked:user.username == 'Bloqueado' %}
+				<script>
+					document.getElementById('response-form').innerHTML = 'Você está impossibilitado de responder este usuário.'
+				</script>
+				{% endif %}
 
 <!--<script type="text/javascript">
 	atOptions = {
