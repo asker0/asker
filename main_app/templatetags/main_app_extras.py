@@ -67,6 +67,9 @@ def last_response(question_id):
 
 @register.filter(name='cut_description')
 def cut_description(description):
+	if len(description) < 300:
+		return description
+	
 	pt1 = description[:300]
 	pt2 = description[300:]
 	s=''
