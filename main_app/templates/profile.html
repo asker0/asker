@@ -109,43 +109,10 @@
 		<link rel="stylesheet" href="/static/css/profile.css">
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
-		    <a href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
+	{% include 'includes/nav.html' %}
+	{% block content %}
+    {% endblock %}
 
-			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					{% if user.is_authenticated %}
-    					{% if user.username != user_p.user.username %}
-    					<li class="nav-item">
-    					    <a class="nav-link" href="/user/{{user.username}}"><i class="far fa-user"></i> perfil</a>
-    					</li>
-    					{% endif %}
-					<li class="nav-item">
-						<a class="nav-link" href="/ask"><i class="fas fa-question"></i> perguntar</a>
-					</li>
-					<li class="nav-item">
-					    <a class="nav-link" href="/notifications"><i class="far fa-bell"></i> notificações</a>
-					</li>
-					<li class="nav-item">
-					    <a class="nav-link" href="/rank"><i class="fas fa-trophy"></i> rank</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/logout"><i class="fas fa-external-link-alt"></i> sair</a>
-					</li>
-					{% else %}
-					<li class="nav-item">
-						<a class="nav-link" href="/signin">Entrar</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/signup">Criar uma conta</a>
-					</li>
-					{% endif %}
-				</ul>
-			</div>
-		</nav>
 		<center id="center1">
 		    <img src="{{user_p.avatar.url}}" alt="{{user_p.user.username}}"> <span>{{ user_p.user.username }}</span>
 			{% if user_p.user.username == "Erick" %}<p id="bio">{{ user_p.bio|safe }}</p>{% else %}
@@ -178,11 +145,11 @@
 		<center id="block-div">
 			<button id="block-button" class="btn btn-outline-info" onclick="block_user()">{{ user.username|blocked:user_p.user.username }}</button>
 		</center>
-		
+
 		<script>
 			function block_user() {
 				button = document.getElementById('block-button')
-				
+
 				$.ajax({
 					type: 'get',
 					url: '/user/{{ user_p.user.username }}/block',
@@ -195,7 +162,7 @@
 						} else
 							button.innerHTML = 'Bloqueado'
 					}
-				})	
+				})
 			}
 		</script>
 		{% endif %}

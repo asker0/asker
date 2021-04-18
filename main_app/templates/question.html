@@ -182,47 +182,14 @@ function delete_comment(obj) {
 	</head>
 	<body>
 
-		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
-		    <a href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-
-			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					{% if user.is_authenticated %}
-					<li class="nav-item">
-						<a class="nav-link" href="/user/{{user.username}}"><i class="far fa-user"></i> perfil</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/ask"><i class="fas fa-question"></i> perguntar</a>
-					</li>
-					<li class="nav-item">
-					    <a class="nav-link" href="/notifications"><i class="far fa-bell"></i> notificações</a>
-					</li>
-					<li class="nav-item">
-					    <a class="nav-link" href="/rank"><i class="fas fa-trophy"></i> rank</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/logout"><i class="fas fa-external-link-alt"></i> sair</a>
-					</li>
-					{% else %}
-					<li class="nav-item">
-						<a class="nav-link" href="/signin?redirect=/question/{{question.id}}">Entrar</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/signup?redirect=/question/{{question.id}}">Criar uma conta</a>
-					</li>
-					{% endif %}
-				</ul>
-			</div>
-		</nav>
+	{% include 'includes/nav.html' %}
+	{% block content %}
+    {% endblock %}
 
 		<section id="responses">
 			{% if user.username == "Erick" %}
 			<script>
 				function delete_bostagem() {
-
 					$.ajax({
 						type: 'get',
 						url: 'apagar/pergunta/moderador/apagar/{{ question.id }}',
