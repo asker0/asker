@@ -125,7 +125,9 @@ def question(request, question_id):
 	return render(request, 'question.html', context)
 
 
-def like(request, answer_id):
+def like(request):
+
+    answer_id = request.GET.get('answer_id')
 
     r = Response.objects.get(id=answer_id)
     
@@ -158,8 +160,8 @@ def like(request, answer_id):
     return HttpResponse('OK')
 
 
-def delete_answer(request, answer_id):
-    r = Response.objects.get(id=answer_id)
+def delete_response(request):
+    r = Response.objects.get(id=request.GET.get('response_id'))
     q = r.question
     q.total_responses -= 1
     q.save()
@@ -347,90 +349,27 @@ def deleteQuestion(request):
 
 
 def comments(request):
-	response_id = request.POST.get('response_id')
-	page = request.POST.get('page')
-
+	response = Response.objects.get(id=request.GET.get('id'))
+	page = int(request.GET.get('page'))
+	p = Paginator(Comment.objects.filter(response=response), 3)
+	
 	json = {}
-
-	# testa se existem ou não comentários para está pergunta
-	if not Comment.objects.filter(response=Response.objects.get(id=response_id)).exists():
-		json['has_comments'] = 'false'
-		return JsonResponse(json)
-
-	json['has_coments'] = 'true'
-	'''
-	json['comments'] = {
-		'foo': {'username': 'teste', 'image_url': '/media/avatars/7EQMG6PQJYunnamed%20(1).jpg', 'comment': 'eu não concordo com você porque papapa'},
-
-
-
-
-	}'''
-
-	p = Paginator(Comment.objects.filter(response=Response.objects.get(id=response_id)).order_by('pub_date'), 3)
-
-	comments = p.page(page).object_list
-
-	id_list = []
-	for c in comments.all():
-		id_list.append(c.id)
-
-	json['total_comments'] = len(comments)
-
-	if len(Comment.objects.filter(id__in=id_list)) == 1:
-		json['comments'] = {
-			1: {
-				'username': Comment.objects.filter(id__in=id_list).first().creator.username,
-				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).first().creator).avatar.url,
-				'comment': Comment.objects.filter(id__in=id_list).first().text,
-				'id': Comment.objects.filter(id__in=id_list).first().id,
-			}
+	json['comments'] = {}
+	
+	count = 1
+	for comment in p.page(page):
+		json['comments'][count] = {
+			'username': comment.creator.username,
+			'avatar': UserProfile.objects.get(user=comment.creator).avatar.url,
+			'text': comment.text,
 		}
-	elif len(Comment.objects.filter(id__in=id_list)) == 2:
-		json['comments'] = {
-			1: {
-				'username': Comment.objects.filter(id__in=id_list).first().creator.username,
-				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).first().creator).avatar.url,
-				'comment': Comment.objects.filter(id__in=id_list).first().text,
-				'id': Comment.objects.filter(id__in=id_list).first().id,
-			},
-
-			2: {
-				'username': Comment.objects.filter(id__in=id_list).last().creator.username,
-				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).last().creator).avatar.url,
-				'comment': Comment.objects.filter(id__in=id_list).last().text,
-				'id': Comment.objects.filter(id__in=id_list).last().id,
-			},
-		}
-	else:
-		json['comments'] = {
-			1: {
-				'username': Comment.objects.filter(id__in=id_list).first().creator.username,
-				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).first().creator).avatar.url,
-				'comment': Comment.objects.filter(id__in=id_list).first().text,
-				'id': Comment.objects.filter(id__in=id_list).first().id,
-			},
-
-			2: {
-				'username': Comment.objects.filter(id__in=id_list)[1].creator.username,
-				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list)[1].creator).avatar.url,
-				'comment': Comment.objects.filter(id__in=id_list)[1].text,
-				'id': Comment.objects.filter(id__in=id_list)[1].id,
-			},
-			3: {
-				'username': Comment.objects.filter(id__in=id_list).last().creator.username,
-				'image_url': UserProfile.objects.get(user=Comment.objects.filter(id__in=id_list).last().creator).avatar.url,
-				'comment': Comment.objects.filter(id__in=id_list).last().text,
-				'id': Comment.objects.filter(id__in=id_list).last().id,
-			},
-		}
-
-	# calcula se tem outra página de comentários desta resposta:
+		count += 1
+	
 	if p.page(page).has_next():
-		json['has_next'] = 'true'
+		json['has_next'] = True
 	else:
-		json['has_next'] = 'false'
-
+		json['has_next'] = False
+	
 	return JsonResponse(json)
 
 
@@ -439,7 +378,7 @@ def comment(request):
 		return HttpResponse('ERROR.')
 
 	response_id = request.POST.get('response_id')
-	text = request.POST.get('comment')
+	text = request.POST.get('text')
 
 	r = Response.objects.get(id=response_id)
 
@@ -466,7 +405,9 @@ def rank(request):
 
 def edit_response(request):
 
-	r = Response.objects.get(creator=UserProfile.objects.get(user=request.user), id=request.POST.get('response_id'))
+	id=request.POST.get('response_id')
+
+	r = Response.objects.get(creator=UserProfile.objects.get(user=request.user), id=id)
 	r.text = request.POST.get('response')
 	r.save()
 

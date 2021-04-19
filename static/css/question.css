@@ -1,46 +1,30 @@
-#response-form {
-	margin: 6px;
+.heart-comment {
+	display: inline;
 }
 
-#response-form input {
-	margin: 3px;
+.icon {
+	cursor: pointer;
 }
 
-.comment_form input {
-	margin: 3px;
+main {
+	width: 50%;
+	margin: auto;
 }
 
 .card {
-	margin-bottom: 2px;
-}
-
-section {
-	width: 50%;
-	margin: 6px auto auto;
+	margin: 1%;
 }
 
 #options-dropdown {
 	float: right;
 }
 
-.fa-flag {
-	float: right;
-	font-size: 120%;
-}
-
-.fa-flag:hover {
-	font-weight: 800;
-	font-size: 140%;
-	transition-duration: 0.2s;
+#edit-response-form {
+	display: none;
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
-	section {
-		width: 95%;
-	}
-
-	.fa-flag:hover {
-		font-weight: 400;
-		font-size: 120%;
+	main {
+		width: 98%;
 	}
 }
