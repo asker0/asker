@@ -93,8 +93,14 @@ $(function() {
 						<img width="70%" src="{{ question.image.url }}">
 					</center>
 					{% endif %}
-
+					{% if question.creator.user.username == user.username %}
+					{% else %}
 					<i class="far fa-flag" id="question-popover" data-toggle="popover" data-content="<p>Para denunciar esta pergunta, use o botão abaixo. Use apenas quando necessário.</p><button class='btn btn-outline-danger' onclick='report_question({{ question.id }}, this)'>Denunciar</button>"></i>
+					{% endif %}
+					
+					{% if question.creator.user.username == user.username %}
+					<button onclick="delete_question({{ question.id }})" class="btn btn-outline-danger">Apagar</button>
+					{% endif %}
 				</div>
 			</div>
 
@@ -161,4 +167,20 @@ $(function() {
 		</main>
 		<script src="/static/js/question.js"></script>
 	</body>
+	
+	<script>
+function delete_question(id) {
+	$.ajax({
+		url: '/delete_question',
+		type: 'post',
+		data: {
+			csrfmiddlewaretoken: '{{csrf_token}}',
+			question_id: id,
+		},
+		complete: function() {
+			alert('Pergunta excluída.')
+		}
+	})
+}
+	</script>
 </html>
