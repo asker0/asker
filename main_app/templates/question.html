@@ -4,34 +4,34 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
+
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 		<link rel="stylesheet" href="/static/css/question.css">
-		
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 		<script src="https://kit.fontawesome.com/1f965a8b94.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-		
+
 		<title>{{ question.text }} | Asker</title>
-		
+
 		<script>
 $(function() {
 	$('#response-form').ajaxForm(function(answer_id) {
 		responses = document.getElementById('responses')
-		
+
 		new_user_response = document.getElementById('response-form').response.value
-		
+
 		//responses.innerHTML += '<div class="card"><a href="/user/{{ user.username }}"><img src="{{ user_p.avatar.url }}"><span>{{ user.username }}</span></a><div class="card-body"><p>'+new_user_response+'</p></p>           <div class="heart-comment" id="like-counter-'+answer_id+'" onclick="like(this, '+answer_id+')"><img width="20px" src="/static/images/white-heart.png" class="icon"> <span>0</span></div>&nbsp;&nbsp;        <div class="heart-comment"><img width="20px" src="/static/images/comments.png" class="icon" onclick="show_comments(this.parentElement, '+answer_id+', this.parentElement.getElementsByTagName(`img`)[0], `{{ csrf_token }}`)"> <span class="comment">0</span><div class="comments" id="1"></div></div>          <div class="dropdown" id="options-dropdown"><button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opções</button>   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><button class="dropdown-item" onclick="delete_response('+answer_id+'); this.parentElement.parentElement.parentElement.parentElement.remove()">Apagar</button><button class="dropdown-item" onclick="document.getElementById(`edit-response-form`).style.display=`block`">Editar</button></div>   </div>                    </div></div>'
 		responses.innerHTML += '<div class="card"><a style="text-decoration: none; color: black;" href="/user/{{ user.username }}"><img src="{{ user_p.avatar.url }}" width="45px" alt="{{ user.username }}"> <span>{{ user.username }}</span></a><div class="card-body"><p>'+new_user_response+'</p></p>           <div class="heart-comment" id="like-counter-'+answer_id+'" onclick="like(this, '+answer_id+')"><img width="20px" src="/static/images/white-heart.png" class="icon"> <span>0</span></div>&nbsp;&nbsp;                   <div class="dropdown" id="options-dropdown"><button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opções</button>   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><button class="dropdown-item" onclick="delete_response('+answer_id+'); this.parentElement.parentElement.parentElement.parentElement.remove()">Apagar</button><button class="dropdown-item" onclick="document.getElementById(`edit-response-form`).style.display=`block`">Editar</button></div>   </div>                  <div class="heart-comment">&nbsp;<img width="20px" src="/static/images/comments.png" class="icon" onclick="show_comments(this.parentElement, '+answer_id+', this.parentElement.getElementsByTagName(`img`)[0], `{{ csrf_token }}`, `{{ user.username }}`, {{ question.id }})"> <span class="comment">0</span><div class="comments" id="1"></div></div>                              </div></div>'
-		
+
 		document.getElementById('response-form').remove()
-		
+
 		responses.innerHTML += '<form id="edit-response-form" class="form-inline" method="post" action="/edit-response" onsubmit="document.getElementById(`response-'+answer_id+'`).innerHTML = this.response.value.replace(`\n`, `<br>`)">{% csrf_token %}<input type="hidden" name="response_id" value="'+answer_id+'"><textarea name="response" class="form-control">'+new_user_response+'</textarea><input class="btn btn-outline-primary" type="submit" value="Enviar"></form>'
 	});
-	
+
 	$('#edit-response-form').ajaxForm(function(answer_id) {
 		document.getElementById('edit-response-form').style.display = 'none'
 	});
@@ -39,7 +39,7 @@ $(function() {
 		</script>
 	</head>
 	<body>
-		
+
 		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
 		    <a id="logo" href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,14 +75,14 @@ $(function() {
 				</ul>
 			</div>
 		</nav>
-		
+
 		<main>
 			<div class="card">
-				<a>
+				<a style="text-decoration: none; color: black;" href="/user/{{ question.creator.user.username }}">
 					<img width="45px" src="{{ question.creator.avatar.url }}" alt="{{ question.creator.user.username }}"> <span>{{ question.creator.user.username }}</span>
 				</a>
 				<div class="card-body">
-					<p>{{ question.text }}</p>
+					<h3>{{ question.text }}</h3>
 					{% if question.description != '' %}
 					<hr>
 					<p>{{ question.description }}</p>
@@ -93,26 +93,26 @@ $(function() {
 						<img width="70%" src="{{ question.image.url }}">
 					</center>
 					{% endif %}
-					
+
 					<i class="far fa-flag" id="question-popover" data-toggle="popover" data-content="<p>Para denunciar esta pergunta, use o botão abaixo. Use apenas quando necessário.</p><button class='btn btn-outline-danger' onclick='report_question({{ question.id }}, this)'>Denunciar</button>"></i>
 				</div>
 			</div>
-			
+
 			<section id="responses">
 				{% for response in responses %}
 				<div class="card">
-					<a>
+					<a style="text-decoration: none; color: black;" href="/user/{{ response.creator.user.username }}">
 						<img width="45px" src="{{ response.creator.avatar.url }}" alt="{{ response.creator.user.username }}"> <span>{{ response.creator.user.username }}</span>
 					</a>
 					<div class="card-body">
 						<p id="response-{{ response.id }}">{{ response.text|linebreaksbr }}</p>
-						
+
 						<div class="heart-comment" id="like-counter-{{ response.id }}" onclick="like(this, {{ response.id }})">
 							<img width="20px" src="/static/images/{{ response.id|like_or_not:user.username }}" class="icon">
 							<span>{{ response.total_likes }}</span>
 						</div>
 						&nbsp;&nbsp;
-						
+
 						{% if response.creator.user.username == user.username %}
 						<div class="dropdown" id="options-dropdown">
 						  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -124,11 +124,11 @@ $(function() {
 						  </div>
 						</div>
 						{% endif %}
-						
+
 						<div class="heart-comment">
 							<img width="20px" src="/static/images/comments.png" class="icon" onclick="show_comments(this.parentElement, {{ response.id }}, this.parentElement.getElementsByTagName('img')[0], '{{ csrf_token }}', `{{ user.username }}`, {{ question.id }})">
 							<span class="comment">{{ response.id|total_comments }}</span>
-							
+
 							<!-- Comentários -->
 							<div class="comments" id="1"> <!-- O ID deste elemento é usado para paginação. -->
 							</div>

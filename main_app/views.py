@@ -130,7 +130,7 @@ def like(request):
     answer_id = request.GET.get('answer_id')
 
     r = Response.objects.get(id=answer_id)
-    
+
     if r.creator.blocked_users.filter(username=request.user.username).exists():
         return HttpResponse('OK')
 
@@ -303,7 +303,7 @@ def ask(request):
 			file_name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
 			file_name += str(f)
 			# em produção: with open('django_project/media/questions/' + file_name, 'wb+') as destination:
-			with open('/home/erick/Documentos/asker/media/questions/' + file_name, 'wb+') as destination:
+			with open('django_project/media/questions/' + file_name, 'wb+') as destination:
 				for chunk in f.chunks():
 					destination.write(chunk)
 			q.image = 'questions/' + file_name
@@ -352,10 +352,10 @@ def comments(request):
 	response = Response.objects.get(id=request.GET.get('id'))
 	page = int(request.GET.get('page'))
 	p = Paginator(Comment.objects.filter(response=response), 3)
-	
+
 	json = {}
 	json['comments'] = {}
-	
+
 	count = 1
 	for comment in p.page(page):
 		json['comments'][count] = {
@@ -365,12 +365,12 @@ def comments(request):
 			'comment_id': comment.id,
 		}
 		count += 1
-	
+
 	if p.page(page).has_next():
 		json['has_next'] = True
 	else:
 		json['has_next'] = False
-	
+
 	return JsonResponse(json)
 
 
@@ -474,10 +474,10 @@ def delete_question(request, question_id):
 
 def delete_comment(request):
 	c = Comment.objects.get(id=request.GET.get('comment_id'))
-	
+
 	if request.user != c.creator:
 		return HttpResponse('Proibido.')
-	
+
 	c.delete()
 	return HttpResponse('OK')
 
