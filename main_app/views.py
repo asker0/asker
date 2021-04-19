@@ -362,6 +362,7 @@ def comments(request):
 			'username': comment.creator.username,
 			'avatar': UserProfile.objects.get(user=comment.creator).avatar.url,
 			'text': comment.text,
+			'comment_id': comment.id,
 		}
 		count += 1
 	
@@ -472,7 +473,11 @@ def delete_question(request, question_id):
 
 
 def delete_comment(request):
-	c = Comment.objects.get(id=request.POST.get('comment_id'))
+	c = Comment.objects.get(id=request.GET.get('comment_id'))
+	
+	if request.user != c.creator:
+		return HttpResponse('Proibido.')
+	
 	c.delete()
 	return HttpResponse('OK')
 

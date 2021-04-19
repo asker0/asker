@@ -28,7 +28,7 @@ function like(likeElement, response_id) {
 	})
 }
 
-function show_comments(commentsDiv, response_id, commentsIcon, csrf_token) {
+function show_comments(commentsDiv, response_id, commentsIcon, csrf_token, user_logged, question_id) {
 	
 	commentsSection = commentsDiv.getElementsByClassName('comments')[0]
 	
@@ -49,7 +49,11 @@ function show_comments(commentsDiv, response_id, commentsIcon, csrf_token) {
 		complete: function(data) {
 			data = JSON.parse(data.responseText)
 			$.each(data.comments, function(index, value) {
-				commentsSection.innerHTML += '<div class="c"><hr><a href="/user/'+value.username+'"><img src="'+value.avatar+'" width="40px"> <span>'+value.username+'</span></a><p>'+value.text+'</p><hr></div>'
+				if(user_logged != value.username) {
+					commentsSection.innerHTML += '<div class="c"><hr><a href="/user/'+value.username+'"><img src="'+value.avatar+'" width="40px"> <span>'+value.username+'</span></a><p>'+value.text+'</p><hr></div>'
+				} else {
+					commentsSection.innerHTML += '<div class="c"><hr><a href="/user/'+value.username+'"><img src="'+value.avatar+'" width="40px"> <span>'+value.username+'</span></a> <img onclick="delete_comment('+value.comment_id+'); this.parentElement.remove()" style="float: right; cursor: pointer;" width="20px" src="/static/images/trash.png"> <p>'+value.text+'</p><hr></div>'
+				}
 			})
 			
 			if(data.has_next) {
@@ -60,7 +64,7 @@ function show_comments(commentsDiv, response_id, commentsIcon, csrf_token) {
 			}
 			
 			/* Adiciona o formulário para comentar */
-			commentsSection.innerHTML += '<form class="form-inline" method="post" action="/comment"><input type="hidden" name="csrfmiddlewaretoken" value="'+csrf_token+'"><input type="hidden" name="response_id" value="'+response_id+'"><textarea maxlength="400" class="form-control" name="text" placeholder="Escreva seu comentário"></textarea><input class="btn btn-outline-primary" type="submit" value="Pronto"></form>'
+			commentsSection.innerHTML += '<form class="form-inline" method="post" action="/comment"><input type="hidden" name="csrfmiddlewaretoken" value="'+csrf_token+'"><input type="hidden" name="response_id" value="'+response_id+'">  <input type="hidden" name="question_id" value="'+question_id+'">  <textarea maxlength="400" class="form-control" name="text" placeholder="Escreva seu comentário"></textarea><input class="btn btn-outline-primary" type="submit" value="Pronto"></form>'
 		}
 	})
 	
@@ -92,6 +96,19 @@ function delete_response(response_id) {
 		},
 		complete: function() {
 			alert('Resposta apagada.')
+		}
+	})
+}
+
+function delete_comment(comment_id, csrf_token) {
+	$.ajax({
+		url: '/delete_comment',
+		type: 'get',
+		data: {
+			comment_id: comment_id,
+		},
+		complete: function() {
+			alert('Comentário deletado.')
 		}
 	})
 }
