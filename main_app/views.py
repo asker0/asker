@@ -302,8 +302,8 @@ def ask(request):
 
 			file_name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
 			file_name += str(f)
-
-			with open('django_project/media/questions/' + file_name, 'wb+') as destination:
+			# em produção: with open('django_project/media/questions/' + file_name, 'wb+') as destination:
+			with open('/home/erick/Documentos/asker/media/questions/' + file_name, 'wb+') as destination:
 				for chunk in f.chunks():
 					destination.write(chunk)
 			q.image = 'questions/' + file_name
