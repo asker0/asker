@@ -112,3 +112,32 @@ function delete_comment(comment_id, csrf_token) {
 		}
 	})
 }
+
+function report_question(question_id, obj) {
+	// quando a denÃºncia tiver sido feita, a funÃ§Ã£o abaixo Ã© executada:
+	function ok() {
+		obj.parentElement.innerHTML = '<p>Pergunta denunciada com sucesso <i class="far fa-check-circle"></i></p>'
+		obj.remove()
+	}
+	
+	$.ajax({
+		type: 'get',
+		url: '/report',
+		data: {
+			type: 'question',
+			id: question_id,
+		},
+		
+		complete: function () {
+			ok()
+		}
+	})
+}
+
+$(function () {
+	$('[data-toggle="popover"]').popover({
+		container: 'body',
+		html: true,
+		title: 'Denunciar abuso',
+	})
+})

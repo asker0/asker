@@ -13,6 +13,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 		<script src="https://kit.fontawesome.com/1f965a8b94.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 		
 		<title>{{ question.text }} | Asker</title>
 		
@@ -93,7 +94,7 @@ $(function() {
 					</center>
 					{% endif %}
 					
-					<i class="far fa-flag" id="question-popover" data-toggle="popover" data-content="<p>Para denunciar esta pergunta, use o botão abaixo. Use apenas quando necessário.</p><button class='btn btn-outline-danger' onclick='report_question(8307, this)'>Denunciar</button>"></i>
+					<i class="far fa-flag" id="question-popover" data-toggle="popover" data-content="<p>Para denunciar esta pergunta, use o botão abaixo. Use apenas quando necessário.</p><button class='btn btn-outline-danger' onclick='report_question({{ question.id }}, this)'>Denunciar</button>"></i>
 				</div>
 			</div>
 			
