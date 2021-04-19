@@ -50,9 +50,9 @@ function show_comments(commentsDiv, response_id, commentsIcon, csrf_token, user_
 			data = JSON.parse(data.responseText)
 			$.each(data.comments, function(index, value) {
 				if(user_logged != value.username) {
-					commentsSection.innerHTML += '<div class="c"><hr><a href="/user/'+value.username+'"><img src="'+value.avatar+'" width="40px"> <span>'+value.username+'</span></a><p>'+value.text+'</p><hr></div>'
+					commentsSection.innerHTML += '<div class="c"><hr><a style="text-decoration: none; color: black;" href="/user/'+value.username+'"><img src="'+value.avatar+'" width="40px"> <span>'+value.username+'</span></a><p>'+value.text+'</p><hr></div>'
 				} else {
-					commentsSection.innerHTML += '<div class="c"><hr><a href="/user/'+value.username+'"><img src="'+value.avatar+'" width="40px"> <span>'+value.username+'</span></a> <img onclick="delete_comment('+value.comment_id+'); this.parentElement.remove()" style="float: right; cursor: pointer;" width="20px" src="/static/images/trash.png"> <p>'+value.text+'</p><hr></div>'
+					commentsSection.innerHTML += '<div class="c"><hr><a style="text-decoration: none; color: black;" href="/user/'+value.username+'"><img src="'+value.avatar+'" width="40px"> <span>'+value.username+'</span></a> <img onclick="delete_comment('+value.comment_id+'); this.parentElement.remove()" style="float: right; cursor: pointer;" width="20px" src="/static/images/trash.png"> <p>'+value.text+'</p><hr></div>'
 				}
 			})
 			
