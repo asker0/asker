@@ -125,7 +125,7 @@ def question(request, question_id):
 		context['answered'] = Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=q).exists()
 
 	# questões recomendadas:
-	qs = Question.objects.all().order_by('-pub_date')[10:20]
+	qs = Question.objects.all().order_by('-pub_date')[20:30]
 	qs_list = list(qs)
 	shuffle(qs_list)
 	

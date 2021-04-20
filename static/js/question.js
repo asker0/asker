@@ -60,7 +60,7 @@ function show_comments(commentsDiv, response_id, commentsIcon, csrf_token, user_
 				commentsSection.id = Number(commentsSection.id) + 1
 				
 				/* Adiciona elemento para clicar e carregar mais comentários */
-				commentsSection.innerHTML += `<p class="load-more" onclick="show_comments(this.parentElement.parentElement, ${response_id}, this.parentElement.getElementsByTagName('img')[0], '${csrf_token}')">Carregar mais</p>`
+				commentsSection.innerHTML += `<p class="load-more" onclick="show_comments(this.parentElement.parentElement, ${response_id}, this.parentElement.getElementsByTagName('img')[0], '${csrf_token}', '`+user_logged+`', `+question_id+`)">Carregar mais</p>`
 			}
 			
 			/* Adiciona o formulário para comentar */
