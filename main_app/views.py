@@ -82,7 +82,7 @@ def index(request):
 		context['user_p'] = UserProfile.objects.get(user=request.user)
 
 		if not UserProfile.objects.get(user=request.user).active:
-			context['account_verification_alert'] = ''
+			context['account_verification_alert'] = '<div class="alert alert-info"><p>Confirme seu email abrindo o link enviado para ele.<br>Este é o email usado na tela de cadastro: {}</p><p>Caso não encontre o email, verifique na pasta de spam.</p></div>'.format(request.user.email)
 
 	if request.GET.get('new_user', 'false') == 'true':
 		context['account_verification_alert'] = '''
@@ -370,7 +370,7 @@ def ask(request):
 
 		return redirect('/question/' + str(q.id))
 
-	return render(request, 'ask.html')
+	return render(request, 'ask.html', {'user_p': UserProfile.objects.get(user=request.user)})
 
 
 def logout(request):
