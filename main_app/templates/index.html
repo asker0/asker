@@ -107,7 +107,7 @@
 											alert('Você está impossibilidado de responder as perguntas deste usuário.')
 											return false
 										}
-										
+
 										m = document.getElementById("modal-{{ question.id }}")
 										m.style.display = "block"
 										f = document.getElementById("form-{{ question.id }}")
@@ -122,7 +122,7 @@
 								</script>
 								{% endif %}
 								{% else %}
-								<p>Ative sua conta para responder está pergunta.</p>
+								<p>Confirme seu email (verifique sua caixa de entrada do email: {{ user.email }}) para responder está pergunta.</p>
 								{% endif %}
 							{% else %}
 							<p><a href="/signin?redirect=/question/{{ question.id }}">Faça login</a> ou <a href="/signup?redirect=/question/{{ question.id }}">crie uma conta</a> para responder está pergunta.</p>
