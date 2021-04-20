@@ -168,13 +168,14 @@ $(function() {
 		</main>
 		<script src="/static/js/question.js"></script>
 		<div class="recommended">
+			<hr>
 			<h2>— Responda Também —</h2>
 			{% for question in recommended_questions %}
 			<div class="r-question">
 				<hr>
-					<a href="/question/{{ question.id }}">{{ question.text }}</a>
-					&middot;
-					<span>Perguntada {{ question.pub_date|naturaltime }} por <a href="/user/{{ question.creator.user.username }}">{{ question.creator.user.username }}</a></span>
+					<a href="/question/{{ question.id }}"><big>{{ question.text }}</big></a>
+					<br>
+					<span class="text-muted">perguntada {{ question.pub_date|naturaltime }} por <a href="/user/{{ question.creator.user.username }}">{{ question.creator.user.username }}</a></span>
 				<hr>
 			</div>
 			{% endfor %}
