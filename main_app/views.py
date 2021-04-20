@@ -65,7 +65,7 @@ def index(request):
 
 	# pega as perguntas mais populares (com mais likes nas respostas) da mais nova para a mais velha:
 	q = Question.objects.all().order_by('-pub_date')
-	q = q[:500]
+	q = q[:250]
 
 	q = sorted(q, key=lambda o: o.total_likes, reverse=True)
 
@@ -125,11 +125,11 @@ def question(request, question_id):
 		context['answered'] = Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=q).exists()
 
 	# questões recomendadas:
-	qs = Question.objects.all().order_by('-pub_date')[20:30]
+	qs = Question.objects.all().order_by('-pub_date')[:50]
 	qs_list = list(qs)
 	shuffle(qs_list)
 	
-	context['recommended_questions'] = qs_list
+	context['recommended_questions'] = qs_list[:20]
 
 	return render(request, 'question.html', context)
 
