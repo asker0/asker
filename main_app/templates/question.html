@@ -153,6 +153,7 @@ $(function() {
 				{% endfor %}
 			</section>
 			{% if user.is_authenticated %}
+			{% if user_p.active %}
 			{% if user.username|answered:question.id == False %}
 			{% if question.creator.user.username|blocked:user.username == 'Bloquear' %}
 			<form id="response-form" method="post">
@@ -161,6 +162,9 @@ $(function() {
 				<input class="btn btn-primary" type="submit" value="Enviar">
 			</form>
 			{% endif %}
+			{% endif %}
+			{% else %}
+			<p>Confirme seu email para responder está pergunta.</p>
 			{% endif %}
 			{% else %}
 			<p>Faça <a href="/signin?redirect=/question/{{ question.id }}">login</a> ou <a href="/signup?redirect=/question/{{ question.id }}">crie uma conta</a> para responder esta pergunta.</p>
