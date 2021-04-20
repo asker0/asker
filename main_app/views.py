@@ -12,6 +12,8 @@ from main_app.forms import UploadFileForm
 
 from bs4 import BeautifulSoup as bs
 
+from random import shuffle
+
 import random, string
 
 def get_client_ip(request):
@@ -121,6 +123,13 @@ def question(request, question_id):
 	if not request.user.is_anonymous:
 		context['user_p'] = UserProfile.objects.get(user=request.user)
 		context['answered'] = Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=q).exists()
+
+	# questões recomendadas:
+	qs = Question.objects.all().order_by('-pub_date')[10:20]
+	qs_list = list(qs)
+	shuffle(qs_list)
+	
+	context['recommended_questions'] = qs_list
 
 	return render(request, 'question.html', context)
 

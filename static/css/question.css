@@ -23,8 +23,26 @@ main {
 	display: none;
 }
 
+.recommended {
+	width: 50%;
+	margin: auto;
+}
+
+.recommended h2 {
+	text-align: center;
+}
+
 @media (min-width: 320px) and (max-width: 480px) {
 	main {
 		width: 98%;
+	}
+	
+	.recommended {
+		width: 100%;
+	}
+	
+	.r-question {
+		width: 95%;
+		margin: auto;
 	}
 }

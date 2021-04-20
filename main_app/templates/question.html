@@ -1,4 +1,5 @@
 {% load main_app_extras %}
+{% load humanize %}
 <!doctype html>
 <html>
 	<head>
@@ -166,6 +167,18 @@ $(function() {
 			{% endif %}
 		</main>
 		<script src="/static/js/question.js"></script>
+		<div class="recommended">
+			<h2>— Responda Também —</h2>
+			{% for question in recommended_questions %}
+			<div class="r-question">
+				<hr>
+					<a href="/question/{{ question.id }}">{{ question.text }}</a>
+					&middot;
+					<span>Perguntada {{ question.pub_date|naturaltime }} por <a href="/user/{{ question.creator.user.username }}">{{ question.creator.user.username }}</a></span>
+				<hr>
+			</div>
+			{% endfor %}
+		</div>
 	</body>
 
 	<script>
