@@ -25,8 +25,6 @@
 		<script data-ad-client="ca-pub-7822970257108562" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 	</head>
 	<body>
-
-
 		<nav class="navbar navbar-expand-sm   navbar-light bg-light">
 		    <a id="logo" href="/" class="navbar-brand"><img src="/static/images/asker.png" height="40px" alt="Asker"></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +60,7 @@
 				</ul>
 			</div>
 		</nav>
-
-
+{{ account_verification_alert|safe }}
 		<ul class="nav nav-tabs" id="tabs">
 			<li class="nav-item">
 				<a class="nav-link" id="popular">Popular</a>
@@ -90,6 +87,7 @@
 								</p>
 								<small>{{ question.id|total_answers }} respostas <b>&middot;</b> <span class="text-muted">{{ question.pub_date|naturaltime }}</span></small>
 							{% if user.is_authenticated %}
+								{% if user_p.active %}
 								{% if user.username|answered:question.id %}
 								<span style="display: block"><b>Sua resposta:</b></span> {{ user.username|answer:question.id|linebreaksbr }}
 								{% else %}
@@ -122,6 +120,9 @@
 										return false
 									})
 								</script>
+								{% endif %}
+								{% else %}
+								<p>Ative sua conta para responder está pergunta.</p>
 								{% endif %}
 							{% else %}
 							<p><a href="/signin?redirect=/question/{{ question.id }}">Faça login</a> ou <a href="/signup?redirect=/question/{{ question.id }}">crie uma conta</a> para responder está pergunta.</p>

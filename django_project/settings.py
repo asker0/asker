@@ -25,7 +25,7 @@ SECRET_KEY = '2v9x$8+=ea=acan10k9ra(5bjmg@iz#7ezqqgbv2ca9a5h-hl9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['asker.fun']
+ALLOWED_HOSTS = ['asker.fun', 'localhost']
 
 
 # Application definition
@@ -132,3 +132,11 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_URL = '/static/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'EMAIL@DOMAIN.COM'
+EMAIL_HOST_PASSWORD = 'EMAIL-PASSWORD'
+EMAIL_USE_SSL = False

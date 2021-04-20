@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator
+from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib.auth.models import User
+from django_project.settings import EMAIL_HOST_USER
 
 from django.contrib.humanize.templatetags.humanize import naturalday
 
@@ -13,6 +15,7 @@ from main_app.forms import UploadFileForm
 from bs4 import BeautifulSoup as bs
 
 from random import shuffle
+from hashlib import sha256
 
 import random, string
 
@@ -74,6 +77,50 @@ def index(request):
 	questions = p.page(page).object_list
 
 	context['popular_questions'] = questions
+	
+	if request.user.is_authenticated:
+		context['user_p'] = UserProfile.objects.get(user=request.user)
+		
+		if not UserProfile.objects.get(user=request.user).active:
+			context['account_verification_alert'] = '''
+		<style>
+			/* Estilos para a div abaixo. */
+			#alert-email-activation {
+				width: 50%;
+				margin: auto;
+			}
+			
+			@media (min-width: 320px) and (max-width: 480px) {
+				#alert-email-activation {
+					width: 98%;
+				}
+			}
+		</style>
+		<div id="alert-email-activation" class="alert alert-info" role="alert">
+			<p>Lhe enviamos um email com o link de confirmação. Por favor, confirme para começar a fazer e responder perguntas.</p>
+			<a href="#">Enviar novamente</a>
+		</div>
+			'''
+	
+	if request.GET.get('new_user', 'false') == 'true':
+		context['account_verification_alert'] = '''
+		<style>
+			/* Estilos para a div abaixo. */
+			#alert-email-activation {
+				width: 50%;
+				margin: auto;
+			}
+			
+			@media (min-width: 320px) and (max-width: 480px) {
+				#alert-email-activation {
+					width: 98%;
+				}
+			}
+		</style>
+		<div id="alert-email-activation" class="alert alert-success" role="alert">
+			<p>Conta verificada com sucesso!</p>
+		</div>
+		'''
 
 	return render(request, 'index.html', context)
 
@@ -231,9 +278,26 @@ def signup(request):
 		u = User.objects.create_user(username=username, email=email, password=password)
 		login(request, u)
 
+		''' Geração do código de confirmação de conta: '''
+		s = 'abcdefghijklmnopqrstuvwxyz123456789'
+		RANDOM_CODE = ''.join(random.sample(s, len(s)))
+
 		new_user_profile = UserProfile.objects.create(user=u)
 		new_user_profile.ip = get_client_ip(request)
+		new_user_profile.active = False
+		new_user_profile.verification_code = RANDOM_CODE
 		new_user_profile.save()
+		
+		subject = 'Asker.fun: confirmação de conta'
+		message = ''' Olá {}! Obrigado por criar uma conta no Asker.fun.
+ 
+ Para continuar, verifique seu endereço de email usando o link: https://asker.fun/account/verify?user={}&code={}
+ 
+  Obrigado e bem vindo(a)!
+'''.format(username, sha256(bytes(username, 'utf-8')).hexdigest(), RANDOM_CODE)
+		recipient = [email]
+		
+		print(send_mail(subject, message, EMAIL_HOST_USER, recipient, fail_silently=False))
 
 		return redirect(r)
 
@@ -569,3 +633,18 @@ def block(request, username):
 	else:
 		u_p.blocked_users.add(User.objects.get(username=username))
 	return HttpResponse('OK')
+
+
+def account_verification(request):
+	hash = request.GET.get('user') # o valor do parâmetro user é nada mais nada menos do que a soma sha256 do nome de usuário.
+	CODE = request.GET.get('code') # código de verificação.
+	
+	for u in UserProfile.objects.all():
+		if sha256(bytes(u.user.username, 'utf-8')).hexdigest() == hash:
+			if u.verification_code == CODE:
+				u.active = True
+				u.save()
+				return redirect('/?new_user=true')
+			else:
+				return HttpResponse('Erro: código de verificação incorreto.')
+	return HttpResponse('Erro.')
