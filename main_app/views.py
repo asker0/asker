@@ -97,10 +97,10 @@ def index(request):
 			}
 		</style>
 		<div id="alert-email-activation" class="alert alert-info" role="alert">
-			<p>Lhe enviamos um email com o link de confirmação. Por favor, confirme para começar a fazer e responder perguntas.</p>
+			<p>O link de confirmação foi enviado para o seu email: {}. Por favor, confirme seu email para começar a fazer e responder perguntas.</p>
 			<a href="#">Enviar novamente</a>
 		</div>
-			'''
+			'''.format(request.user.email)
 	
 	if request.GET.get('new_user', 'false') == 'true':
 		context['account_verification_alert'] = '''

