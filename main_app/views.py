@@ -77,31 +77,13 @@ def index(request):
 	questions = p.page(page).object_list
 
 	context['popular_questions'] = questions
-	
+
 	if request.user.is_authenticated:
 		context['user_p'] = UserProfile.objects.get(user=request.user)
-		
+
 		if not UserProfile.objects.get(user=request.user).active:
-			context['account_verification_alert'] = '''
-		<style>
-			/* Estilos para a div abaixo. */
-			#alert-email-activation {
-				width: 50%;
-				margin: auto;
-			}
-			
-			@media (min-width: 320px) and (max-width: 480px) {
-				#alert-email-activation {
-					width: 98%;
-				}
-			}
-		</style>
-		<div id="alert-email-activation" class="alert alert-info" role="alert">
-			<p>O link de confirmação foi enviado para o seu email: {}. Por favor, confirme seu email para começar a fazer e responder perguntas.</p>
-			<a href="#">Enviar novamente</a>
-		</div>
-			'''.format(request.user.email)
-	
+			context['account_verification_alert'] = ''
+
 	if request.GET.get('new_user', 'false') == 'true':
 		context['account_verification_alert'] = '''
 		<style>
@@ -110,7 +92,7 @@ def index(request):
 				width: 50%;
 				margin: auto;
 			}
-			
+
 			@media (min-width: 320px) and (max-width: 480px) {
 				#alert-email-activation {
 					width: 98%;
@@ -175,7 +157,7 @@ def question(request, question_id):
 	qs = Question.objects.all().order_by('-pub_date')[:50]
 	qs_list = list(qs)
 	shuffle(qs_list)
-	
+
 	context['recommended_questions'] = qs_list[:20]
 
 	return render(request, 'question.html', context)
@@ -287,16 +269,16 @@ def signup(request):
 		new_user_profile.active = False
 		new_user_profile.verification_code = RANDOM_CODE
 		new_user_profile.save()
-		
+
 		subject = 'Asker.fun: confirmação de conta'
 		message = ''' Olá {}! Obrigado por criar uma conta no Asker.fun.
- 
+
  Para continuar, verifique seu endereço de email usando o link: https://asker.fun/account/verify?user={}&code={}
- 
+
   Obrigado e bem vindo(a)!
 '''.format(username, sha256(bytes(username, 'utf-8')).hexdigest(), RANDOM_CODE)
 		recipient = [email]
-		
+
 		print(send_mail(subject, message, EMAIL_HOST_USER, recipient, fail_silently=False))
 
 		return redirect(r)
@@ -638,7 +620,7 @@ def block(request, username):
 def account_verification(request):
 	hash = request.GET.get('user') # o valor do parâmetro user é nada mais nada menos do que a soma sha256 do nome de usuário.
 	CODE = request.GET.get('code') # código de verificação.
-	
+
 	for u in UserProfile.objects.all():
 		if sha256(bytes(u.user.username, 'utf-8')).hexdigest() == hash:
 			if u.verification_code == CODE:
