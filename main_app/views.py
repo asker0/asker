@@ -14,6 +14,7 @@ from main_app.forms import UploadFileForm
 
 from bs4 import BeautifulSoup as bs
 
+import re
 from random import shuffle
 from hashlib import sha256
 
@@ -271,11 +272,12 @@ def signup(request):
 		new_user_profile.save()
 
 		subject = 'Asker.fun: confirmação de conta'
-		message = ''' Olá {}! Obrigado por criar uma conta no Asker.fun.
+		message = '''Olá {}! Obrigado por criar uma conta no Asker.fun.
 
- Para continuar, verifique seu endereço de email usando o link: https://asker.fun/account/verify?user={}&code={}
+Para continuar, verifique seu endereço de email usando o link:
+https://asker.fun/account/verify?user={}&code={}
 
-  Obrigado e bem vindo(a)!
+Obrigado e bem vindo(a)!
 '''.format(username, sha256(bytes(username, 'utf-8')).hexdigest(), RANDOM_CODE)
 		recipient = [email]
 
@@ -336,6 +338,14 @@ def profile(request, username):
 	return render(request, 'profile.html', context)
 
 
+def replace_url_to_link(value):
+    urls = re.compile(r"((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", re.MULTILINE|re.UNICODE)
+    value = urls.sub(r'<a href="\1" target="_blank">\1</a>', value)
+    urls = re.compile(r"([\w\-\.]+@(\w[\w\-]+\.)+[\w\-]+)", re.MULTILINE|re.UNICODE)
+    value = urls.sub(r'<a href="mailto:\1">\1</a>', value)
+    return value
+
+
 def ask(request):
 
 	if str(get_client_ip(request)) == '201.71.41.130':
@@ -348,6 +358,7 @@ def ask(request):
 
 		description = bs(request.POST.get('description'), 'html.parser').text
 		text = bs(request.POST.get('question'), 'html.parser').text
+		description = replace_url_to_link(description) # transforma links (http, https, etc) em âncoras.
 
 		q = Question.objects.create(creator=UserProfile.objects.get(user=request.user), text=text, description=description)
 

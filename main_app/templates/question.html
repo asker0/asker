@@ -86,7 +86,7 @@ $(function() {
 					<h3>{{ question.text }}</h3>
 					{% if question.description != '' %}
 					<hr>
-					<p>{{ question.description }}</p>
+					<p>{{ question.description|safe|linebreaksbr }}</p>
 					{% endif %}
 					{% if question.image %}
 					<center>

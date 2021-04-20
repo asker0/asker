@@ -82,7 +82,7 @@
 								</a>
 								<p>
 									{% if question.description != '' %}
-			{{ question.description|cut_description|safe }}
+			{{ question.description|cut_description|safe|linebreaksbr }}
 									{% endif %}
 								</p>
 								<small>{{ question.id|total_answers }} respostas <b>&middot;</b> <span class="text-muted">{{ question.pub_date|naturaltime }}</span></small>
@@ -148,7 +148,7 @@
 						</a>
 						<p>
 							{% if question.description != '' %}
-	{{ question.description|cut_description|safe }}
+	{{ question.description|cut_description|safe|linebreaksbr }}
 							{% endif %}
 						</p>
 						<small>{{ question.id|total_answers }} respostas <b>&middot;</b> <span>{{ question.total_likes }} likes</span> <b>&middot;</b> {{ question.id|last_response|safe }}</small>
