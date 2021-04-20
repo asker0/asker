@@ -20,6 +20,15 @@ from hashlib import sha256
 
 import random, string
 
+
+def replace_url_to_link(value):
+    urls = re.compile(r"((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", re.MULTILINE|re.UNICODE)
+    value = urls.sub(r'<a href="\1" target="_blank">\1</a>', value)
+    urls = re.compile(r"([\w\-\.]+@(\w[\w\-]+\.)+[\w\-]+)", re.MULTILINE|re.UNICODE)
+    value = urls.sub(r'<a href="mailto:\1">\1</a>', value)
+    return value
+
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -336,14 +345,6 @@ def profile(request, username):
 			return redirect('/user/' + request.user.username)
 
 	return render(request, 'profile.html', context)
-
-
-def replace_url_to_link(value):
-    urls = re.compile(r"((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", re.MULTILINE|re.UNICODE)
-    value = urls.sub(r'<a href="\1" target="_blank">\1</a>', value)
-    urls = re.compile(r"([\w\-\.]+@(\w[\w\-]+\.)+[\w\-]+)", re.MULTILINE|re.UNICODE)
-    value = urls.sub(r'<a href="mailto:\1">\1</a>', value)
-    return value
 
 
 def ask(request):

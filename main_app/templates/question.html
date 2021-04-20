@@ -86,7 +86,7 @@ $(function() {
 					<h3>{{ question.text }}</h3>
 					{% if question.description != '' %}
 					<hr>
-					<p>{{ question.description|safe|linebreaksbr }}</p>
+					<p>{{ question.description|cut_description|safe|linebreaksbr }}</p>
 					{% endif %}
 					{% if question.image %}
 					<center>
@@ -112,7 +112,7 @@ $(function() {
 						<img width="45px" src="{{ response.creator.avatar.url }}" alt="{{ response.creator.user.username }}"> <span>{{ response.creator.user.username }}</span>
 					</a>
 					<div class="card-body">
-						<p id="response-{{ response.id }}">{{ response.text|linebreaksbr }}</p>
+						<p id="response-{{ response.id }}">{{ response.text|cut_description|safe }}</p>
 
 						<div class="heart-comment" id="like-counter-{{ response.id }}" onclick="like(this, {{ response.id }})">
 							<img width="20px" src="/static/images/{{ response.id|like_or_not:user.username }}" class="icon">
