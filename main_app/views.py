@@ -634,7 +634,7 @@ def edit_profile(request, username):
 			if user is None:
 				if not User.objects.filter(username=request.POST.get('username')).exists():
 					return render(request, 'edit-profile.html', {'user_p': UserProfile.objects.get(user=User.objects.get(username=username)), 'password_display': 'block', 'invalid_password': ' is-invalid'})
-			user.username = request.POST.get('username')
+			user.username = request.POST.get('username').strip()
 			user.save()
 			login(request, user)
 			return redirect('/user/' + user.username)
