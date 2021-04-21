@@ -50,11 +50,11 @@ def index(request):
 			return HttpResponse(False)
 
 		q = Question.objects.get(id=request.POST.get('question_id'))
-		
+
 		text = request.POST.get('text')
 		if not is_a_valid_response(text):
 			return HttpResponse('Proibido.')
-		
+
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=text)
 		q.total_responses += 1
 
@@ -83,7 +83,7 @@ def index(request):
 
 	# pega as perguntas mais populares (com mais likes nas respostas) da mais nova para a mais velha:
 	q = Question.objects.all().order_by('-pub_date')
-	q = q[:250]
+	q = q[:200]
 
 	q = sorted(q, key=lambda o: o.total_likes, reverse=True)
 
@@ -149,7 +149,7 @@ def question(request, question_id):
 		text = request.POST.get('response')
 		if not is_a_valid_response(text):
 			return HttpResponse('Proibido.')
-		
+
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=text)
 
 		u = UserProfile.objects.get(user=request.user)
@@ -263,7 +263,7 @@ def signup(request):
 		username = request.POST.get('username').strip()
 		email = request.POST.get('email').strip()
 		password = request.POST.get('password')
-		
+
 		''' Validação das credenciais: '''
 		if not is_a_valid_user(username, email, password):
 			return HttpResponse('Proibido.')
@@ -467,7 +467,7 @@ def comment(request):
 	text = request.POST.get('text')
 
 	r = Response.objects.get(id=response_id)
-	
+
 	if not is_a_valid_comment(text):
 		return HttpResponse('Proibido.')
 
@@ -668,14 +668,14 @@ def account_verification(request):
 def user_info(request, username):
 	if request.user.username != 'Erick':
 		return HttpResponse('Sem informações.')
-	
+
 	user = User.objects.get(username=username)
 	user_profile = UserProfile.objects.get(user=user)
-	
+
 	context = {
 		'user_p': user_profile,
 	}
-	
+
 	return render(request, 'user-info.html', context)
 
 
