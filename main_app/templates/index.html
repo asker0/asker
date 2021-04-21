@@ -70,35 +70,11 @@
 			</li>
 		</ul>
 		
-			<style>
-				.index-profile-a {
-					color: black;
-				}
-				
-				.index-profile-a:hover {
-					color: black;
-					text-decoration: none;
-				}
-				
-				.index-profile-pic {
-					width: 45px;
-				}
-				
-				.index-question-hr {
-					margin-top: 0;
-				}
-			</style>
-		
 			<section id="n_questions">
 				<div class="infinite-container">
 					{% for question in questions %}
 					<div class="infinite-item">
 						<div class="card">
-							<a class="index-profile-a" href="/user/{{ question.creator.user.username }}">
-								<img class="index-profile-pic" src="{{ question.creator.avatar.url }}">
-								<span>{{ question.creator.user.username }}</span>
-								<hr class="index-question-hr">
-							</a>
 							<div class="card-body">
 								<a href="/question/{{ question.id }}">
 									{{ question.text }}
