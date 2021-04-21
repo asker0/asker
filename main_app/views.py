@@ -8,7 +8,7 @@ from django_project.settings import EMAIL_HOST_USER
 
 from django.contrib.humanize.templatetags.humanize import naturalday
 
-from main_app.models import UserProfile, Question, Response, Notification, Comment, Report
+from main_app.models import UserProfile, Question, Response, Notification, Comment, Report, Ban
 
 from main_app.forms import UploadFileForm
 
@@ -364,8 +364,10 @@ def profile(request, username):
 
 def ask(request):
 
-	if str(get_client_ip(request)) == '201.71.41.130':
-		return HttpResponse('Você está bloqueado.')
+	client_ip = str(get_client_ip(request))
+
+	if Ban.objects.filter(ip=client_ip).exists():
+		return HttpResponse(Ban.objects.get(ip=client_ip).message)
 
 	if request.method == 'POST':
 

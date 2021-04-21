@@ -5,14 +5,14 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
 	ip = models.TextField(null=True)
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	avatar = models.ImageField(default='avatars/default-avatar.png')
-	bio = models.TextField(max_length=400)
-	total_points = models.IntegerField(null=True, default=0)
-	total_views = models.IntegerField(default=0) # total de visualizações desde o dia: 16/04/2021
+	avatar = models.ImageField(default='avatars/default-avatar.png', blank=True)
+	bio = models.TextField(max_length=400, blank=True)
+	total_points = models.IntegerField(null=True, default=0, blank=True)
+	total_views = models.IntegerField(default=0, blank=True) # total de visualizações desde o dia: 16/04/2021
 
 	rank = models.IntegerField(default=-1, null=True, blank=True)
 
-	blocked_users = models.ManyToManyField(User, related_name='blocked_by') # usuários bloqueados pelo UserProfile.user atual.
+	blocked_users = models.ManyToManyField(User, related_name='blocked_by', blank=True) # usuários bloqueados pelo UserProfile.user atual.
 
 	active = models.BooleanField(default=True) # conta está ativa ou não.
 	verification_code = models.TextField(null=True) # código de verificação da conta.
@@ -104,3 +104,7 @@ class Report(models.Model):
     reporter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     url = models.URLField(null=True)
     text = models.TextField(null=True)
+
+class Ban(models.Model): # todos os IP's banidos:
+    ip = models.TextField()
+    message = models.TextField(null=True)
