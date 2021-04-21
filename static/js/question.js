@@ -64,7 +64,7 @@ function show_comments(commentsDiv, response_id, commentsIcon, csrf_token, user_
 			}
 			
 			/* Adiciona o formulário para comentar */
-			commentsSection.innerHTML += '<form class="form-inline" method="post" action="/comment"><input type="hidden" name="csrfmiddlewaretoken" value="'+csrf_token+'"><input type="hidden" name="response_id" value="'+response_id+'">  <input type="hidden" name="question_id" value="'+question_id+'">  <textarea maxlength="400" class="form-control" name="text" placeholder="Escreva seu comentário"></textarea><input class="btn btn-outline-primary" type="submit" value="Pronto"></form>'
+			commentsSection.innerHTML += '<form class="form-inline" method="post" action="/comment"><input type="hidden" name="csrfmiddlewaretoken" value="'+csrf_token+'"><input type="hidden" name="response_id" value="'+response_id+'">  <input type="hidden" name="question_id" value="'+question_id+'">  <textarea maxlength="300" class="form-control" name="text" placeholder="Escreva seu comentário"></textarea><input class="btn btn-outline-primary" type="submit" value="Pronto"></form>'
 		}
 	})
 	

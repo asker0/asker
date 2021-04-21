@@ -45,7 +45,7 @@ urlpatterns = [
 	path('get_more_questions', views.get_more_questions, name='get_more_questions'),
 	path('get_more_responses', views.get_more_responses, name='get_more_responses'),
 	path('report', views.report, name='report'),
-	path('question/apagar/pergunta/moderador/apagar/<int:question_id>', views.delete_question, name='delete_question'),
 	path('account/verify', views.account_verification, name='account_verification'),
+	path('user/<str:username>/info', views.user_info, name='user_info'),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

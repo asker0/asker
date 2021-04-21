@@ -50,7 +50,12 @@ def index(request):
 			return HttpResponse(False)
 
 		q = Question.objects.get(id=request.POST.get('question_id'))
-		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('text'))
+		
+		text = request.POST.get('text')
+		if not is_a_valid_response(text):
+			return HttpResponse('Proibido.')
+		
+		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=text)
 		q.total_responses += 1
 
 		u_p = UserProfile.objects.get(user=request.user)
@@ -89,8 +94,10 @@ def index(request):
 	context['popular_questions'] = questions
 
 	if request.user.is_authenticated:
-		context['user_p'] = UserProfile.objects.get(user=request.user)
-
+		user_p = UserProfile.objects.get(user=request.user)
+		user_p.ip = get_client_ip(request)
+		user_p.save()
+		context['user_p'] = user_p
 		if not UserProfile.objects.get(user=request.user).active:
 			context['account_verification_alert'] = '<div class="alert alert-info"><p>Confirme seu email abrindo o link enviado para ele.<br>Este é o email usado na tela de cadastro: {}</p><p>Caso não encontre o email, verifique na pasta de spam.</p></div>'.format(request.user.email)
 
@@ -139,7 +146,11 @@ def question(request, question_id):
 		if Response.objects.filter(creator=UserProfile.objects.get(user=request.user), question=q).exists():
 			return HttpResponse('OK')
 
-		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=request.POST.get('response'))
+		text = request.POST.get('response')
+		if not is_a_valid_response(text):
+			return HttpResponse('Proibido.')
+		
+		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=text)
 
 		u = UserProfile.objects.get(user=request.user)
 		u.total_points += 2
@@ -252,6 +263,10 @@ def signup(request):
 		username = request.POST.get('username').strip()
 		email = request.POST.get('email').strip()
 		password = request.POST.get('password')
+		
+		''' Validação das credenciais: '''
+		if not is_a_valid_user(username, email, password):
+			return HttpResponse('Proibido.')
 
 		if User.objects.filter(username=username).exists():
 			return render(request, 'signup.html', {'error': '''<div class="alert alert-danger error-alert" role="alert"><h4 class="alert-heading">Ops!</h4>Nome de usuário em uso.</div>''',
@@ -361,6 +376,9 @@ def ask(request):
 		text = bs(request.POST.get('question'), 'html.parser').text
 		description = replace_url_to_link(description) # transforma links (http, https, etc) em âncoras.
 
+		if not is_a_valid_question(text, description):
+			return HttpResponse('Proibido.')
+
 		q = Question.objects.create(creator=UserProfile.objects.get(user=request.user), text=text, description=description)
 
 		form = UploadFileForm(request.POST, request.FILES)
@@ -449,6 +467,9 @@ def comment(request):
 	text = request.POST.get('text')
 
 	r = Response.objects.get(id=response_id)
+	
+	if not is_a_valid_comment(text):
+		return HttpResponse('Proibido.')
 
 	c = Comment.objects.create(response=r, creator=request.user, text=text)
 
@@ -642,3 +663,51 @@ def account_verification(request):
 			else:
 				return HttpResponse('Erro: código de verificação incorreto.')
 	return HttpResponse('Erro.')
+
+
+def user_info(request, username):
+	if request.user.username != 'Erick':
+		return HttpResponse('Sem informações.')
+	
+	user = User.objects.get(username=username)
+	user_profile = UserProfile.objects.get(user=user)
+	
+	context = {
+		'user_p': user_profile,
+	}
+	
+	return render(request, 'user-info.html', context)
+
+
+''' A função abaixo faz a validação das credenciais de novos usuários. '''
+def is_a_valid_user(username, email, password):
+	if len(username) > 30:
+		return False
+	elif len(email) > 60:
+		return False
+	elif len(password) < 6 or len(password) > 256:
+		return False
+	return True
+
+
+''' A função abaixo faz a validação de novas questões (perguntas). '''
+def is_a_valid_question(text, description):
+	if len(text) > 180:
+		return False
+	if len(description) > 5000:
+		return False
+	return True
+
+
+''' A função abaixo faz a validação de novas respostas. '''
+def is_a_valid_response(text):
+	if len(text) > 5000:
+		return False
+	return True
+
+
+''' A função abaixo faz a validação de um novo comentário. '''
+def is_a_valid_comment(text):
+	if len(text) > 300:
+		return False
+	return True

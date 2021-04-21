@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{{ user_p.user.username }}</title>
+		<script>
+			function show_blocked_users() {
+				div = document.getElementById('blocked-users')
+				if (div.style.display == 'none')
+					div.style.display = 'block'
+				else
+					div.style.display = 'none'
+			}
+		</script>
+	</head>
+	<body>
+		Último endereço de IP registrado: {{ user_p.ip }}<br>
+		Nome de usuário: |{{ user_p.user.username }}|<br>
+		Email: |{{ user_p.user.email }}|<br>
+		Visualizações de perfil: {{ user_p.total_views }}<br>
+		Usuários bloqueados: <button onclick="show_blocked_users()">ver</button>
+		<div id="blocked-users" style="display: none">
+			<br>
+			{% for user in user_p.blocked_users.all %}
+				{{ user.username }}<br>
+			{% endfor %}
+		</div><br>
+		Conta ativa: {{ user_p.active }}
+	</body>
+</html>
