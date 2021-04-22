@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
@@ -363,14 +364,26 @@ def profile(request, username):
 
 
 def ask(request):
-
-	client_ip = str(get_client_ip(request))
-
-	if Ban.objects.filter(ip=client_ip).exists():
+	'''
+	Teste de banimento.
+	'''
+	if Ban.objects.filter(ip=str(get_client_ip(request))).exists():
 		return HttpResponse(Ban.objects.get(ip=client_ip).message)
 
-	if request.method == 'POST':
+	'''
+	Controle de spam
+	'''
+	try:
+		last_q = Question.objects.filter(creator=UserProfile.objects.get(user=request.user))
+		last_q = last_q[last_q.count()-1] # pega a última questão feita pelo usuário.
+		
+		# verifica se já passou 20 segundos:
+		if (timezone.now() - last_q.pub_date).seconds < 20:
+			return HttpResponse('<p>Você deve esperar {} segundos para perguntar novamente.'.format(20 - (timezone.now() - last_q.pub_date).seconds))
+	except:
+		pass
 
+	if request.method == 'POST':
 		if request.POST.get('question') == '' or request.POST.get('question') == '.':
 			return render(request, 'ask.html', {'error': '<p>Pergunta inválida.</p>'})
 

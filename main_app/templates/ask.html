@@ -22,12 +22,19 @@
 				}
 			}
 		</style>
+<script>
+	function format_form(form) {
+		q = form.question
+		if (q.value[q.value.length - 1] != '?')
+			q.value += '?'
+	}
+</script>
 	</head>
 	<body>
 		<main>
 			{% if user_p.active %}
 			<div id="inner">
-				<form method="post" enctype="multipart/form-data">
+				<form method="post" enctype="multipart/form-data" onsubmit="format_form(this)">
 					{% csrf_token %}
 					<div class="form-group">
 						<input class="form-control" type="text" name="question" placeholder="Sua pergunta aqui" autocomplete="off" maxlength="180">

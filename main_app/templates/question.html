@@ -173,13 +173,12 @@ $(function() {
 		<script src="/static/js/question.js"></script>
 		<div class="recommended">
 			<hr>
-			<h3>— Responda Também —</h3>
+			<h3 class="text-secondary">— Responda também —</h3>
 			{% for question in recommended_questions %}
 			<div class="r-question">
-				<hr>
-					<a href="/question/{{ question.id }}"><span>{{ question.text }}</span></a>
-					<br>
-					<span class="text-muted">perguntada {{ question.pub_date|naturaltime }} por <a href="/user/{{ question.creator.user.username }}">{{ question.creator.user.username }}</a></span>
+				<a href="/question/{{ question.id }}"><b>{{ question.text }}</b></a>
+				<br>
+				<small class="text-muted">perguntada {{ question.pub_date|naturaltime }} por <a href="/user/{{ question.creator.user.username }}">{{ question.creator.user.username }}</a></small>
 				<hr>
 			</div>
 			{% endfor %}
