@@ -265,6 +265,20 @@ def signup(request):
 		email = request.POST.get('email').strip()
 		password = request.POST.get('password')
 
+		'''
+		Validação do nome de usuário: verifica se combina com o regex (apenas letras, números, hífens, undercores e espaços).
+		'''
+		regex = r'^[-\w_ ]+$'
+		try:
+			re.search(regex, username)[0]
+		except:
+			html = '<div class="alert alert-danger"><p>O nome de usuário deve conter apenas caracteres alfanuméricos, hífens, underscores e espaços.</p></div>'
+			return render(request, 'signup.html', {'invalid_username': html,
+														 'username': username,
+														 'email': email,
+														 'redirect': r,
+														 'username_error': ' is-invalid'})
+
 		''' Validação das credenciais: '''
 		if not is_a_valid_user(username, email, password):
 			return HttpResponse('Proibido.')
@@ -638,8 +652,18 @@ def edit_profile(request, username):
 			u.save()
 			return redirect('/user/' + username)
 		if request.POST.get('type') == 'username':
+			
+			username = request.POST.get('username')
+			
+			# validação do novo nome de usuário:
+			r = r'^[-\w_ ]+$'
+			try:
+				re.search(r, username)[0]
+			except:
+				html = '<div class="alert alert-danger"><p>O nome de usuário deve conter apenas caracteres alfanuméricos, hífens, underscores e espaços.</p></div>'
+				return render(request, 'edit-profile.html', {'invalid_username': html})
 
-			if User.objects.filter(username=request.POST.get('username')).exists():
+			if User.objects.filter(username=username).exists():
 				return render(request, 'edit-profile.html', {'user_p': UserProfile.objects.get(user=User.objects.get(username=username)), 'username_display': 'block', 'invalid_username': ' is-invalid'})
 
 			password = request.POST.get('password')

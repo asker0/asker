@@ -30,7 +30,8 @@
 		</form>
 		<hr>
 		<h2>Nome de usuário</h2>
-		<form method="post" onsubmit="return username_form_validator()" id="username_form">
+		{{ invalid_username|safe }}
+		<form accept-charset="utf-8" method="post" id="username_form">
 			<input type="hidden" name="type" value="username">
 			{% csrf_token %}
 

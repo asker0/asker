@@ -16,6 +16,7 @@
 			<center id="logo"><img src="/static/images/asker.png" alt="Asker"></center>
 			
 			{{ error|safe }}
+			{{ invalid_username|safe }}
 			
 			<form method="post">
 				{% csrf_token %}
