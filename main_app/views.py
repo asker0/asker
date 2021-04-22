@@ -661,7 +661,9 @@ def edit_profile(request, username):
 				re.search(r, username)[0]
 			except:
 				html = '<div class="alert alert-danger"><p>O nome de usuário deve conter apenas caracteres alfanuméricos, hífens, underscores e espaços.</p></div>'
-				return render(request, 'edit-profile.html', {'invalid_username': html})
+				return render(request, 'edit-profile.html', {'invalid_username_text': html,
+															 'username': username,
+															 'invalid_username': ' is-invalid'})
 
 			if User.objects.filter(username=username).exists():
 				return render(request, 'edit-profile.html', {'user_p': UserProfile.objects.get(user=User.objects.get(username=username)), 'username_display': 'block', 'invalid_username': ' is-invalid'})
