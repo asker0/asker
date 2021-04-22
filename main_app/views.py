@@ -664,6 +664,9 @@ def edit_profile(request, username):
 				return render(request, 'edit-profile.html', {'invalid_username_text': html,
 															 'username': username,
 															 'invalid_username': ' is-invalid'})
+			
+			if len(username) > 30:
+				return HttpResponse('Escolha um nome de usuário menor ou igual a 30 caracteres.')
 
 			if User.objects.filter(username=username).exists():
 				return render(request, 'edit-profile.html', {'user_p': UserProfile.objects.get(user=User.objects.get(username=username)), 'username_display': 'block', 'invalid_username': ' is-invalid'})

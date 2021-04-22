@@ -46,7 +46,7 @@
 
 			<div class="form-row">
 				<div class="col-md-4 mb-3">
-					<input name="username" placeholder="Novo nome de usuário" class="form-control{{ invalid_username }}" value="{{ username }}" type="text">
+					<input maxlength="30" name="username" placeholder="Novo nome de usuário" class="form-control{{ invalid_username }}" value="{{ username }}" type="text">
 					<div class="invalid-feedback" style="display: {{ username_display }}">
 						Nome de usuário em uso ou inválido.
 					</div>
