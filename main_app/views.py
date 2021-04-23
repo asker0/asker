@@ -488,26 +488,31 @@ def comments(request):
 	return JsonResponse(json)
 
 
+'''
+Faz um comentário para uma resposta.
+'''
 def comment(request):
-	if request.method != 'POST':
-		return HttpResponse('ERROR.')
-
+	
 	response_id = request.POST.get('response_id')
 	text = request.POST.get('text')
-
+	
+	'''
+	Verifica se está tudo certo para comentar:
+	'''
+	if request.method != 'POST' or (not is_a_valid_comment(text)):
+		return HttpResponse('ERRO.')
+	
 	r = Response.objects.get(id=response_id)
-
-	if not is_a_valid_comment(text):
-		return HttpResponse('Proibido.')
-
-	c = Comment.objects.create(response=r, creator=request.user, text=text)
-
-
+	c = Comment.objects.create(response=r, creator=request.user, text=text) # cria o comentário da resposta.
+	
+	'''
+	Cria a notificação do novo comentário:
+	'''
 	n = Notification.objects.create(receiver=r.creator.user, type='comment-in-response')
 	n.set_text(r.id, comment_id=c.id)
 	n.save()
-
-	return redirect('/question/' + request.POST.get('question_id'))
+	
+	return redirect('/question/' + str(c.response.question.id))
 
 
 def rank(request):

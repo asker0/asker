@@ -72,7 +72,7 @@ class Comment(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     pub_date = models.DateTimeField(default=timezone.now)
-
+    
     def __str__(self):
         return self.text
 
