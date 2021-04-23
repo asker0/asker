@@ -62,6 +62,60 @@
 			</div>
 		</nav>
 {{ account_verification_alert|safe }}
+
+
+
+<style>
+	#alert {
+		width: 50%;
+		margin: auto;
+	}
+	
+	#hide-alert {
+		float: right;
+		border-bottom-style: solid;
+		border-bottom-width: 1px;
+		cursor: pointer;
+	}
+	
+	#alert-elements {
+		display: none;
+	}
+	
+	@media (min-width: 320px) and (max-width: 480px) {
+		#alert {
+			width: 100%;
+		}
+	}
+</style>
+<div id="alert" class="alert alert-info" role="alert">
+	<span id="hide-alert">Mostrar</span>
+  <h4 class="alert-heading">Aviso</h4>
+  <div id="alert-elements">
+	  <p>Devido a um erro no registrador de domínios GoDaddy.com, o Asker vai utilizar este domínio: <b>asker.pythonanywhere.com</b> até a próxima segunda feira, e logo vai voltar a ser <b>asker.fun</b>.</p>
+	  <hr>
+	  <p class="mb-0">Dica: adicione este site aos favoritos!</p>
+	  <small>Obrigado a todos os usuários do Asker.</small>
+  </div>
+</div>
+<script>
+	btn = document.getElementById('hide-alert')
+	btn.onclick = function() {
+		if (btn.innerText == 'Mostrar') {
+			btn.innerText = 'Ocultar'
+		} else
+			btn.innerText = 'Mostrar'
+		
+		alert_div = document.getElementById('alert-elements')
+		if (window.getComputedStyle(alert_div, null).display == 'none') {
+			alert_div.style.display = 'block'
+		} else
+			alert_div.style.display = 'none'
+	}
+</script>
+
+
+
 		<ul class="nav nav-tabs" id="tabs">
 			<li class="nav-item">
 				<a class="nav-link" id="popular">Popular</a>
