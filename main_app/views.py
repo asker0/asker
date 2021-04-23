@@ -511,14 +511,12 @@ def comment(request):
 
 
 def rank(request):
-	p = Paginator(UserProfile.objects.all().order_by('-total_points'), 50)
-	r = p.page(1)
-	count = 1
-	for u in r:
-		u.rank = count
+	rank = UserProfile.objects.order_by('-total_points')[:50]
+	count = 0
+	for user in rank:
 		count += 1
-	context = {'rank': r}
-	return render(request, 'rank.html', context)
+		user.rank = count
+	return render(request,'rank.html',{'rank':rank})
 
 
 def edit_response(request):
