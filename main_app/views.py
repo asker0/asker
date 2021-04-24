@@ -179,16 +179,16 @@ def question(request, question_id):
 
 		q.total_responses += 1
 		q.save()
-		
+
 		json = {'answer_id': r.id}
-		
+
 		try:
 			image_url = r.image.url
 			json['has_image'] = True
 			json['image_url'] = r.image.url
 		except:
 			json['has_image'] = False
-		
+
 		return JsonResponse(json)
 
 	context = {'question': q,
@@ -245,14 +245,14 @@ def like(request):
 
 def delete_response(request):
     r = Response.objects.get(id=request.GET.get('response_id'))
-    
+
     try:
         ''' Deleta também a imagem do sistema de arquivos para liberar espaço. '''
         import os
         os.system('rm ' + r.image.path)
     except:
         pass
-    
+
     q = r.question
     q.total_responses -= 1
     q.save()
@@ -421,7 +421,7 @@ def ask(request):
 	try:
 		last_q = Question.objects.filter(creator=UserProfile.objects.get(user=request.user))
 		last_q = last_q[last_q.count()-1] # pega a última questão feita pelo usuário.
-		
+
 		# verifica se já passou 20 segundos:
 		if (timezone.now() - last_q.pub_date).seconds < 20:
 			return HttpResponse('<p>Você deve esperar {} segundos para perguntar novamente.'.format(20 - (timezone.now() - last_q.pub_date).seconds))
@@ -523,26 +523,26 @@ def comments(request):
 Faz um comentário para uma resposta.
 '''
 def comment(request):
-	
+
 	response_id = request.POST.get('response_id')
 	text = request.POST.get('text')
-	
+
 	'''
 	Verifica se está tudo certo para comentar:
 	'''
 	if request.method != 'POST' or (not is_a_valid_comment(text)):
 		return HttpResponse('ERRO.')
-	
+
 	r = Response.objects.get(id=response_id)
 	c = Comment.objects.create(response=r, creator=request.user, text=text) # cria o comentário da resposta.
-	
+
 	'''
 	Cria a notificação do novo comentário:
 	'''
 	n = Notification.objects.create(receiver=r.creator.user, type='comment-in-response')
 	n.set_text(r.id, comment_id=c.id)
 	n.save()
-	
+
 	return redirect('/question/' + str(c.response.question.id))
 
 
@@ -686,9 +686,9 @@ def edit_profile(request, username):
 			u.save()
 			return redirect('/user/' + username)
 		if request.POST.get('type') == 'username':
-			
+
 			username = request.POST.get('username')
-			
+
 			# validação do novo nome de usuário:
 			r = r'^[-\w_ ]+$'
 			try:
@@ -698,7 +698,7 @@ def edit_profile(request, username):
 				return render(request, 'edit-profile.html', {'invalid_username_text': html,
 															 'username': username,
 															 'invalid_username': ' is-invalid'})
-			
+
 			if len(username) > 30:
 				return HttpResponse('Escolha um nome de usuário menor ou igual a 30 caracteres.')
 
