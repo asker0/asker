@@ -131,7 +131,7 @@ $(function() {
 						<img width="45px" src="{{ response.creator.avatar.url }}" alt="{{ response.creator.user.username }}"> <span>{{ response.creator.user.username }}</span>
 					</a>
 					<div class="card-body">
-						<p id="response-{{ response.id }}">{{ response.text|cut_description|safe }}</p>
+						<p id="response-{{ response.id }}">{{ response.text|cut_description }}</p>
 						
 						{% if response.image %}
 							<hr>
