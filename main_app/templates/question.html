@@ -195,15 +195,16 @@ $(function() {
 				}
 			</style>
 			
-			<form id="response-form" method="post" enctype="multipart/form-data">
+			<form id="response-form" method="post" enctype="multipart/form-data" onsubmit="document.getElementById('response-loading-gif').style.display = 'block'; document.getElementById('send-response-btn').disabled = true; if (document.getElementById('upload-photo').value != '') { alert('A funcionalidade de enviar imagens nas respostas está em DEMO e pode não funcionar. Reinicie a página se demorar mais de 20 segundos.') }">
 				{% csrf_token %}
 				<textarea maxlength="5000" class="form-control" placeholder="Responda esta pergunta!" name="response" required="required"></textarea>
-				<input class="btn btn-primary" type="submit" value="Enviar">
+				<input class="btn btn-primary" type="submit" value="Enviar" id="send-response-btn">
 				
-				<!--<label for="upload-photo"><img src="/static/images/camera.png" width="25px"> <span id="upload-photo-text"></span></label>
+				<label for="upload-photo"><img src="/static/images/camera.png" width="25px"> <span id="upload-photo-text"></span></label>
 				<input type="file" accept="image/*" name="file" id="upload-photo">
-				<img src="/static/images/close-icon.png" width="20px" style="display: none; cursor: pointer;" id="delete-photo-icon">-->
+				<img src="/static/images/close-icon.png" width="20px" style="display: none; cursor: pointer;" id="delete-photo-icon"><span>
 			</form>
+			<img src="/static/images/loading.gif" width="30px" style="display: none;" id="response-loading-gif">
 			{% endif %}
 			{% endif %}
 			{% else %}

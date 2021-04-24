@@ -246,9 +246,12 @@ def like(request):
 def delete_response(request):
     r = Response.objects.get(id=request.GET.get('response_id'))
     
-    ''' Deleta também a imagem do sistema de arquivos para liberar espaço. '''
-    import os
-    os.system('rm ' + r.image.path)
+    try:
+        ''' Deleta também a imagem do sistema de arquivos para liberar espaço. '''
+        import os
+        os.system('rm ' + r.image.path)
+    except:
+        pass
     
     q = r.question
     q.total_responses -= 1
