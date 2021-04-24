@@ -534,7 +534,7 @@ def comment(request):
 		return HttpResponse('ERRO.')
 
 	r = Response.objects.get(id=response_id)
-	c = Comment.objects.create(response=r, creator=request.user, text=text) # cria o comentário da resposta.
+	c = Comment.objects.create(response=r, creator=request.user, text=bs(text, "lxml").text) # cria o comentário da resposta.
 
 	'''
 	Cria a notificação do novo comentário:
