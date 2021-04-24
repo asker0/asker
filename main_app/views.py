@@ -345,7 +345,7 @@ def signup(request):
 		message = '''Olá {}! Obrigado por criar uma conta no Asker.fun.
 
 Para continuar, verifique seu endereço de email usando o link:
-https://asker.fun/account/verify?user={}&code={}
+https://asker.pythonanywhere.com/account/verify?user={}&code={}
 
 Obrigado e bem vindo(a)!
 '''.format(username, sha256(bytes(username, 'utf-8')).hexdigest(), RANDOM_CODE)
