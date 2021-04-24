@@ -20,13 +20,23 @@
 
 		<script>
 $(function() {
-	$('#response-form').ajaxForm(function(answer_id) {
+	$('#response-form').ajaxForm(function(data) {
+		answer_id = data['answer_id']
+		
 		responses = document.getElementById('responses')
 
 		new_user_response = document.getElementById('response-form').response.value
-
-		//responses.innerHTML += '<div class="card"><a href="/user/{{ user.username }}"><img src="{{ user_p.avatar.url }}"><span>{{ user.username }}</span></a><div class="card-body"><p>'+new_user_response+'</p></p>           <div class="heart-comment" id="like-counter-'+answer_id+'" onclick="like(this, '+answer_id+')"><img width="20px" src="/static/images/white-heart.png" class="icon"> <span>0</span></div>&nbsp;&nbsp;        <div class="heart-comment"><img width="20px" src="/static/images/comments.png" class="icon" onclick="show_comments(this.parentElement, '+answer_id+', this.parentElement.getElementsByTagName(`img`)[0], `{{ csrf_token }}`)"> <span class="comment">0</span><div class="comments" id="1"></div></div>          <div class="dropdown" id="options-dropdown"><button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opções</button>   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><button class="dropdown-item" onclick="delete_response('+answer_id+'); this.parentElement.parentElement.parentElement.parentElement.remove()">Apagar</button><button class="dropdown-item" onclick="document.getElementById(`edit-response-form`).style.display=`block`">Editar</button></div>   </div>                    </div></div>'
-		responses.innerHTML += '<div class="card"><a style="text-decoration: none; color: black;" href="/user/{{ user.username }}"><img src="{{ user_p.avatar.url }}" width="45px" alt="{{ user.username }}"> <span>{{ user.username }}</span></a><div class="card-body"><p>'+new_user_response+'</p></p>           <div class="heart-comment" id="like-counter-'+answer_id+'" onclick="like(this, '+answer_id+')"><img width="20px" src="/static/images/white-heart.png" class="icon"> <span>0</span></div>&nbsp;&nbsp;                   <div class="dropdown" id="options-dropdown"><button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opções</button>   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><button class="dropdown-item" onclick="delete_response('+answer_id+'); this.parentElement.parentElement.parentElement.parentElement.remove()">Apagar</button><button class="dropdown-item" onclick="document.getElementById(`edit-response-form`).style.display=`block`">Editar</button></div>   </div>                  <div class="heart-comment">&nbsp;<img width="20px" src="/static/images/comments.png" class="icon" onclick="show_comments(this.parentElement, '+answer_id+', this.parentElement.getElementsByTagName(`img`)[0], `{{ csrf_token }}`, `{{ user.username }}`, {{ question.id }})"> <span class="comment">0</span><div class="comments" id="1"></div></div>                              </div></div>'
+		
+		new_innerHTML = '<div class="card"><a style="text-decoration: none; color: black;" href="/user/{{ user.username }}"><img src="{{ user_p.avatar.url }}" width="45px" alt="{{ user.username }}"> <span>{{ user.username }}</span></a><div class="card-body"><p>'+new_user_response+'</p></p>'
+		
+		if (data['has_image']) {
+			url = data['image_url']
+			new_innerHTML += '<hr><img src="'+url+'" class="response-image" alt="Ocorreu um erro ao processar a imagem."><hr>'
+		}
+		
+		new_innerHTML += '<div class="heart-comment" id="like-counter-'+answer_id+'" onclick="like(this, '+answer_id+')"><img width="20px" src="/static/images/white-heart.png" class="icon"> <span>0</span></div>&nbsp;&nbsp;                   <div class="dropdown" id="options-dropdown"><button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opções</button>   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><button class="dropdown-item" onclick="delete_response('+answer_id+'); this.parentElement.parentElement.parentElement.parentElement.remove()">Apagar</button><button class="dropdown-item" onclick="document.getElementById(`edit-response-form`).style.display=`block`">Editar</button></div>   </div>                  <div class="heart-comment">&nbsp;<img width="20px" src="/static/images/comments.png" class="icon" onclick="show_comments(this.parentElement, '+answer_id+', this.parentElement.getElementsByTagName(`img`)[0], `{{ csrf_token }}`, `{{ user.username }}`, {{ question.id }})"> <span class="comment">0</span><div class="comments" id="1"></div></div>                              </div></div>'
+		
+		responses.innerHTML += new_innerHTML
 
 		document.getElementById('response-form').remove()
 
@@ -38,6 +48,15 @@ $(function() {
 	});
 });
 		</script>
+		
+		<style>
+			.response-image {
+				max-width: 100%;
+				max-height: 400px;
+				display: block;
+				margin: auto;
+			}
+		</style>
 	</head>
 	<body>
 
@@ -113,6 +132,12 @@ $(function() {
 					</a>
 					<div class="card-body">
 						<p id="response-{{ response.id }}">{{ response.text|cut_description|safe }}</p>
+						
+						{% if response.image %}
+							<hr>
+							<img src="{{ response.image.url }}" class="response-image" alt="Ocorreu um erro ao processar a imagem.">
+							<hr>
+						{% endif %}
 
 						<div class="heart-comment" id="like-counter-{{ response.id }}" onclick="like(this, {{ response.id }})">
 							<img width="20px" src="/static/images/{{ response.id|like_or_not:user.username }}" class="icon">
@@ -156,10 +181,28 @@ $(function() {
 			{% if user_p.active %}
 			{% if user.username|answered:question.id == False %}
 			{% if question.creator.user.username|blocked:user.username == 'Bloquear' %}
-			<form id="response-form" method="post">
+			
+			<style>
+				/* Estilos para o formulário abaixo. */
+				label {
+				   cursor: pointer;
+				   /* Style as you please, it will become the visible UI component. */
+				}
+				#upload-photo {
+				   opacity: 0;
+				   position: absolute;
+				   z-index: -1;
+				}
+			</style>
+			
+			<form id="response-form" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				<textarea maxlength="5000" class="form-control" placeholder="Responda esta pergunta!" name="response" required="required"></textarea>
 				<input class="btn btn-primary" type="submit" value="Enviar">
+				
+				<label for="upload-photo"><img src="/static/images/camera.png" width="25px"> <span id="upload-photo-text"></span></label>
+				<input type="file" accept="image/*" name="file" id="upload-photo">
+				<img src="/static/images/close-icon.png" width="20px" style="display: none; cursor: pointer;" id="delete-photo-icon">
 			</form>
 			{% endif %}
 			{% endif %}
@@ -186,6 +229,25 @@ $(function() {
 	</body>
 
 	<script>
+/* Javascript para upload de imagem em respostas */
+document.getElementById('upload-photo').onchange = function () {
+	text = document.getElementById('upload-photo-text')
+	delete_photo_icon = document.getElementById('delete-photo-icon')
+	input = document.getElementById('upload-photo')
+	text.innerText = input.value.slice(12)
+	delete_photo_icon.style.display = 'inline'
+}
+
+document.getElementById('delete-photo-icon').onclick = function () {
+	delete_photo_icon = document.getElementById('delete-photo-icon')
+	input = document.getElementById('upload-photo')
+	text = document.getElementById('upload-photo-text')
+	delete_photo_icon.style.display = 'none'
+	text.innerText = ''
+	input.value = null
+}
+/* Fim: Javascript para upload de imagem em respostas */
+
 function delete_question(id) {
 	$.ajax({
 		url: '/delete_question',
@@ -207,8 +269,6 @@ function delete_question(id) {
         throttle: 0.8, c: 'w', ads: 0
     });
     _client.start();
-
-
 </script>
 
 </html>

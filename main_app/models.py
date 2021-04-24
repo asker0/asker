@@ -62,6 +62,7 @@ class Response(models.Model):
 	pub_date = models.DateTimeField(default=timezone.now)
 	likes = models.ManyToManyField(User)
 	total_likes = models.IntegerField(default=0)
+	image = models.ImageField(null=True, blank=True)
 
 	def __str__(self):
 	    return self.text

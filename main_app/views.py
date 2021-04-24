@@ -153,6 +153,20 @@ def question(request, question_id):
 
 		r = Response.objects.create(question=q, creator=UserProfile.objects.get(user=request.user), text=text)
 
+		''' Upload de imagens: '''
+		form = UploadFileForm(request.POST, request.FILES)
+		if form.is_valid():
+			f = request.FILES['file']
+
+			file_name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+			file_name += str(f)
+			# em produção: with open('django_project/media/responses/' + file_name, 'wb+') as destination:
+			with open('django_project/media/responses/' + file_name, 'wb+') as destination:
+				for chunk in f.chunks():
+					destination.write(chunk)
+			r.image = 'responses/' + file_name
+			r.save()
+
 		u = UserProfile.objects.get(user=request.user)
 		u.total_points += 2
 		u.save()
@@ -165,8 +179,17 @@ def question(request, question_id):
 
 		q.total_responses += 1
 		q.save()
-
-		return HttpResponse(r.id)
+		
+		json = {'answer_id': r.id}
+		
+		try:
+			image_url = r.image.url
+			json['has_image'] = True
+			json['image_url'] = r.image.url
+		except:
+			json['has_image'] = False
+		
+		return JsonResponse(json)
 
 	context = {'question': q,
 			   'responses': Response.objects.filter(question=q).order_by('-pub_date').order_by('-total_likes')}
@@ -222,6 +245,11 @@ def like(request):
 
 def delete_response(request):
     r = Response.objects.get(id=request.GET.get('response_id'))
+    
+    ''' Deleta também a imagem do sistema de arquivos para liberar espaço. '''
+    import os
+    os.system('rm ' + r.image.path)
+    
     q = r.question
     q.total_responses -= 1
     q.save()
